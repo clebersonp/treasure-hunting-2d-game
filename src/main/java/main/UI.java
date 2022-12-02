@@ -5,7 +5,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
+
+import object.OBJ_Heart;
+import object.SuperObject;
 
 public class UI {
 
@@ -13,6 +17,7 @@ public class UI {
 	private GamePanel gp;
 	private String currentDialogue = "";
 	private int commandNum = 0;
+	private BufferedImage heart_full, heart_half, heart_blank;
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
@@ -29,6 +34,12 @@ public class UI {
 			e.printStackTrace();
 		}
 
+		// CREATE HUD OBJECT
+		SuperObject obj_Heart = new OBJ_Heart(this.gp);
+		this.heart_full = obj_Heart.getImage();
+		this.heart_half = obj_Heart.getImage2();
+		this.heart_blank = obj_Heart.getImage3();
+
 	}
 
 	public void draw(Graphics2D g2) {
@@ -40,9 +51,48 @@ public class UI {
 
 		switch (this.gp.getGameState()) {
 		case GamePanel.TITLE_STATE -> this.drawTitleScreen(g2);
-		case GamePanel.PLAY_STATE -> this.drawPlayScreen(g2);
-		case GamePanel.PAUSE_STATE -> this.drawPauseScreen(g2);
-		case GamePanel.DIALOGUE_STATE -> this.drawDialogScreen(g2);
+		case GamePanel.PLAY_STATE -> {
+			this.drawPlayerLife(g2);
+			this.drawPlayScreen(g2);
+		}
+		case GamePanel.PAUSE_STATE -> {
+			this.drawPlayerLife(g2);
+			this.drawPauseScreen(g2);
+		}
+		case GamePanel.DIALOGUE_STATE -> {
+			this.drawPlayerLife(g2);
+			this.drawDialogScreen(g2);
+		}
+		}
+
+	}
+
+	private void drawPlayerLife(Graphics2D g2) {
+		int x = this.gp.getTileSize() / 2;
+		int y = this.gp.getTileSize() / 2;
+		int i = 0;
+
+		// DRAW MAX LIFE
+		while (i < this.gp.getPlayer().getMaxLife() / 2) {
+			g2.drawImage(heart_blank, x, y, null);
+			i++;
+			x += this.gp.getTileSize();
+		}
+
+		// RESET
+		x = this.gp.getTileSize() / 2;
+		y = this.gp.getTileSize() / 2;
+		i = 0;
+
+		// DRAW CURRENT LIFE
+		while (i < this.gp.getPlayer().getLife()) {
+			g2.drawImage(heart_half, x, y, null);
+			i++;
+			if (i < this.gp.getPlayer().getLife()) {
+				g2.drawImage(heart_full, x, y, null);
+			}
+			i++;
+			x += this.gp.getTileSize();
 		}
 
 	}

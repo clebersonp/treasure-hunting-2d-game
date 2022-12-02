@@ -8,7 +8,7 @@ import main.GamePanel;
 
 public class SuperObject {
 
-	protected BufferedImage image;
+	protected BufferedImage image, image2, image3;
 	protected String name;
 	protected boolean collision;
 	protected int worldX, worldY;
@@ -76,6 +76,14 @@ public class SuperObject {
 
 	public int getSolidAreaDefaultY() {
 		return solidAreaDefaultY;
+	}
+
+	public BufferedImage getImage2() {
+		return image2;
+	}
+
+	public BufferedImage getImage3() {
+		return image3;
 	}
 
 }

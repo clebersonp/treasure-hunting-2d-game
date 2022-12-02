@@ -35,6 +35,10 @@ public abstract class Entity {
 	private String[] dialogues = new String[20];
 	private int dialogueIndex = 0;
 
+	// CHARACTER LIFE
+	private int maxLife;
+	private int life;
+
 	private GamePanel gp;
 
 	public Entity(GamePanel gp) {
@@ -199,6 +203,22 @@ public abstract class Entity {
 
 	public BufferedImage getRight2() {
 		return right2;
+	}
+
+	public int getLife() {
+		return life;
+	}
+
+	public void setLife(int life) {
+		this.life = life;
+	}
+
+	public int getMaxLife() {
+		return maxLife;
+	}
+
+	public void setMaxLife(int maxLife) {
+		this.maxLife = maxLife;
 	}
 
 	public static enum Direction {

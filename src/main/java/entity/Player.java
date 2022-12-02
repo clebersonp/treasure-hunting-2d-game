@@ -49,7 +49,12 @@ public class Player extends Entity {
 
 		super.speed = 4;
 		super.direction = DOWN;
-
+		
+		
+		// PLAYER LIFE
+		int defaultLife = 6;
+		super.setMaxLife(defaultLife);
+		super.setLife(defaultLife);
 	}
 
 	public void setAction() {
