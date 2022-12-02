@@ -3,10 +3,8 @@ package main;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.io.IOException;
 import java.io.InputStream;
 
 public class UI {
@@ -17,20 +15,22 @@ public class UI {
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
-		
-		try {
-			InputStream is = getClass().getResourceAsStream("/fonts/purisa_bold.ttf");
-			this.purisaB = Font.createFont(Font.TRUETYPE_FONT, is);
-			is = getClass().getResourceAsStream("/fonts/underdog_regular.ttf");
-			this.underdog = Font.createFont(Font.TRUETYPE_FONT, is);
+
+		try (InputStream isPurisa = getClass().getResourceAsStream("/fonts/purisa_bold.ttf");
+				InputStream isUnderdog = getClass().getResourceAsStream("/fonts/underdog_regular.ttf");) {
+
+			this.purisaB = Font.createFont(Font.TRUETYPE_FONT, isPurisa);
+			this.underdog = Font.createFont(Font.TRUETYPE_FONT, isUnderdog);
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void draw(Graphics2D g2) {
 
+		g2.setFont(this.underdog);
 		g2.setFont(this.purisaB);
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g2.setColor(Color.WHITE);
@@ -64,7 +64,7 @@ public class UI {
 		g2.setStroke(new BasicStroke(5F));
 		g2.setColor(white);
 		g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 15, 15);
-		
+
 		x += this.gp.getTileSize();
 		y += this.gp.getTileSize();
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
