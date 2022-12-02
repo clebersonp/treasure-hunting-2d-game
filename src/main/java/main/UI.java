@@ -9,18 +9,21 @@ import java.io.InputStream;
 
 public class UI {
 
-	private Font purisaB, underdog;
+	private Font purisaB, underdog, pressStart;
 	private GamePanel gp;
 	private String currentDialogue = "";
+	private int commandNum = 0;
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
 
 		try (InputStream isPurisa = getClass().getResourceAsStream("/fonts/purisa_bold.ttf");
-				InputStream isUnderdog = getClass().getResourceAsStream("/fonts/underdog_regular.ttf");) {
+				InputStream isUnderdog = getClass().getResourceAsStream("/fonts/underdog_regular.ttf");
+				InputStream isPressStart = getClass().getResourceAsStream("/fonts/pressStart2P_Regular.ttf")) {
 
 			this.purisaB = Font.createFont(Font.TRUETYPE_FONT, isPurisa);
 			this.underdog = Font.createFont(Font.TRUETYPE_FONT, isUnderdog);
+			this.pressStart = Font.createFont(Font.TRUETYPE_FONT, isPressStart);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -31,16 +34,100 @@ public class UI {
 	public void draw(Graphics2D g2) {
 
 		g2.setFont(this.underdog);
-		g2.setFont(this.purisaB);
+//		g2.setFont(this.purisaB);
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g2.setColor(Color.WHITE);
 
 		switch (this.gp.getGameState()) {
+		case GamePanel.TITLE_STATE -> this.drawTitleScreen(g2);
 		case GamePanel.PLAY_STATE -> this.drawPlayScreen(g2);
 		case GamePanel.PAUSE_STATE -> this.drawPauseScreen(g2);
 		case GamePanel.DIALOGUE_STATE -> this.drawDialogScreen(g2);
 		}
 
+	}
+
+	private void drawTitleScreen(Graphics2D g2) {
+		// BACKGROUND COLOR
+		g2.setColor(Color.BLACK);
+		g2.fillRect(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight());
+
+		// TITLE NAME
+		g2.setFont(this.pressStart.deriveFont(Font.BOLD, 35F));
+		String text = "Blue Boy Adventure";
+		int x = this.getXTextPositionCenter(g2, text);
+		int y = this.gp.getTileSize() * 3;
+
+		// SHADOW COLOR
+		g2.setColor(Color.DARK_GRAY);
+		g2.drawString(text, x + 7, y + 5);
+		// MAIN COLOR
+		g2.setColor(Color.WHITE);
+		g2.drawString(text, x, y);
+
+		// Blue Boy image
+		x = this.gp.getScreenWidth() / 2 - (this.gp.getTileSize() * 2) / 2;
+		y += this.gp.getTileSize();
+		g2.drawImage(this.gp.getPlayer().getDown1(), x, y, this.gp.getTileSize() * 2, this.gp.getTileSize() * 2, null);
+
+		// MENU
+		g2.setFont(this.pressStart.deriveFont(Font.PLAIN, 25F));
+		text = "NEW GAME";
+		x = getXTextPositionCenter(g2, text);
+		y += this.gp.getTileSize() * 4;
+		if (this.commandNum == 0) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (x - this.gp.getTileSize()) + 3, y + 2);
+			g2.drawString(text, x + 3, y + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", x - this.gp.getTileSize(), y);
+			g2.drawString(text, x, y);
+		} else {
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x, y);
+		}
+
+		text = "LOAD GAME";
+		x = getXTextPositionCenter(g2, text);
+		y += this.gp.getTileSize();
+		g2.setColor(Color.WHITE);
+		g2.drawString(text, x, y);
+		if (this.commandNum == 1) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (x - this.gp.getTileSize()) + 3, y + 2);
+			g2.drawString(text, x + 3, y + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", x - this.gp.getTileSize(), y);
+			g2.drawString(text, x, y);
+
+		} else {
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x, y);
+		}
+
+		text = "QUIT";
+		x = getXTextPositionCenter(g2, text);
+		y += this.gp.getTileSize();
+		g2.setColor(Color.WHITE);
+		g2.drawString(text, x, y);
+		if (this.commandNum == 2) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (x - this.gp.getTileSize()) + 3, y + 2);
+			g2.drawString(text, x + 3, y + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", x - this.gp.getTileSize(), y);
+			g2.drawString(text, x, y);
+
+		} else {
+			g2.setColor(Color.WHITE);
+			g2.drawString(text, x, y);
+		}
 	}
 
 	private void drawDialogScreen(Graphics2D g2) {
@@ -67,7 +154,7 @@ public class UI {
 
 		x += this.gp.getTileSize();
 		y += this.gp.getTileSize();
-		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 30F));
 		g2.setColor(Color.WHITE);
 		for (String line : this.currentDialogue.split("\n")) {
 			g2.drawString(line, x, y);
@@ -101,6 +188,14 @@ public class UI {
 
 	public void setCurrentDialogue(String currentDialogue) {
 		this.currentDialogue = currentDialogue;
+	}
+
+	public int getCommandNum() {
+		return commandNum;
+	}
+
+	public void setCommandNum(int commandNum) {
+		this.commandNum = commandNum;
 	}
 
 }

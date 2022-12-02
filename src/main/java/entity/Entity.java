@@ -169,6 +169,38 @@ public abstract class Entity {
 		this.dialogueIndex = dialogueIndex;
 	}
 
+	public BufferedImage getUp1() {
+		return up1;
+	}
+
+	public BufferedImage getUp2() {
+		return up2;
+	}
+
+	public BufferedImage getDown1() {
+		return down1;
+	}
+
+	public BufferedImage getDown2() {
+		return down2;
+	}
+
+	public BufferedImage getLeft1() {
+		return left1;
+	}
+
+	public BufferedImage getLeft2() {
+		return left2;
+	}
+
+	public BufferedImage getRight1() {
+		return right1;
+	}
+
+	public BufferedImage getRight2() {
+		return right2;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT;
 	}

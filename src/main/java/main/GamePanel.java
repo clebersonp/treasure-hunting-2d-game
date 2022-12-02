@@ -53,6 +53,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// GAME STATE
 	private int gameState;
+	public static final int TITLE_STATE = 0;
 	public static final int PLAY_STATE = 1;
 	public static final int PAUSE_STATE = 2;
 	public static final int DIALOGUE_STATE = 3;
@@ -65,13 +66,13 @@ public class GamePanel extends JPanel implements Runnable {
 		this.addKeyListener(this.keyHandler);
 		this.setFocusable(Boolean.TRUE);
 
-		this.gameState = PLAY_STATE;
 	}
 
 	public void setupGame() {
 		this.assetSetter.setObject();
 		this.assetSetter.setNPC();
-		this.playMusic(0);
+//		this.playMusic(0);
+		this.gameState = TITLE_STATE;
 	}
 
 	public void startGameThread() {
@@ -163,18 +164,18 @@ public class GamePanel extends JPanel implements Runnable {
 		if (this.gameState == PLAY_STATE) {
 			// PLAYER
 			this.player.update();
-			
+
 			// NPCS
 			for (int i = 0; i < this.npcs.length; i++) {
 				if (this.npcs[i] != null) {
 					this.npcs[i].update();
 				}
 			}
-			
+
 		} else if (this.gameState == PAUSE_STATE) {
 			// do nothing
 		} else if (this.gameState == DIALOGUE_STATE) {
-			
+
 		}
 	}
 
@@ -185,25 +186,33 @@ public class GamePanel extends JPanel implements Runnable {
 		// DEBUG
 		long drawStart = System.nanoTime();
 
-		// A ordem de desenhar importa, pois o ultimo sobrepoe o anterior
-		// TILES
-		this.tileManager.draw(g2);
+		// TITLE SCREEN
+		if (this.gameState == TITLE_STATE) {
+			
+			// UI
+			this.ui.draw(g2);
+			
+		} else {
+			// A ordem de desenhar importa, pois o ultimo sobrepoe o anterior
+			// TILES
+			this.tileManager.draw(g2);
 
-		// OBJECTS
-		this.drawObjects(g2);
+			// OBJECTS
+			this.drawObjects(g2);
 
-		// NPCS
-		for (int i = 0; i < this.npcs.length; i++) {
-			if (this.npcs[i] != null) {
-				this.npcs[i].draw(g2);
+			// NPCS
+			for (int i = 0; i < this.npcs.length; i++) {
+				if (this.npcs[i] != null) {
+					this.npcs[i].draw(g2);
+				}
 			}
+
+			// PLAYER
+			this.player.draw(g2);
+
+			// UI
+			this.ui.draw(g2);
 		}
-
-		// PLAYER
-		this.player.draw(g2);
-
-		// UI
-		ui.draw(g2);
 
 		// DEBUG
 		if (this.keyHandler.isCheckDrawTime()) {

@@ -27,8 +27,35 @@ public class KeyHandler implements KeyListener {
 	public void keyPressed(KeyEvent e) {
 		int keyCode = e.getKeyCode();
 
+		// TITLE STATE
+		if (this.gp.getGameState() == GamePanel.TITLE_STATE) {
+			switch (keyCode) {
+			case KeyEvent.VK_W, KeyEvent.VK_UP -> this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
+			case KeyEvent.VK_S, KeyEvent.VK_DOWN -> this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
+			case KeyEvent.VK_ENTER -> {
+
+				if (this.gp.getUi().getCommandNum() == 0) {
+					this.gp.setGameState(GamePanel.PLAY_STATE);
+					this.gp.playMusic(0);
+				} else if (this.gp.getUi().getCommandNum() == 1) {
+					// LOAD GAME LATER
+					System.out.println("// TODO LOAD GAME LATER");
+				} else if (this.gp.getUi().getCommandNum() == 2) {
+					System.exit(0);
+				}
+
+			}
+			}
+
+			if (this.gp.getUi().getCommandNum() < 0) {
+				this.gp.getUi().setCommandNum(2);
+			} else if (this.gp.getUi().getCommandNum() > 2) {
+				this.gp.getUi().setCommandNum(0);
+			}
+		}
+
 		// PLAY STATE
-		if (this.gp.getGameState() == GamePanel.PLAY_STATE) {
+		else if (this.gp.getGameState() == GamePanel.PLAY_STATE) {
 
 			switch (keyCode) {
 			case KeyEvent.VK_W, KeyEvent.VK_UP -> this.upPressed = true;
