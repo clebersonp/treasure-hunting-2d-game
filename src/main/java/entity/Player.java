@@ -8,30 +8,25 @@ import static entity.Entity.Direction.UP;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
-import main.UtilityTool;
 
 public class Player extends Entity {
 
-	private GamePanel gp;
 	private KeyHandler keyHandler;
 
 	private final int screenX;
 	private final int screenY;
-	private int hasKey = 0;
 
 	public Player(final GamePanel gp, final KeyHandler keyHandler) {
-		this.gp = gp;
+		super(gp);
+
 		this.keyHandler = keyHandler;
 
 		// posicao do player na screen centralizado
-		this.screenX = this.gp.getScreenWidth() / 2 - (this.gp.getTileSize() / 2); // 360
-		this.screenY = this.gp.getScreenHeight() / 2 - (this.gp.getTileSize() / 2); // 264
+		this.screenX = super.getGp().getScreenWidth() / 2 - (super.getGp().getTileSize() / 2); // 360
+		this.screenY = super.getGp().getScreenHeight() / 2 - (super.getGp().getTileSize() / 2); // 264
 
 		// Definir area de colisao do player
 		super.solidArea = new Rectangle();
@@ -43,17 +38,21 @@ public class Player extends Entity {
 		super.solidArea.height = 31;
 
 		this.setDefaultValues();
-		this.getPlayerImage();
+		this.getImage();
 	}
 
 	private void setDefaultValues() {
 
 		// posicao do player no world fixa no centro p inicio do game
-		super.worldX = this.gp.getTileSize() * 23; // 1104
-		super.worldY = this.gp.getTileSize() * 21; // 1008
+		super.worldX = super.getGp().getTileSize() * 23; // 1104
+		super.worldY = super.getGp().getTileSize() * 21; // 1008
 
 		super.speed = 4;
 		super.direction = DOWN;
+
+	}
+
+	public void setAction() {
 
 	}
 
@@ -73,11 +72,15 @@ public class Player extends Entity {
 
 			// RESET AND CHECK TILE COLLISION AGAIN
 			collisionOn = false;
-			this.gp.getCollisionChecker().checkTile(this);
+			super.getGp().getCollisionChecker().checkTile(this);
 
 			// CHECK OBJECT COLLISION
-			int objectIndex = this.gp.getCollisionChecker().checkObject(this, true);
+			int objectIndex = super.getGp().getCollisionChecker().checkObject(this, true);
 			this.pickupObject(objectIndex);
+
+			// CHECK NPCS COLLISION
+			int collisionNpcIndex = super.getGp().getCollisionChecker().checkEntity(this, super.getGp().getNpcs());
+			this.interactNPC(collisionNpcIndex);
 
 			// IF COLLISION IS FALSE< PLAYER CAN MOVE
 			if (!collisionOn) {
@@ -110,39 +113,19 @@ public class Player extends Entity {
 		}
 	}
 
+	private void interactNPC(int collisionNpcIndex) {
+		if (collisionNpcIndex >= 0) {
+			if (this.keyHandler.isEnterPressed()) {
+				this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
+				this.getGp().getNpcs()[collisionNpcIndex].speak();
+			}
+		}
+		this.keyHandler.setEnterPressed(Boolean.FALSE);
+	}
+
 	public void pickupObject(int objectIndex) {
 		if (objectIndex >= 0) {
-			String objectName = this.gp.getObjects()[objectIndex].getName();
 
-			switch (objectName) {
-			case "Key":
-				this.gp.playSoundEffects(1); // coin sound effect
-				hasKey++;
-				this.gp.getObjects()[objectIndex] = null;
-				this.gp.getUi().showMessage("You got a key!");
-				break;
-			case "Door":
-				if (hasKey > 0) {
-					this.gp.playSoundEffects(3); // door open sound effect
-					this.gp.getObjects()[objectIndex] = null;
-					hasKey--;
-					this.gp.getUi().showMessage("You opened the door!");
-				} else {
-					this.gp.getUi().showMessage("You need a key!");
-				}
-				break;
-			case "Boots":
-				this.gp.playSoundEffects(2); // boots sound effect
-				this.speed += 1;
-				this.gp.getObjects()[objectIndex] = null;
-				this.gp.getUi().showMessage("Speed up!");
-				break;
-			case "Chest":
-				this.gp.stopMusic();
-				this.gp.getUi().setGameFinished(Boolean.TRUE);
-				this.gp.playSoundEffects(4); // Fanfare
-				break;
-			}
 		}
 	}
 
@@ -173,27 +156,15 @@ public class Player extends Entity {
 
 	}
 
-	public void getPlayerImage() {
-		super.up1 = this.setup("boy_up_1");
-		super.up2 = this.setup("boy_up_2");
-		super.right1 = this.setup("boy_right_1");
-		super.right2 = this.setup("boy_right_2");
-		super.down1 = this.setup("boy_down_1");
-		super.down2 = this.setup("boy_down_2");
-		super.left1 = this.setup("boy_left_1");
-		super.left2 = this.setup("boy_left_2");
-	}
-
-	public BufferedImage setup(String fileName) {
-		BufferedImage scaledImage = null;
-		try {
-			scaledImage = UtilityTool.scaleImage(
-					ImageIO.read(getClass().getResourceAsStream(String.format("/player/%s.png", fileName))),
-					this.gp.getTileSize(), this.gp.getTileSize());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return scaledImage;
+	public void getImage() {
+		super.up1 = this.setup("/player/boy_up_1.png");
+		super.up2 = this.setup("/player/boy_up_2.png");
+		super.right1 = this.setup("/player/boy_right_1.png");
+		super.right2 = this.setup("/player/boy_right_2.png");
+		super.down1 = this.setup("/player/boy_down_1.png");
+		super.down2 = this.setup("/player/boy_down_2.png");
+		super.left1 = this.setup("/player/boy_left_1.png");
+		super.left2 = this.setup("/player/boy_left_2.png");
 	}
 
 	public int getScreenX() {
@@ -202,10 +173,6 @@ public class Player extends Entity {
 
 	public int getScreenY() {
 		return screenY;
-	}
-
-	public int getHasKey() {
-		return hasKey;
 	}
 
 }

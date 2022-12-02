@@ -135,4 +135,100 @@ public class CollisionChecker {
 		return objIndex;
 	}
 
+	// NPC OR MONSTER COLLISION
+	public int checkEntity(Entity entity, Entity[] targets) {
+		int objIndex = -1;
+		for (int i = 0; i < targets.length; i++) {
+
+			if (targets[i] != null) {
+				// Get entity's solid area position
+				entity.getSolidArea().x = entity.getWorldX() + entity.getSolidArea().x;
+				entity.getSolidArea().y = entity.getWorldY() + entity.getSolidArea().y;
+
+				// Get the object's solid area position
+				targets[i].getSolidArea().x = targets[i].getWorldX() + targets[i].getSolidArea().x;
+				targets[i].getSolidArea().y = targets[i].getWorldY() + targets[i].getSolidArea().y;
+
+				switch (entity.getDirection()) {
+				case UP:
+					entity.getSolidArea().y -= entity.getSpeed();
+					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
+						entity.setCollisionOn(Boolean.TRUE);
+						objIndex = i;
+					}
+					break;
+				case DOWN:
+					entity.getSolidArea().y += entity.getSpeed();
+					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
+						entity.setCollisionOn(Boolean.TRUE);
+						objIndex = i;
+					}
+					break;
+				case LEFT:
+					entity.getSolidArea().x -= entity.getSpeed();
+					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
+						entity.setCollisionOn(Boolean.TRUE);
+						objIndex = i;
+					}
+					break;
+				case RIGHT:
+					entity.getSolidArea().x += entity.getSpeed();
+					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
+						entity.setCollisionOn(Boolean.TRUE);
+						objIndex = i;
+					}
+					break;
+				}
+				// Reset entity's and target's solid area position to default
+				entity.getSolidArea().x = entity.getSolidAreaDefaultX();
+				entity.getSolidArea().y = entity.getSolidAreaDefaultY();
+				targets[i].getSolidArea().x = targets[i].getSolidAreaDefaultX();
+				targets[i].getSolidArea().y = targets[i].getSolidAreaDefaultY();
+			}
+		}
+		return objIndex;
+	}
+
+	public void checkPlayer(Entity entity) {
+		// Get entity's solid area position
+		entity.getSolidArea().x = entity.getWorldX() + entity.getSolidArea().x;
+		entity.getSolidArea().y = entity.getWorldY() + entity.getSolidArea().y;
+
+		// Get the player's solid area position
+		this.gp.getPlayer().getSolidArea().x = this.gp.getPlayer().getWorldX() + this.gp.getPlayer().getSolidArea().x;
+		this.gp.getPlayer().getSolidArea().y = this.gp.getPlayer().getWorldY() + this.gp.getPlayer().getSolidArea().y;
+
+		switch (entity.getDirection()) {
+		case UP:
+			entity.getSolidArea().y -= entity.getSpeed();
+			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
+				entity.setCollisionOn(Boolean.TRUE);
+			}
+			break;
+		case DOWN:
+			entity.getSolidArea().y += entity.getSpeed();
+			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
+				entity.setCollisionOn(Boolean.TRUE);
+			}
+			break;
+		case LEFT:
+			entity.getSolidArea().x -= entity.getSpeed();
+			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
+				entity.setCollisionOn(Boolean.TRUE);
+			}
+			break;
+		case RIGHT:
+			entity.getSolidArea().x += entity.getSpeed();
+			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
+				entity.setCollisionOn(Boolean.TRUE);
+			}
+			break;
+		}
+		// Reset entity's and target's solid area position to default
+		entity.getSolidArea().x = entity.getSolidAreaDefaultX();
+		entity.getSolidArea().y = entity.getSolidAreaDefaultY();
+		this.gp.getPlayer().getSolidArea().x = this.gp.getPlayer().getSolidAreaDefaultX();
+		this.gp.getPlayer().getSolidArea().y = this.gp.getPlayer().getSolidAreaDefaultY();
+	}
+
 }

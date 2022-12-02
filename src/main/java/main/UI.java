@@ -1,106 +1,106 @@
 package main;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.text.DecimalFormat;
-import java.util.Locale;
-
-import object.OBJ_Key;
+import java.awt.RenderingHints;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class UI {
 
-	private static final Font ARIAL_40 = new Font("Arial", Font.PLAIN, 40);
-	private static final Font ARIAL_80_BOLD = new Font("Arial", Font.BOLD, 80);
-	private final OBJ_Key ObjKey;
+	private Font purisaB, underdog;
 	private GamePanel gp;
-	private boolean messageOn;
-	private String message = "";
-	private int messageTimer = 0;
-	private boolean gameFinished;
-	private double playTime = 0.0;
-	private DecimalFormat decimalFormat; 
+	private String currentDialogue = "";
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
-		ObjKey = new OBJ_Key(gp);
-		this.decimalFormat = (DecimalFormat) DecimalFormat.getNumberInstance(Locale.US);
-		this.decimalFormat.applyPattern("#0.00");
-	}
-
-	public void showMessage(String text) {
-		this.message = text;
-		this.messageOn = true;
+		
+		try {
+			InputStream is = getClass().getResourceAsStream("/fonts/purisa_bold.ttf");
+			this.purisaB = Font.createFont(Font.TRUETYPE_FONT, is);
+			is = getClass().getResourceAsStream("/fonts/underdog_regular.ttf");
+			this.underdog = Font.createFont(Font.TRUETYPE_FONT, is);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	public void draw(Graphics2D g2) {
 
-		if (this.gameFinished) {
+		g2.setFont(this.purisaB);
+		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2.setColor(Color.WHITE);
 
-			g2.setFont(ARIAL_40);
-			g2.setColor(Color.WHITE);
-
-			String text;
-			int textLength;
-			int x, y;
-
-			text = "You found the treasure!";
-			textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-			x = this.gp.getScreenWidth() / 2 - textLength / 2;
-			y = this.gp.getScreenHeight() / 2 - this.gp.getTileSize() * 3;
-			g2.drawString(text, x, y);
-			
-			text = String.format("Your Time is: %s!", this.decimalFormat.format(playTime));
-			textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-			x = this.gp.getScreenWidth() / 2 - textLength / 2;
-			y = this.gp.getScreenHeight() / 3 - this.gp.getTileSize() * 3;
-			g2.drawString(text, x, y);
-			
-			g2.setFont(ARIAL_80_BOLD);
-			g2.setColor(Color.YELLOW);
-			text = "Congratulations!";
-			textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
-			x = this.gp.getScreenWidth() / 2 - textLength / 2;
-			y = this.gp.getScreenHeight() / 2 + this.gp.getTileSize() * 2;
-			g2.drawString(text, x, y);
-
-			this.gp.finishedGame();
-
-		} else {
-			g2.setFont(ARIAL_40);
-			g2.setColor(Color.WHITE);
-			g2.drawImage(ObjKey.getImage(), this.gp.getTileSize() / 2, this.gp.getTileSize() / 2,
-					this.gp.getTileSize(), this.gp.getTileSize(), null);
-			g2.drawString(String.format("x %s", this.gp.getPlayer().getHasKey()), 74, 65);
-
-			// TIME
-			playTime += (double) 1 / this.gp.getFPS();
-
-			g2.setFont(ARIAL_40);
-			g2.setColor(Color.WHITE);
-			g2.drawString(String.format("Time: %s", this.decimalFormat.format(playTime)), this.gp.getTileSize() * 11,
-					65);
-
-			// MESSAGE
-			if (this.messageOn) {
-
-				g2.setFont(g2.getFont().deriveFont(30F));
-				g2.drawString(this.message, this.gp.getTileSize() / 2, this.gp.getTileSize() * 5);
-
-				this.messageTimer++;
-
-				if (this.messageTimer > this.gp.getFPS() * 2) {
-					this.message = "";
-					this.messageTimer = 0;
-					this.messageOn = false;
-				}
-			}
+		switch (this.gp.getGameState()) {
+		case GamePanel.PLAY_STATE -> this.drawPlayScreen(g2);
+		case GamePanel.PAUSE_STATE -> this.drawPauseScreen(g2);
+		case GamePanel.DIALOGUE_STATE -> this.drawDialogScreen(g2);
 		}
 
 	}
 
-	public void setGameFinished(boolean gameFinished) {
-		this.gameFinished = gameFinished;
+	private void drawDialogScreen(Graphics2D g2) {
+
+		// WINDOW
+		int x = this.gp.getTileSize() * 2;
+		int y = this.gp.getTileSize() / 2;
+		int width = this.gp.getScreenWidth() - (this.gp.getTileSize() * 4);
+		int height = this.gp.getTileSize() * 4;
+
+		this.drawSubWindow(g2, x, y, width, height);
+	}
+
+	private void drawSubWindow(Graphics2D g2, int x, int y, int width, int height) {
+
+		Color black = new Color(0, 0, 0, 210);
+		g2.setColor(black);
+		g2.fillRoundRect(x, y, width, height, 25, 25);
+
+		Color white = new Color(255, 255, 255, 180);
+		g2.setStroke(new BasicStroke(5F));
+		g2.setColor(white);
+		g2.drawRoundRect(x + 5, y + 5, width - 10, height - 10, 15, 15);
+		
+		x += this.gp.getTileSize();
+		y += this.gp.getTileSize();
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 20F));
+		g2.setColor(Color.WHITE);
+		for (String line : this.currentDialogue.split("\n")) {
+			g2.drawString(line, x, y);
+			y += 40;
+		}
+
+	}
+
+	private void drawPlayScreen(Graphics2D g2) {
+		// TODO Auto-generated method stub
+	}
+
+	public void drawPauseScreen(Graphics2D g2) {
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 80F));
+
+		String text = "PAUSED";
+		int x = this.getXTextPositionCenter(g2, text);
+		int y = this.gp.getScreenHeight() / 2;
+
+		g2.drawString(text, x, y);
+	}
+
+	private int getXTextPositionCenter(Graphics2D g2, String text) {
+		int textLength = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
+		return this.gp.getScreenWidth() / 2 - textLength / 2;
+	}
+
+	public String getCurrentDialogue() {
+		return currentDialogue;
+	}
+
+	public void setCurrentDialogue(String currentDialogue) {
+		this.currentDialogue = currentDialogue;
 	}
 
 }

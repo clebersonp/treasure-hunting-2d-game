@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
+import entity.Entity;
+import entity.NPC_OldMan;
 import entity.Player;
 import object.SuperObject;
 import tile.TileManager;
@@ -34,7 +36,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// SYSTEM
 	private TileManager tileManager = new TileManager(this);
-	private KeyHandler keyHandler = new KeyHandler();
+	private KeyHandler keyHandler = new KeyHandler(this);
 	private Sound music = new Sound();
 	private Sound soundEffects = new Sound();
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
@@ -46,6 +48,15 @@ public class GamePanel extends JPanel implements Runnable {
 	private Player player = new Player(this, keyHandler);
 	private SuperObject[] objects = new SuperObject[10];
 
+	// NPC
+	private Entity[] npcs = new NPC_OldMan[10];
+
+	// GAME STATE
+	private int gameState;
+	public static final int PLAY_STATE = 1;
+	public static final int PAUSE_STATE = 2;
+	public static final int DIALOGUE_STATE = 3;
+
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.DARK_GRAY);
@@ -53,11 +64,13 @@ public class GamePanel extends JPanel implements Runnable {
 
 		this.addKeyListener(this.keyHandler);
 		this.setFocusable(Boolean.TRUE);
+
+		this.gameState = PLAY_STATE;
 	}
 
 	public void setupGame() {
 		this.assetSetter.setObject();
-
+		this.assetSetter.setNPC();
 		this.playMusic(0);
 	}
 
@@ -147,7 +160,22 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void update() {
-		this.player.update();
+		if (this.gameState == PLAY_STATE) {
+			// PLAYER
+			this.player.update();
+			
+			// NPCS
+			for (int i = 0; i < this.npcs.length; i++) {
+				if (this.npcs[i] != null) {
+					this.npcs[i].update();
+				}
+			}
+			
+		} else if (this.gameState == PAUSE_STATE) {
+			// do nothing
+		} else if (this.gameState == DIALOGUE_STATE) {
+			
+		}
 	}
 
 	public void paintComponent(final Graphics g) {
@@ -156,7 +184,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 		// DEBUG
 		long drawStart = System.nanoTime();
-		
+
 		// A ordem de desenhar importa, pois o ultimo sobrepoe o anterior
 		// TILES
 		this.tileManager.draw(g2);
@@ -164,12 +192,19 @@ public class GamePanel extends JPanel implements Runnable {
 		// OBJECTS
 		this.drawObjects(g2);
 
+		// NPCS
+		for (int i = 0; i < this.npcs.length; i++) {
+			if (this.npcs[i] != null) {
+				this.npcs[i].draw(g2);
+			}
+		}
+
 		// PLAYER
 		this.player.draw(g2);
 
 		// UI
 		ui.draw(g2);
-		
+
 		// DEBUG
 		if (this.keyHandler.isCheckDrawTime()) {
 			long drawEnd = System.nanoTime();
@@ -179,7 +214,7 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.drawString(drawPassedMsg, 10, 400);
 			System.out.println(drawPassedMsg);
 		}
-		
+
 		g2.dispose();
 	}
 
@@ -252,6 +287,26 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public int getFPS() {
 		return FPS;
+	}
+
+	public int getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(int gameState) {
+		this.gameState = gameState;
+	}
+
+	public int getPLAY_STATE() {
+		return PLAY_STATE;
+	}
+
+	public int getPAUSE_STATE() {
+		return PAUSE_STATE;
+	}
+
+	public Entity[] getNpcs() {
+		return npcs;
 	}
 
 }

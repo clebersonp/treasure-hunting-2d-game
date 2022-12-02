@@ -1,9 +1,18 @@
 package entity;
 
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
-public class Entity {
+import javax.imageio.ImageIO;
+
+import main.GamePanel;
+import main.UtilityTool;
+
+public abstract class Entity {
 
 	// Entity position
 	protected int worldX, worldY;
@@ -20,16 +29,96 @@ public class Entity {
 	protected int spriteCounter = 0;
 	protected int sprintNum = 1;
 
-	protected Rectangle solidArea;
+	protected Rectangle solidArea = new Rectangle(new Point(0, 0), new Dimension(48, 48));
 	protected int solidAreaDefaultX, solidAreaDefaultY;
 	protected boolean collisionOn;
+	private String[] dialogues = new String[20];
+	private int dialogueIndex = 0;
+
+	private GamePanel gp;
+
+	public Entity(GamePanel gp) {
+		super();
+		this.gp = gp;
+	}
+
+	public BufferedImage setup(String imagePath) {
+		BufferedImage scaledImage = null;
+		try {
+			scaledImage = UtilityTool.scaleImage(ImageIO.read(getClass().getResourceAsStream(imagePath)),
+					this.gp.getTileSize(), this.gp.getTileSize());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return scaledImage;
+	}
+
+	public void setAction() {
+	}
+
+	public void update() {
+
+		this.setAction();
+
+		this.collisionOn = false;
+		this.gp.getCollisionChecker().checkTile(this);
+		this.gp.getCollisionChecker().checkObject(this, false);
+		this.gp.getCollisionChecker().checkPlayer(this);
+
+		// IF COLLISION IS FALSE< PLAYER CAN MOVE
+		if (!collisionOn) {
+			switch (this.direction) {
+			case UP -> this.worldY -= this.speed;
+			case DOWN -> this.worldY += this.speed;
+			case LEFT -> this.worldX -= this.speed;
+			case RIGHT -> this.worldX += this.speed;
+			}
+		}
+
+		this.spriteCounter++;
+		if (this.spriteCounter > 10) {
+			if (this.sprintNum == 1) {
+				this.sprintNum++;
+			} else if (this.sprintNum == 2) {
+				this.sprintNum--;
+			}
+			this.spriteCounter = 0;
+		}
+	}
+
+	protected abstract void getImage();
+
+	public void speak() {
+
+		if (this.getDialogues()[this.getDialogueIndex()] == null) {
+			this.setDialogueIndex(0);
+		}
+		this.getGp().getUi().setCurrentDialogue(this.getDialogues()[this.getDialogueIndex()]);
+		this.setDialogueIndex(this.getDialogueIndex() + 1);
+
+		switch (this.getGp().getPlayer().getDirection()) {
+		case UP -> this.direction = Direction.DOWN;
+		case DOWN -> this.direction = Direction.UP;
+		case LEFT -> this.direction = Direction.RIGHT;
+		case RIGHT -> this.direction = Direction.LEFT;
+		}
+
+	}
 
 	public int getWorldX() {
 		return worldX;
 	}
 
+	public void setWorldX(int worldX) {
+		this.worldX = worldX;
+	}
+
 	public int getWorldY() {
 		return worldY;
+	}
+
+	public void setWorldY(int worldY) {
+		this.worldY = worldY;
 	}
 
 	public boolean isCollisionOn() {
@@ -60,8 +149,30 @@ public class Entity {
 		return solidAreaDefaultY;
 	}
 
+	public GamePanel getGp() {
+		return gp;
+	}
+
+	public String[] getDialogues() {
+		return dialogues;
+	}
+
+	public void setDialogues(String[] dialogues) {
+		this.dialogues = dialogues;
+	}
+
+	public int getDialogueIndex() {
+		return dialogueIndex;
+	}
+
+	public void setDialogueIndex(int dialogueIndex) {
+		this.dialogueIndex = dialogueIndex;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT;
 	}
+
+	public abstract void draw(Graphics2D g2);
 
 }
