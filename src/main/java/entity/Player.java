@@ -5,6 +5,7 @@ import static entity.Entity.Direction.LEFT;
 import static entity.Entity.Direction.RIGHT;
 import static entity.Entity.Direction.UP;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -86,6 +87,12 @@ public class Player extends Entity {
 			// CHECK NPCS COLLISION
 			int collisionNpcIndex = super.getGp().getCollisionChecker().checkEntity(this, super.getGp().getNpcs());
 			this.interactNPC(collisionNpcIndex);
+			
+			// CHECK EVENT
+			this.getGp().getEventHandler().checkEvent();
+			
+			// Dps de checkar nos eventos a key, resetar
+			this.keyHandler.setEnterPressed(Boolean.FALSE);
 
 			// IF COLLISION IS FALSE< PLAYER CAN MOVE
 			if (!collisionOn) {
@@ -125,7 +132,6 @@ public class Player extends Entity {
 				this.getGp().getNpcs()[collisionNpcIndex].speak();
 			}
 		}
-		this.keyHandler.setEnterPressed(Boolean.FALSE);
 	}
 
 	public void pickupObject(int objectIndex) {
@@ -157,7 +163,8 @@ public class Player extends Entity {
 //				this.screenY, super.worldX, super.worldY));
 
 		// debug collision area
-//		g2.drawRect(this.screenX + 8, this.screenY + 16, 32, 31);
+//		g2.setColor(new Color(0, 0, 255, 100));
+//		g2.fillRect(this.screenX + 8, this.screenY + 16, 32, 31);
 
 	}
 

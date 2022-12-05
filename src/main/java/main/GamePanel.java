@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
 	private AssetSetter assetSetter = new AssetSetter(this);
 	private UI ui = new UI(this);
+	private EventHandler eventHandler = new EventHandler(this);
 	private Thread gameThread;
 
 	// ENTITY AND OBJECTS
@@ -188,10 +189,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 		// TITLE SCREEN
 		if (this.gameState == TITLE_STATE) {
-			
+
 			// UI
 			this.ui.draw(g2);
-			
+
 		} else {
 			// A ordem de desenhar importa, pois o ultimo sobrepoe o anterior
 			// TILES
@@ -316,6 +317,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public Entity[] getNpcs() {
 		return npcs;
+	}
+
+	public EventHandler getEventHandler() {
+		return eventHandler;
+	}
+
+	public KeyHandler getKeyHandler() {
+		return keyHandler;
 	}
 
 }

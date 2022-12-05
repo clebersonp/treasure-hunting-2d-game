@@ -222,7 +222,7 @@ public abstract class Entity {
 	}
 
 	public static enum Direction {
-		UP, DOWN, LEFT, RIGHT;
+		UP, DOWN, LEFT, RIGHT, ANY;
 	}
 
 	public abstract void draw(Graphics2D g2);
