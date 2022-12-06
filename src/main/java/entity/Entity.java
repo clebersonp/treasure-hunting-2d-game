@@ -39,9 +39,16 @@ public abstract class Entity {
 	protected String name;
 	protected boolean collision;
 
+	private boolean invincible;
+	private int invincibleCounter = 0;
+
 	// CHARACTER LIFE
 	private int maxLife;
 	private int life;
+
+	private int actionLockCounter = 0;
+
+	protected TYPE type;
 
 	private GamePanel gp;
 
@@ -71,7 +78,17 @@ public abstract class Entity {
 		this.collisionOn = false;
 		this.gp.getCollisionChecker().checkTile(this);
 		this.gp.getCollisionChecker().checkObject(this, false);
-		this.gp.getCollisionChecker().checkPlayer(this);
+		this.gp.getCollisionChecker().checkEntity(this, this.gp.getNpcs());
+		this.gp.getCollisionChecker().checkEntity(this, this.gp.getMonsters());
+		boolean contactedPlayer = this.gp.getCollisionChecker().checkPlayer(this);
+
+		if (TYPE.MONSTER.equals(this.type) && contactedPlayer) {
+			if (!this.gp.getPlayer().isInvincible()) {
+				// we can give damage
+				this.gp.getPlayer().setLife(this.gp.getPlayer().getLife() - 1);
+				this.gp.getPlayer().setInvincible(Boolean.TRUE);
+			}
+		}
 
 		// IF COLLISION IS FALSE< PLAYER CAN MOVE
 		if (!collisionOn) {
@@ -272,8 +289,48 @@ public abstract class Entity {
 		return collision;
 	}
 
+	public int getActionLockCounter() {
+		return actionLockCounter;
+	}
+
+	public void setActionLockCounter(int actionLockCounter) {
+		this.actionLockCounter = actionLockCounter;
+	}
+
+	public boolean isInvincible() {
+		return invincible;
+	}
+
+	public void setInvincible(boolean invincible) {
+		this.invincible = invincible;
+	}
+
+	public void incrementInvincibleCounter() {
+		this.invincibleCounter++;
+	}
+
+	public void resetInvincibleCounter() {
+		this.invincibleCounter = 0;
+	}
+
+	public int getInvincibleCounter() {
+		return invincibleCounter;
+	}
+
+	public TYPE getType() {
+		return type;
+	}
+
+	public void setType(TYPE type) {
+		this.type = type;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT, ANY;
+	}
+
+	public static enum TYPE {
+		PLAYER, NPC, MONSTER;
 	}
 
 }

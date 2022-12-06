@@ -51,6 +51,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Player player = new Player(this, keyHandler);
 	private Entity[] objects = new Entity[10];
 	private Entity[] npcs = new NPC_OldMan[10];
+	private Entity[] monsters = new Entity[20];
 	private List<Entity> entities = new ArrayList<>();
 
 	// GAME STATE
@@ -73,6 +74,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public void setupGame() {
 		this.assetSetter.setObject();
 		this.assetSetter.setNPC();
+		this.assetSetter.setMonsters();
 //		this.playMusic(0);
 		this.gameState = TITLE_STATE;
 	}
@@ -173,6 +175,13 @@ public class GamePanel extends JPanel implements Runnable {
 					this.npcs[i].update();
 				}
 			}
+			
+			// MONSTERS
+			for (Entity monster : this.monsters) {
+				if (monster != null) {
+					monster.update();
+				}
+			}
 
 		} else if (this.gameState == PAUSE_STATE) {
 			// do nothing
@@ -210,7 +219,12 @@ public class GamePanel extends JPanel implements Runnable {
 					this.entities.add(obj);
 				}
 			}
-
+			for (Entity monster : this.monsters) {
+				if (monster != null) {
+					this.entities.add(monster);
+				}
+			}
+			
 			// Sort entities collection by worldY para sobreposicao de entity
 			Collections.sort(this.entities, (e1, e2) -> Integer.compare(e1.getWorldY(), e2.getWorldY()));
 
@@ -326,6 +340,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public KeyHandler getKeyHandler() {
 		return keyHandler;
+	}
+
+	public Entity[] getMonsters() {
+		return monsters;
 	}
 
 }

@@ -6,8 +6,6 @@ import main.GamePanel;
 
 public class NPC_OldMan extends Entity {
 
-	private int actionLockCounter = 0;
-
 	public NPC_OldMan(GamePanel gp) {
 		super(gp);
 
@@ -37,9 +35,9 @@ public class NPC_OldMan extends Entity {
 
 	public void setAction() {
 
-		this.actionLockCounter++;
+		this.setActionLockCounter(this.getActionLockCounter() + 1);
 
-		if (this.actionLockCounter == 120) {
+		if (this.getActionLockCounter() == 120) {
 
 			Random random = new Random();
 			int i = random.nextInt(100) + 1;
@@ -57,7 +55,7 @@ public class NPC_OldMan extends Entity {
 				super.direction = Entity.Direction.RIGHT;
 			}
 
-			this.actionLockCounter = 0;
+			this.setActionLockCounter(0);
 		}
 	}
 

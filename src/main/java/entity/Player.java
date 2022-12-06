@@ -5,8 +5,12 @@ import static entity.Entity.Direction.LEFT;
 import static entity.Entity.Direction.RIGHT;
 import static entity.Entity.Direction.UP;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Random;
 
 import main.GamePanel;
 import main.KeyHandler;
@@ -44,6 +48,9 @@ public class Player extends Entity {
 		// posicao do player no world fixa no centro p inicio do game
 		super.worldX = super.getGp().getTileSize() * 23; // 1104
 		super.worldY = super.getGp().getTileSize() * 21; // 1008
+
+		super.worldX = super.getGp().getTileSize() * 10;
+		super.worldY = super.getGp().getTileSize() * 13;
 
 		super.speed = 4;
 		super.direction = DOWN;
@@ -84,6 +91,11 @@ public class Player extends Entity {
 			int collisionNpcIndex = super.getGp().getCollisionChecker().checkEntity(this, super.getGp().getNpcs());
 			this.interactNPC(collisionNpcIndex);
 
+			// CHECK MONSTER COLLISION
+			int collisionMonsterIndex = super.getGp().getCollisionChecker().checkEntity(this,
+					super.getGp().getMonsters());
+			this.contactMonster(collisionMonsterIndex);
+
 			// CHECK EVENT
 			this.getGp().getEventHandler().checkEvent();
 
@@ -119,6 +131,24 @@ public class Player extends Entity {
 			}
 
 		}
+
+		// This needs to be outside of key if statement!
+		if (this.isInvincible()) {
+			this.incrementInvincibleCounter();
+			if (this.getInvincibleCounter() > 60) { // 60 segundos
+				this.setInvincible(Boolean.FALSE);
+				this.resetInvincibleCounter();
+			}
+		}
+	}
+
+	private void contactMonster(int collisionMonsterIndex) {
+		if (collisionMonsterIndex >= 0) {
+			if (!this.isInvincible()) {
+				this.setLife(this.getLife() - 1);
+				this.setInvincible(Boolean.TRUE);
+			}
+		}
 	}
 
 	private void interactNPC(int collisionNpcIndex) {
@@ -153,7 +183,19 @@ public class Player extends Entity {
 		default -> throw new IllegalArgumentException("Unexpected value for player direction: " + super.direction);
 		};
 
+		if (this.isInvincible()) {
+			this.hitEffect(g2);
+		}
+
 		g2.drawImage(image, this.screenX, this.screenY, null);
+
+		// RESET ALPHA
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
+
+		// Debug player damage
+//		g2.setFont(new Font("Arial", Font.PLAIN, 26));
+//		g2.setColor(Color.WHITE);
+//		g2.drawString(String.format("Invincible Counter: %d", this.getInvincibleCounter()), 10, 400);
 
 		// Debug position player
 //		System.out.println(String.format("PLAYER > SCREEN_X: %s, SCREEN_Y: %s, WORLD_X: %s, WORLD_Y: %s", this.screenX,
@@ -163,6 +205,15 @@ public class Player extends Entity {
 //		g2.setColor(new Color(0, 0, 255, 100));
 //		g2.fillRect(this.screenX + 8, this.screenY + 16, 32, 31);
 
+	}
+
+	private void hitEffect(Graphics2D g2) {
+		long modResult = System.currentTimeMillis() % 2 + new Random().nextInt(2);
+		if (modResult == 2) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
+		} else {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7F));
+		}
 	}
 
 	public void loadImages() {

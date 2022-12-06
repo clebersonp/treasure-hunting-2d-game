@@ -22,45 +22,35 @@ public class CollisionChecker {
 		int entityTopRow = entityTopWorldY / this.gp.getTileSize();
 		int entityBottomRow = entityBottomWorldY / this.gp.getTileSize();
 
-		int tileNum1, tileNum2;
+		int tileNum2 = 0;
+		int tileNum1 = tileNum2;
 
 		switch (entity.getDirection()) {
 		case UP:
 			entityTopRow = (entityTopWorldY - entity.getSpeed()) / this.gp.getTileSize();
 			tileNum1 = this.gp.getTileManager().getMapTileNum()[entityTopRow][entityLeftCol];
 			tileNum2 = this.gp.getTileManager().getMapTileNum()[entityTopRow][entityRightCol];
-			if (this.gp.getTileManager().getTiles()[tileNum1].isCollision()
-					|| this.gp.getTileManager().getTiles()[tileNum2].isCollision()) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		case DOWN:
 			entityBottomRow = (entityBottomWorldY + entity.getSpeed()) / this.gp.getTileSize();
 			tileNum1 = this.gp.getTileManager().getMapTileNum()[entityBottomRow][entityLeftCol];
 			tileNum2 = this.gp.getTileManager().getMapTileNum()[entityBottomRow][entityRightCol];
-			if (this.gp.getTileManager().getTiles()[tileNum1].isCollision()
-					|| this.gp.getTileManager().getTiles()[tileNum2].isCollision()) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		case LEFT:
 			entityLeftCol = (entityLeftWorldX - entity.getSpeed()) / this.gp.getTileSize();
 			tileNum1 = this.gp.getTileManager().getMapTileNum()[entityTopRow][entityLeftCol];
 			tileNum2 = this.gp.getTileManager().getMapTileNum()[entityBottomRow][entityLeftCol];
-			if (this.gp.getTileManager().getTiles()[tileNum1].isCollision()
-					|| this.gp.getTileManager().getTiles()[tileNum2].isCollision()) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		case RIGHT:
 			entityRightCol = (entityRightWorldX + entity.getSpeed()) / this.gp.getTileSize();
 			tileNum1 = this.gp.getTileManager().getMapTileNum()[entityTopRow][entityRightCol];
 			tileNum2 = this.gp.getTileManager().getMapTileNum()[entityBottomRow][entityRightCol];
-			if (this.gp.getTileManager().getTiles()[tileNum1].isCollision()
-					|| this.gp.getTileManager().getTiles()[tileNum2].isCollision()) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
+		}
+
+		if (this.gp.getTileManager().getTiles()[tileNum1].isCollision()
+				|| this.gp.getTileManager().getTiles()[tileNum2].isCollision()) {
+			entity.setCollisionOn(Boolean.TRUE);
 		}
 	}
 
@@ -82,49 +72,27 @@ public class CollisionChecker {
 				switch (entity.getDirection()) {
 				case UP:
 					entity.getSolidArea().y -= entity.getSpeed();
-					if (entity.getSolidArea().intersects(this.gp.getObjects()[i].getSolidArea())) {
-						if (this.gp.getObjects()[i].isCollision()) {
-							entity.setCollisionOn(Boolean.TRUE);
-						}
-						if (player) {
-							objIndex = i;
-						}
-					}
 					break;
 				case DOWN:
 					entity.getSolidArea().y += entity.getSpeed();
-					if (entity.getSolidArea().intersects(this.gp.getObjects()[i].getSolidArea())) {
-						if (this.gp.getObjects()[i].isCollision()) {
-							entity.setCollisionOn(Boolean.TRUE);
-						}
-						if (player) {
-							objIndex = i;
-						}
-					}
 					break;
 				case LEFT:
 					entity.getSolidArea().x -= entity.getSpeed();
-					if (entity.getSolidArea().intersects(this.gp.getObjects()[i].getSolidArea())) {
-						if (this.gp.getObjects()[i].isCollision()) {
-							entity.setCollisionOn(Boolean.TRUE);
-						}
-						if (player) {
-							objIndex = i;
-						}
-					}
 					break;
 				case RIGHT:
 					entity.getSolidArea().x += entity.getSpeed();
-					if (entity.getSolidArea().intersects(this.gp.getObjects()[i].getSolidArea())) {
-						if (this.gp.getObjects()[i].isCollision()) {
-							entity.setCollisionOn(Boolean.TRUE);
-						}
-						if (player) {
-							objIndex = i;
-						}
-					}
 					break;
 				}
+
+				if (entity.getSolidArea().intersects(this.gp.getObjects()[i].getSolidArea())) {
+					if (this.gp.getObjects()[i].isCollision()) {
+						entity.setCollisionOn(Boolean.TRUE);
+					}
+					if (player) {
+						objIndex = i;
+					}
+				}
+
 				// Reset entity's and object's solid area position to default
 				entity.getSolidArea().x = entity.getSolidAreaDefaultX();
 				entity.getSolidArea().y = entity.getSolidAreaDefaultY();
@@ -152,33 +120,24 @@ public class CollisionChecker {
 				switch (entity.getDirection()) {
 				case UP:
 					entity.getSolidArea().y -= entity.getSpeed();
-					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
-						entity.setCollisionOn(Boolean.TRUE);
-						objIndex = i;
-					}
 					break;
 				case DOWN:
 					entity.getSolidArea().y += entity.getSpeed();
-					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
-						entity.setCollisionOn(Boolean.TRUE);
-						objIndex = i;
-					}
 					break;
 				case LEFT:
 					entity.getSolidArea().x -= entity.getSpeed();
-					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
-						entity.setCollisionOn(Boolean.TRUE);
-						objIndex = i;
-					}
 					break;
 				case RIGHT:
 					entity.getSolidArea().x += entity.getSpeed();
-					if (entity.getSolidArea().intersects(targets[i].getSolidArea())) {
-						entity.setCollisionOn(Boolean.TRUE);
-						objIndex = i;
-					}
 					break;
 				}
+
+				// Se houve colisao entre duas Entities porem n em si proprio
+				if (entity.getSolidArea().intersects(targets[i].getSolidArea()) && entity != targets[i]) {
+					entity.setCollisionOn(Boolean.TRUE);
+					objIndex = i;
+				}
+
 				// Reset entity's and target's solid area position to default
 				entity.getSolidArea().x = entity.getSolidAreaDefaultX();
 				entity.getSolidArea().y = entity.getSolidAreaDefaultY();
@@ -189,7 +148,11 @@ public class CollisionChecker {
 		return objIndex;
 	}
 
-	public void checkPlayer(Entity entity) {
+	public boolean checkPlayer(Entity entity) {
+		
+		boolean contactPlayer = false;
+		
+		
 		// Get entity's solid area position
 		entity.getSolidArea().x = entity.getWorldX() + entity.getSolidArea().x;
 		entity.getSolidArea().y = entity.getWorldY() + entity.getSolidArea().y;
@@ -201,34 +164,30 @@ public class CollisionChecker {
 		switch (entity.getDirection()) {
 		case UP:
 			entity.getSolidArea().y -= entity.getSpeed();
-			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		case DOWN:
 			entity.getSolidArea().y += entity.getSpeed();
-			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		case LEFT:
 			entity.getSolidArea().x -= entity.getSpeed();
-			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		case RIGHT:
 			entity.getSolidArea().x += entity.getSpeed();
-			if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
-				entity.setCollisionOn(Boolean.TRUE);
-			}
 			break;
 		}
+
+		if (entity.getSolidArea().intersects(this.gp.getPlayer().getSolidArea())) {
+			entity.setCollisionOn(Boolean.TRUE);
+			contactPlayer = true;
+		}
+
 		// Reset entity's and target's solid area position to default
 		entity.getSolidArea().x = entity.getSolidAreaDefaultX();
 		entity.getSolidArea().y = entity.getSolidAreaDefaultY();
 		this.gp.getPlayer().getSolidArea().x = this.gp.getPlayer().getSolidAreaDefaultX();
 		this.gp.getPlayer().getSolidArea().y = this.gp.getPlayer().getSolidAreaDefaultY();
+		
+		return contactPlayer;
 	}
 
 }
