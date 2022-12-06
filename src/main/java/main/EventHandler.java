@@ -66,7 +66,7 @@ public class EventHandler {
 	public boolean hit(int col, int row, Entity.Direction reqDirection) {
 		boolean hit = false;
 
-		boolean debugCollision = true;
+		boolean debugCollision = false;
 		Graphics2D g2 = (Graphics2D) this.gp.getGraphics();
 
 		if (debugCollision) {

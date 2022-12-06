@@ -1,7 +1,5 @@
 package entity;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import main.GamePanel;
@@ -13,13 +11,20 @@ public class NPC_OldMan extends Entity {
 	public NPC_OldMan(GamePanel gp) {
 		super(gp);
 
+		super.solidArea.x = 8;
+		super.solidArea.y = 16;
+		super.solidAreaDefaultX = super.solidArea.x;
+		this.solidAreaDefaultY = super.solidArea.y;
+		super.solidArea.width = 32;
+		super.solidArea.height = 31;
+
 		this.direction = Entity.Direction.DOWN;
 		this.speed = 1;
-		this.getImage();
+		this.loadImages();
 		this.setDialogue();
 	}
 
-	public void getImage() {
+	public void loadImages() {
 		super.up1 = this.setup("/npc/oldman_up_1.png");
 		super.up2 = this.setup("/npc/oldman_up_2.png");
 		super.right1 = this.setup("/npc/oldman_right_1.png");
@@ -28,38 +33,6 @@ public class NPC_OldMan extends Entity {
 		super.down2 = this.setup("/npc/oldman_down_2.png");
 		super.left1 = this.setup("/npc/oldman_left_1.png");
 		super.left2 = this.setup("/npc/oldman_left_2.png");
-	}
-
-	@Override
-	public void draw(Graphics2D g2) {
-
-		int screenX = this.worldX - this.getGp().getPlayer().getWorldX() + this.getGp().getPlayer().getScreenX();
-		int screenY = this.worldY - this.getGp().getPlayer().getWorldY() + this.getGp().getPlayer().getScreenY();
-
-		// desenha o obj somente o tamanho da screen(tela)
-		if (this.worldX + this.getGp().getTileSize() > this.getGp().getPlayer().getWorldX()
-				- this.getGp().getPlayer().getScreenX()
-				&& this.worldX - this.getGp().getTileSize() < this.getGp().getPlayer().getWorldX()
-						+ this.getGp().getPlayer().getScreenX()
-				&& this.worldY + this.getGp().getTileSize() > this.getGp().getPlayer().getWorldY()
-						- this.getGp().getPlayer().getScreenY()
-				&& this.worldY - this.getGp().getTileSize() < this.getGp().getPlayer().getWorldY()
-						+ this.getGp().getPlayer().getScreenY()) {
-
-			BufferedImage image = null;
-
-			image = switch (super.direction) {
-			case UP -> super.sprintNum == 1 ? super.up1 : super.up2;
-			case DOWN -> super.sprintNum == 1 ? super.down1 : super.down2;
-			case LEFT -> super.sprintNum == 1 ? super.left1 : super.left2;
-			case RIGHT -> super.sprintNum == 1 ? super.right1 : super.right2;
-			default -> throw new IllegalArgumentException("Unexpected value for player direction: " + super.direction);
-			};
-
-			g2.drawImage(image, screenX, screenY, null);
-
-		}
-
 	}
 
 	public void setAction() {

@@ -5,9 +5,7 @@ import static entity.Entity.Direction.LEFT;
 import static entity.Entity.Direction.RIGHT;
 import static entity.Entity.Direction.UP;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 import main.GamePanel;
@@ -30,7 +28,6 @@ public class Player extends Entity {
 		this.screenY = super.getGp().getScreenHeight() / 2 - (super.getGp().getTileSize() / 2); // 264
 
 		// Definir area de colisao do player
-		super.solidArea = new Rectangle();
 		super.solidArea.x = 8;
 		super.solidArea.y = 16;
 		super.solidAreaDefaultX = super.solidArea.x;
@@ -39,7 +36,7 @@ public class Player extends Entity {
 		super.solidArea.height = 31;
 
 		this.setDefaultValues();
-		this.getImage();
+		this.loadImages();
 	}
 
 	private void setDefaultValues() {
@@ -50,8 +47,7 @@ public class Player extends Entity {
 
 		super.speed = 4;
 		super.direction = DOWN;
-		
-		
+
 		// PLAYER LIFE
 		int defaultLife = 6;
 		super.setMaxLife(defaultLife);
@@ -87,10 +83,10 @@ public class Player extends Entity {
 			// CHECK NPCS COLLISION
 			int collisionNpcIndex = super.getGp().getCollisionChecker().checkEntity(this, super.getGp().getNpcs());
 			this.interactNPC(collisionNpcIndex);
-			
+
 			// CHECK EVENT
 			this.getGp().getEventHandler().checkEvent();
-			
+
 			// Dps de checkar nos eventos a key, resetar
 			this.keyHandler.setEnterPressed(Boolean.FALSE);
 
@@ -140,6 +136,7 @@ public class Player extends Entity {
 		}
 	}
 
+	@Override
 	public void draw(Graphics2D g2) {
 
 		// TEST
@@ -168,7 +165,7 @@ public class Player extends Entity {
 
 	}
 
-	public void getImage() {
+	public void loadImages() {
 		super.up1 = this.setup("/player/boy_up_1.png");
 		super.up2 = this.setup("/player/boy_up_2.png");
 		super.right1 = this.setup("/player/boy_right_1.png");

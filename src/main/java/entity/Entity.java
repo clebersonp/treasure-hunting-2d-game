@@ -23,8 +23,8 @@ public abstract class Entity {
 	// Entity Images
 	protected BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
-	// Entity direction
-	protected Direction direction;
+	// Entity direction, Default Down p objetos statics carregar como a image down
+	protected Direction direction = Direction.DOWN;
 
 	protected int spriteCounter = 0;
 	protected int sprintNum = 1;
@@ -34,6 +34,10 @@ public abstract class Entity {
 	protected boolean collisionOn;
 	private String[] dialogues = new String[20];
 	private int dialogueIndex = 0;
+
+	protected BufferedImage image, image2, image3;
+	protected String name;
+	protected boolean collision;
 
 	// CHARACTER LIFE
 	private int maxLife;
@@ -90,7 +94,7 @@ public abstract class Entity {
 		}
 	}
 
-	protected abstract void getImage();
+	protected abstract void loadImages();
 
 	public void speak() {
 
@@ -105,6 +109,37 @@ public abstract class Entity {
 		case DOWN -> this.direction = Direction.UP;
 		case LEFT -> this.direction = Direction.RIGHT;
 		case RIGHT -> this.direction = Direction.LEFT;
+		}
+
+	}
+
+	public void draw(Graphics2D g2) {
+
+		int screenX = this.worldX - this.getGp().getPlayer().getWorldX() + this.getGp().getPlayer().getScreenX();
+		int screenY = this.worldY - this.getGp().getPlayer().getWorldY() + this.getGp().getPlayer().getScreenY();
+
+		// desenha o obj somente o tamanho da screen(tela)
+		if (this.worldX + this.getGp().getTileSize() > this.getGp().getPlayer().getWorldX()
+				- this.getGp().getPlayer().getScreenX()
+				&& this.worldX - this.getGp().getTileSize() < this.getGp().getPlayer().getWorldX()
+						+ this.getGp().getPlayer().getScreenX()
+				&& this.worldY + this.getGp().getTileSize() > this.getGp().getPlayer().getWorldY()
+						- this.getGp().getPlayer().getScreenY()
+				&& this.worldY - this.getGp().getTileSize() < this.getGp().getPlayer().getWorldY()
+						+ this.getGp().getPlayer().getScreenY()) {
+
+			BufferedImage image = null;
+
+			image = switch (this.direction) {
+			case UP -> this.sprintNum == 1 ? this.up1 : this.up2;
+			case DOWN -> this.sprintNum == 1 ? this.down1 : this.down2;
+			case LEFT -> this.sprintNum == 1 ? this.left1 : this.left2;
+			case RIGHT -> this.sprintNum == 1 ? this.right1 : this.right2;
+			default -> throw new IllegalArgumentException("Unexpected value for player direction: " + this.direction);
+			};
+
+			g2.drawImage(image, screenX, screenY, null);
+
 		}
 
 	}
@@ -221,10 +256,24 @@ public abstract class Entity {
 		this.maxLife = maxLife;
 	}
 
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	public BufferedImage getImage2() {
+		return image2;
+	}
+
+	public BufferedImage getImage3() {
+		return image3;
+	}
+
+	public boolean isCollision() {
+		return collision;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT, ANY;
 	}
-
-	public abstract void draw(Graphics2D g2);
 
 }

@@ -4,13 +4,15 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.JPanel;
 
 import entity.Entity;
 import entity.NPC_OldMan;
 import entity.Player;
-import object.SuperObject;
 import tile.TileManager;
 
 public class GamePanel extends JPanel implements Runnable {
@@ -47,10 +49,9 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// ENTITY AND OBJECTS
 	private Player player = new Player(this, keyHandler);
-	private SuperObject[] objects = new SuperObject[10];
-
-	// NPC
+	private Entity[] objects = new Entity[10];
 	private Entity[] npcs = new NPC_OldMan[10];
+	private List<Entity> entities = new ArrayList<>();
 
 	// GAME STATE
 	private int gameState;
@@ -198,18 +199,26 @@ public class GamePanel extends JPanel implements Runnable {
 			// TILES
 			this.tileManager.draw(g2);
 
-			// OBJECTS
-			this.drawObjects(g2);
-
-			// NPCS
-			for (int i = 0; i < this.npcs.length; i++) {
-				if (this.npcs[i] != null) {
-					this.npcs[i].draw(g2);
+			this.entities.add(player);
+			for (Entity npc : this.npcs) {
+				if (npc != null) {
+					this.entities.add(npc);
+				}
+			}
+			for (Entity obj : this.objects) {
+				if (obj != null) {
+					this.entities.add(obj);
 				}
 			}
 
-			// PLAYER
-			this.player.draw(g2);
+			// Sort entities collection by worldY para sobreposicao de entity
+			Collections.sort(this.entities, (e1, e2) -> Integer.compare(e1.getWorldY(), e2.getWorldY()));
+
+			// Draw every Entity
+			this.entities.forEach(e -> e.draw(g2));
+
+			// clean the list
+			this.entities.clear();
 
 			// UI
 			this.ui.draw(g2);
@@ -226,14 +235,6 @@ public class GamePanel extends JPanel implements Runnable {
 		}
 
 		g2.dispose();
-	}
-
-	private void drawObjects(Graphics2D g2) {
-		for (int i = 0; i < this.objects.length; i++) {
-			if (this.objects[i] != null) {
-				this.objects[i].draw(g2, this);
-			}
-		}
 	}
 
 	public void playMusic(int index) {
@@ -287,7 +288,7 @@ public class GamePanel extends JPanel implements Runnable {
 		return collisionChecker;
 	}
 
-	public SuperObject[] getObjects() {
+	public Entity[] getObjects() {
 		return objects;
 	}
 
