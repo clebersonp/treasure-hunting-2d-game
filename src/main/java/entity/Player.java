@@ -98,8 +98,6 @@ public class Player extends Entity {
 			// CHECK EVENT
 			this.getGp().getEventHandler().checkEvent();
 
-			// Dps de checkar nos eventos a key, resetar
-			this.keyHandler.setEnterPressed(Boolean.FALSE);
 
 			// IF COLLISION IS FALSE AND ENTER KEY IS NOT PRESSED, PLAYER CAN MOVE
 			if (!collisionOn && !this.keyHandler.isEnterPressed()) {
@@ -118,6 +116,9 @@ public class Player extends Entity {
 					break;
 				}
 			}
+
+			// Dps de checkar nos eventos a key, resetar
+			this.keyHandler.setEnterPressed(Boolean.FALSE);
 
 			super.spriteCounter++;
 			if (super.spriteCounter > 10) {
