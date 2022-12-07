@@ -175,7 +175,7 @@ public class GamePanel extends JPanel implements Runnable {
 					this.npcs[i].update();
 				}
 			}
-			
+
 			// MONSTERS
 			for (Entity monster : this.monsters) {
 				if (monster != null) {
@@ -224,7 +224,7 @@ public class GamePanel extends JPanel implements Runnable {
 					this.entities.add(monster);
 				}
 			}
-			
+
 			// Sort entities collection by worldY para sobreposicao de entity
 			Collections.sort(this.entities, (e1, e2) -> Integer.compare(e1.getWorldY(), e2.getWorldY()));
 
@@ -344,6 +344,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public Entity[] getMonsters() {
 		return monsters;
+	}
+
+	public Sound getSoundEffects() {
+		return soundEffects;
 	}
 
 }

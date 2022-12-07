@@ -85,7 +85,7 @@ public abstract class Entity {
 		if (TYPE.MONSTER.equals(this.type) && contactedPlayer) {
 			if (!this.gp.getPlayer().isInvincible()) {
 				// we can give damage
-				this.gp.getPlayer().setLife(this.gp.getPlayer().getLife() - 1);
+				this.gp.getPlayer().decreaseLife(1);
 				this.gp.getPlayer().setInvincible(Boolean.TRUE);
 			}
 		}

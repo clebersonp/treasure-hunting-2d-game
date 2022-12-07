@@ -15,7 +15,7 @@ public class EventHandler {
 	public EventHandler(GamePanel gp) {
 		super();
 		this.gp = gp;
-		
+
 		this.previousEventX = 0;
 		this.previousEventY = 0;
 		this.canTouchEvent = true;
@@ -38,7 +38,7 @@ public class EventHandler {
 	}
 
 	public void checkEvent() {
-		
+
 		// Check if the player character is more than 1 tile away from the last event
 		int xDistance = Math.abs(this.gp.getPlayer().getWorldX() - this.previousEventX);
 		int yDistance = Math.abs(this.gp.getPlayer().getWorldY() - this.previousEventY);
@@ -47,12 +47,11 @@ public class EventHandler {
 			this.canTouchEvent = true;
 		}
 
-		
 		if (this.canTouchEvent) {
 			if (this.hit(27, 16, Entity.Direction.RIGHT)) {
 				this.damagePit(27, 16, GamePanel.DIALOGUE_STATE);
 			}
-			
+
 			if (this.hit(23, 19, Entity.Direction.ANY)) {
 				this.damagePit(23, 19, GamePanel.DIALOGUE_STATE);
 			}
@@ -99,13 +98,14 @@ public class EventHandler {
 							+ this.gp.getPlayer().getScreenY()));
 		}
 
-		if (this.gp.getPlayer().getSolidArea().intersects(this.eventRect[row][col]) && !this.eventRect[row][col].isEventDone()) {
+		if (this.gp.getPlayer().getSolidArea().intersects(this.eventRect[row][col])
+				&& !this.eventRect[row][col].isEventDone()) {
 			if (this.gp.getPlayer().getDirection().equals(reqDirection) || Entity.Direction.ANY.equals(reqDirection)) {
 				hit = true;
-				
+
 				this.previousEventX = this.gp.getPlayer().getWorldX();
 				this.previousEventY = this.gp.getPlayer().getWorldY();
-				
+
 				if (debugCollision) {
 					System.out.println("HIT: Player Rect Position: " + this.gp.getPlayer().getSolidArea()
 							+ ", Hit Rect Position: " + this.eventRect);
@@ -125,8 +125,8 @@ public class EventHandler {
 	public void damagePit(int col, int row, int gameState) {
 		this.gp.setGameState(gameState);
 		this.gp.getUi().setCurrentDialogue("You fall into a pit!");
-		this.gp.getPlayer().setLife(this.gp.getPlayer().getLife() - 1);
-		
+		this.gp.getPlayer().decreaseLife(1);
+
 //		this.eventRect[row][col].setEventDone(Boolean.TRUE);
 		this.canTouchEvent = false;
 	}
@@ -136,10 +136,10 @@ public class EventHandler {
 			this.gp.setGameState(gameState);
 			if (this.gp.getPlayer().getLife() < this.gp.getPlayer().getMaxLife()) {
 				this.gp.getUi().setCurrentDialogue("You drink the water. \nYour life has been recovered.");
+				this.gp.getPlayer().resetUpLife(this.gp.getPlayer().getMaxLife());
 			} else {
 				this.gp.getUi().setCurrentDialogue("Your life already has been recovered.");
 			}
-			this.gp.getPlayer().setLife(this.gp.getPlayer().getMaxLife());
 		}
 	}
 

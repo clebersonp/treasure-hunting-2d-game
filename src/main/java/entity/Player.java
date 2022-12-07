@@ -6,14 +6,13 @@ import static entity.Entity.Direction.RIGHT;
 import static entity.Entity.Direction.UP;
 
 import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
 
 public class Player extends Entity {
 
@@ -67,7 +66,7 @@ public class Player extends Entity {
 
 	public void update() {
 
-		if (this.keyHandler.hasAnyDirectionKeyPressed()) {
+		if (this.keyHandler.hasAnyDirectionKeyPressed() || this.keyHandler.isEnterPressed()) {
 
 			if (this.keyHandler.isUpPressed()) {
 				super.direction = UP;
@@ -102,8 +101,8 @@ public class Player extends Entity {
 			// Dps de checkar nos eventos a key, resetar
 			this.keyHandler.setEnterPressed(Boolean.FALSE);
 
-			// IF COLLISION IS FALSE< PLAYER CAN MOVE
-			if (!collisionOn) {
+			// IF COLLISION IS FALSE AND ENTER KEY IS NOT PRESSED, PLAYER CAN MOVE
+			if (!collisionOn && !this.keyHandler.isEnterPressed()) {
 				switch (super.direction) {
 				case UP:
 					super.worldY -= super.speed;
@@ -145,7 +144,7 @@ public class Player extends Entity {
 	private void contactMonster(int collisionMonsterIndex) {
 		if (collisionMonsterIndex >= 0) {
 			if (!this.isInvincible()) {
-				this.setLife(this.getLife() - 1);
+				this.decreaseLife(1);
 				this.setInvincible(Boolean.TRUE);
 			}
 		}
@@ -233,6 +232,20 @@ public class Player extends Entity {
 
 	public int getScreenY() {
 		return screenY;
+	}
+
+	public void decreaseLife(int damage) {
+		this.setLife(this.getLife() - damage);
+		Sound soundEffects = this.getGp().getSoundEffects();
+		soundEffects.setFile(5);
+		soundEffects.play();
+	}
+
+	public void resetUpLife(int life) {
+		this.setLife(life);
+		Sound soundEffects = this.getGp().getSoundEffects();
+		soundEffects.setFile(2);
+		soundEffects.play();
 	}
 
 }
