@@ -1,11 +1,13 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -23,6 +25,10 @@ public abstract class Entity {
 	// Entity Images
 	protected BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
+	// Entity Attack images
+	protected BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1,
+			attackRight2;
+
 	// Entity direction, Default Down p objetos statics carregar como a image down
 	protected Direction direction = Direction.DOWN;
 
@@ -30,6 +36,7 @@ public abstract class Entity {
 	protected int sprintNum = 1;
 
 	protected Rectangle solidArea = new Rectangle(new Point(0, 0), new Dimension(48, 48));
+	protected Rectangle attackArea = new Rectangle(0, 0, 0, 0);
 	protected int solidAreaDefaultX, solidAreaDefaultY;
 	protected boolean collisionOn;
 	private String[] dialogues = new String[20];
@@ -48,6 +55,8 @@ public abstract class Entity {
 
 	private int actionLockCounter = 0;
 
+	private boolean attacking = false;
+
 	protected TYPE type;
 
 	private GamePanel gp;
@@ -57,11 +66,11 @@ public abstract class Entity {
 		this.gp = gp;
 	}
 
-	public BufferedImage setup(String imagePath) {
+	public BufferedImage setup(String imagePath, int width, int height) {
 		BufferedImage scaledImage = null;
 		try {
-			scaledImage = UtilityTool.scaleImage(ImageIO.read(getClass().getResourceAsStream(imagePath)),
-					this.gp.getTileSize(), this.gp.getTileSize());
+			scaledImage = UtilityTool.scaleImage(ImageIO.read(getClass().getResourceAsStream(imagePath)), width,
+					height);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -109,6 +118,15 @@ public abstract class Entity {
 			}
 			this.spriteCounter = 0;
 		}
+
+		// This needs to be outside of key if statement!
+		if (this.isInvincible()) {
+			this.incrementInvincibleCounter();
+			if (this.getInvincibleCounter() > 40) { // 40 segundos
+				this.setInvincible(Boolean.FALSE);
+				this.resetInvincibleCounter();
+			}
+		}
 	}
 
 	protected abstract void loadImages();
@@ -155,10 +173,26 @@ public abstract class Entity {
 			default -> throw new IllegalArgumentException("Unexpected value for player direction: " + this.direction);
 			};
 
+			if (this.isInvincible()) {
+				this.hitEffect(g2);
+			}
+
 			g2.drawImage(image, screenX, screenY, null);
+
+			// RESET ALPHA
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
 
 		}
 
+	}
+
+	public void hitEffect(Graphics2D g2) {
+		long modResult = System.currentTimeMillis() % 2 + new Random().nextInt(2);
+		if (modResult == 2) {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4F));
+		} else {
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8F));
+		}
 	}
 
 	public int getWorldX() {
@@ -323,6 +357,14 @@ public abstract class Entity {
 
 	public void setType(TYPE type) {
 		this.type = type;
+	}
+
+	public boolean isAttacking() {
+		return attacking;
+	}
+
+	public void setAttacking(boolean attacking) {
+		this.attacking = attacking;
 	}
 
 	public static enum Direction {

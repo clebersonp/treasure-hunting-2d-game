@@ -22,7 +22,7 @@ public class OBJ_Door extends Entity {
 
 	@Override
 	protected void loadImages() {
-		this.down1 = this.setup("/objects/door.png");
+		this.down1 = this.setup("/objects/door.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
 }

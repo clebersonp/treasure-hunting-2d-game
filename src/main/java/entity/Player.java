@@ -18,8 +18,8 @@ public class Player extends Entity {
 
 	private KeyHandler keyHandler;
 
-	private final int screenX;
-	private final int screenY;
+	private int screenX;
+	private int screenY;
 
 	public Player(final GamePanel gp, final KeyHandler keyHandler) {
 		super(gp);
@@ -38,8 +38,12 @@ public class Player extends Entity {
 		super.solidArea.width = 32;
 		super.solidArea.height = 31;
 
+		this.attackArea.width = 36;
+		this.attackArea.height = 36;
+
 		this.setDefaultValues();
 		this.loadImages();
+		this.loadPlayerAttackImages();
 	}
 
 	private void setDefaultValues() {
@@ -66,7 +70,9 @@ public class Player extends Entity {
 
 	public void update() {
 
-		if (this.keyHandler.hasAnyDirectionKeyPressed() || this.keyHandler.isEnterPressed()) {
+		if (this.isAttacking()) {
+			this.attacking();
+		} else if (this.keyHandler.hasAnyDirectionKeyPressed() || this.keyHandler.isEnterPressed()) {
 
 			if (this.keyHandler.isUpPressed()) {
 				super.direction = UP;
@@ -97,7 +103,6 @@ public class Player extends Entity {
 
 			// CHECK EVENT
 			this.getGp().getEventHandler().checkEvent();
-
 
 			// IF COLLISION IS FALSE AND ENTER KEY IS NOT PRESSED, PLAYER CAN MOVE
 			if (!collisionOn && !this.keyHandler.isEnterPressed()) {
@@ -142,6 +147,64 @@ public class Player extends Entity {
 		}
 	}
 
+	private void attacking() {
+		super.spriteCounter++;
+		if (super.spriteCounter <= 5) {
+			super.sprintNum = 1;
+		}
+		if (super.spriteCounter > 5 && super.spriteCounter <= 25) {
+			super.sprintNum = 2;
+
+			// save current information
+			int currentWorldX = this.worldX;
+			int currentWorldY = this.worldY;
+			int currentSolidAreaWidth = this.solidArea.width;
+			int currentSolidAreaHeight = this.solidArea.height;
+
+			// Adjust player's worldX/Y for the attackArea collision
+			switch (this.direction) {
+			case UP -> this.worldY -= this.attackArea.height;
+			case DOWN -> this.worldY += this.attackArea.height;
+			case LEFT -> this.worldX -= this.attackArea.width;
+			case RIGHT -> this.worldX += this.attackArea.width;
+			}
+
+			// attackAtea becomes solidArea
+			this.solidArea.width = this.attackArea.width;
+			this.solidArea.height = this.attackArea.height;
+
+			// check monster collision with the updated worldX/Y and solidArea
+			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
+			this.damageMonster(monsterIndex);
+
+			// Reset worldX/Y and solidArea of player
+			this.worldX = currentWorldX;
+			this.worldY = currentWorldY;
+			this.solidArea.x = currentSolidAreaWidth;
+			this.solidArea.y = currentSolidAreaHeight;
+
+		}
+		if (super.spriteCounter > 25) {
+			super.sprintNum = 1;
+			super.spriteCounter = 0;
+			this.setAttacking(Boolean.FALSE);
+		}
+	}
+
+	private void damageMonster(int index) {
+		if (index >= 0) {
+			final Entity[] monsters = this.getGp().getMonsters();
+			final Entity monster = monsters[index];
+			if (!monster.isInvincible()) {
+				monster.setLife(monster.getLife() - 1);
+				monster.setInvincible(Boolean.TRUE);
+			}
+			if (monster.getLife() <= 0) {
+				monsters[index] = null;
+			}
+		}
+	}
+
 	private void contactMonster(int collisionMonsterIndex) {
 		if (collisionMonsterIndex >= 0) {
 			if (!this.isInvincible()) {
@@ -152,10 +215,12 @@ public class Player extends Entity {
 	}
 
 	private void interactNPC(int collisionNpcIndex) {
-		if (collisionNpcIndex >= 0) {
-			if (this.keyHandler.isEnterPressed()) {
+		if (this.getGp().getKeyHandler().isEnterPressed()) {
+			if (collisionNpcIndex >= 0) {
 				this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
 				this.getGp().getNpcs()[collisionNpcIndex].speak();
+			} else {
+				this.setAttacking(Boolean.TRUE);
 			}
 		}
 	}
@@ -174,12 +239,40 @@ public class Player extends Entity {
 		// g2.fillRect(super.x, super.y, this.gp.getTileSize(), this.gp.getTileSize());
 
 		BufferedImage image = null;
+		int tempScreenX = this.screenX;
+		int tempScreenY = this.screenY;
 
 		image = switch (super.direction) {
-		case UP -> super.sprintNum == 1 ? super.up1 : super.up2;
-		case DOWN -> super.sprintNum == 1 ? super.down1 : super.down2;
-		case LEFT -> super.sprintNum == 1 ? super.left1 : super.left2;
-		case RIGHT -> super.sprintNum == 1 ? super.right1 : super.right2;
+		case UP -> {
+			if (this.isAttacking()) {
+				tempScreenY -= this.getGp().getTileSize();
+				yield this.sprintNum == 1 ? this.attackUp1 : this.attackUp2;
+			} else {
+				yield this.sprintNum == 1 ? this.up1 : super.up2;
+			}
+		}
+		case DOWN -> {
+			if (this.isAttacking()) {
+				yield super.sprintNum == 1 ? super.attackDown1 : super.attackDown2;
+			} else {
+				yield super.sprintNum == 1 ? super.down1 : super.down2;
+			}
+		}
+		case LEFT -> {
+			if (this.isAttacking()) {
+				tempScreenX -= this.getGp().getTileSize();
+				yield super.sprintNum == 1 ? super.attackLeft1 : super.attackLeft2;
+			} else {
+				yield super.sprintNum == 1 ? super.left1 : super.left2;
+			}
+		}
+		case RIGHT -> {
+			if (this.isAttacking()) {
+				yield super.sprintNum == 1 ? super.attackRight1 : super.attackRight2;
+			} else {
+				yield super.sprintNum == 1 ? super.right1 : super.right2;
+			}
+		}
 		default -> throw new IllegalArgumentException("Unexpected value for player direction: " + super.direction);
 		};
 
@@ -187,7 +280,7 @@ public class Player extends Entity {
 			this.hitEffect(g2);
 		}
 
-		g2.drawImage(image, this.screenX, this.screenY, null);
+		g2.drawImage(image, tempScreenX, tempScreenY, null);
 
 		// RESET ALPHA
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
@@ -207,7 +300,7 @@ public class Player extends Entity {
 
 	}
 
-	private void hitEffect(Graphics2D g2) {
+	public void hitEffect(Graphics2D g2) {
 		long modResult = System.currentTimeMillis() % 2 + new Random().nextInt(2);
 		if (modResult == 2) {
 			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3F));
@@ -217,14 +310,33 @@ public class Player extends Entity {
 	}
 
 	public void loadImages() {
-		super.up1 = this.setup("/player/boy_up_1.png");
-		super.up2 = this.setup("/player/boy_up_2.png");
-		super.right1 = this.setup("/player/boy_right_1.png");
-		super.right2 = this.setup("/player/boy_right_2.png");
-		super.down1 = this.setup("/player/boy_down_1.png");
-		super.down2 = this.setup("/player/boy_down_2.png");
-		super.left1 = this.setup("/player/boy_left_1.png");
-		super.left2 = this.setup("/player/boy_left_2.png");
+		super.up1 = this.setup("/player/boy_up_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.up2 = this.setup("/player/boy_up_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.right1 = this.setup("/player/boy_right_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.right2 = this.setup("/player/boy_right_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.down1 = this.setup("/player/boy_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.down2 = this.setup("/player/boy_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.left1 = this.setup("/player/boy_left_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.left2 = this.setup("/player/boy_left_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+	}
+
+	public void loadPlayerAttackImages() {
+		this.attackUp1 = this.setup("/player/boy_attack_up_1.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize() * 2);
+		this.attackUp2 = this.setup("/player/boy_attack_up_2.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize() * 2);
+		this.attackDown1 = this.setup("/player/boy_attack_down_1.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize() * 2);
+		this.attackDown2 = this.setup("/player/boy_attack_down_2.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize() * 2);
+		this.attackLeft1 = this.setup("/player/boy_attack_left_1.png", this.getGp().getTileSize() * 2,
+				this.getGp().getTileSize());
+		this.attackLeft2 = this.setup("/player/boy_attack_left_2.png", this.getGp().getTileSize() * 2,
+				this.getGp().getTileSize());
+		this.attackRight1 = this.setup("/player/boy_attack_right_1.png", this.getGp().getTileSize() * 2,
+				this.getGp().getTileSize());
+		this.attackRight2 = this.setup("/player/boy_attack_right_2.png", this.getGp().getTileSize() * 2,
+				this.getGp().getTileSize());
 	}
 
 	public int getScreenX() {

@@ -13,7 +13,7 @@ public class OBJ_Boots extends Entity {
 
 	@Override
 	protected void loadImages() {
-		this.down1 = this.setup("/objects/boots.png");
+		this.down1 = this.setup("/objects/boots.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
 }

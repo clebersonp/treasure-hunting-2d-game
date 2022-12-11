@@ -13,9 +13,9 @@ public class OBJ_Heart extends Entity {
 
 	@Override
 	protected void loadImages() {
-		this.image = this.setup("/objects/heart_full.png");
-		this.image2 = this.setup("/objects/heart_half.png");
-		this.image3 = this.setup("/objects/heart_blank.png");
+		this.image = this.setup("/objects/heart_full.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.image2 = this.setup("/objects/heart_half.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.image3 = this.setup("/objects/heart_blank.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
 }

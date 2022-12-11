@@ -13,7 +13,7 @@ public class OBJ_Key extends Entity {
 
 	@Override
 	protected void loadImages() {
-		this.down1 = this.setup("/objects/key.png");
+		this.down1 = this.setup("/objects/key.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
 }

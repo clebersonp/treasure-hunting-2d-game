@@ -23,14 +23,14 @@ public class NPC_OldMan extends Entity {
 	}
 
 	public void loadImages() {
-		super.up1 = this.setup("/npc/oldman_up_1.png");
-		super.up2 = this.setup("/npc/oldman_up_2.png");
-		super.right1 = this.setup("/npc/oldman_right_1.png");
-		super.right2 = this.setup("/npc/oldman_right_2.png");
-		super.down1 = this.setup("/npc/oldman_down_1.png");
-		super.down2 = this.setup("/npc/oldman_down_2.png");
-		super.left1 = this.setup("/npc/oldman_left_1.png");
-		super.left2 = this.setup("/npc/oldman_left_2.png");
+		super.up1 = this.setup("/npc/oldman_up_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.up2 = this.setup("/npc/oldman_up_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.right1 = this.setup("/npc/oldman_right_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.right2 = this.setup("/npc/oldman_right_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.down1 = this.setup("/npc/oldman_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.down2 = this.setup("/npc/oldman_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.left1 = this.setup("/npc/oldman_left_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		super.left2 = this.setup("/npc/oldman_left_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
 	public void setAction() {

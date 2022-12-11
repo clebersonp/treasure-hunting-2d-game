@@ -28,14 +28,14 @@ public class Slime extends Entity {
 
 	@Override
 	protected void loadImages() {
-		this.up1 = this.setup("/monsters/greenslime_down_1.png");
-		this.up2 = this.setup("/monsters/greenslime_down_2.png");
-		this.down1 = this.setup("/monsters/greenslime_down_1.png");
-		this.down2 = this.setup("/monsters/greenslime_down_2.png");
-		this.left1 = this.setup("/monsters/greenslime_down_1.png");
-		this.left2 = this.setup("/monsters/greenslime_down_2.png");
-		this.right1 = this.setup("/monsters/greenslime_down_1.png");
-		this.right2 = this.setup("/monsters/greenslime_down_2.png");
+		this.up1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.up2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.down1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.down2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.left1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.left2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.right1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.right2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
 	@Override
