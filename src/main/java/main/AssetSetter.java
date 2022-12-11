@@ -19,19 +19,19 @@ public class AssetSetter {
 		this.gp.getNpcs()[0].setWorldX(this.gp.getTileSize() * 21);
 		this.gp.getNpcs()[0].setWorldY(this.gp.getTileSize() * 21);
 		
-		this.gp.getNpcs()[1] = new NPC_OldMan(this.gp);
-		this.gp.getNpcs()[1].setWorldX(this.gp.getTileSize() * 9);
-		this.gp.getNpcs()[1].setWorldY(this.gp.getTileSize() * 7);
+//		this.gp.getNpcs()[1] = new NPC_OldMan(this.gp);
+//		this.gp.getNpcs()[1].setWorldX(this.gp.getTileSize() * 9);
+//		this.gp.getNpcs()[1].setWorldY(this.gp.getTileSize() * 7);
 	}
 
 	public void setMonsters() {
 		this.gp.getMonsters()[0] = new Slime(this.gp);
-		this.gp.getMonsters()[0].setWorldX(this.gp.getTileSize() * 9);
-		this.gp.getMonsters()[0].setWorldY(this.gp.getTileSize() * 9);
+		this.gp.getMonsters()[0].setWorldX(this.gp.getTileSize() * 21);
+		this.gp.getMonsters()[0].setWorldY(this.gp.getTileSize() * 41);
 		
 		this.gp.getMonsters()[1] = new Slime(this.gp);
-		this.gp.getMonsters()[1].setWorldX(this.gp.getTileSize() * 11);
-		this.gp.getMonsters()[1].setWorldY(this.gp.getTileSize() * 7);
+		this.gp.getMonsters()[1].setWorldX(this.gp.getTileSize() * 23);
+		this.gp.getMonsters()[1].setWorldY(this.gp.getTileSize() * 40);
 	}
 
 }

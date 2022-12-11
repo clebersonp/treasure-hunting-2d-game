@@ -39,8 +39,12 @@ public class GamePanel extends JPanel implements Runnable {
 	// SYSTEM
 	private TileManager tileManager = new TileManager(this);
 	private KeyHandler keyHandler = new KeyHandler(this);
-	private Sound music = new Sound();
-	private Sound soundEffects = new Sound();
+	private Sound music = new Sound(Sound.BLUE_BOY_ADVENTURE);
+	private Sound receiveDamage = new Sound(Sound.RECEIVE_DAMAGE);
+	private Sound powerUp = new Sound(Sound.POWER_UP);
+	private Sound hitMonster = new Sound(Sound.HIT_MONSTER);
+	private Sound swingWeapon = new Sound(Sound.SWING_WEAPON);
+
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
 	private AssetSetter assetSetter = new AssetSetter(this);
 	private UI ui = new UI(this);
@@ -56,6 +60,7 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// GAME STATE
 	private int gameState;
+
 	public static final int TITLE_STATE = 0;
 	public static final int PLAY_STATE = 1;
 	public static final int PAUSE_STATE = 2;
@@ -177,9 +182,14 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			// MONSTERS
-			for (Entity monster : this.monsters) {
-				if (monster != null) {
-					monster.update();
+			for (int i = 0; i < this.monsters.length; i++) {
+				if (this.monsters[i] != null) {
+					if (this.monsters[i].isAlive() && !this.monsters[i].isDying()) {
+						this.monsters[i].update();
+					}
+					if (!this.monsters[i].isAlive()) {
+						this.monsters[i] = null;
+					}
 				}
 			}
 
@@ -251,19 +261,19 @@ public class GamePanel extends JPanel implements Runnable {
 		g2.dispose();
 	}
 
-	public void playMusic(int index) {
-		this.music.setFile(index);
-		this.music.play();
-		this.music.loop();
+	public void playMusic(Sound sound) {
+//		this.music.play(index);
+		sound.play();
+		sound.loop();
 	}
 
-	public void stopMusic() {
-		this.music.stop();
+	public void stopMusic(Sound sound) {
+		sound.stop();
 	}
 
-	public void playSoundEffects(int index) {
-		this.soundEffects.setFile(index);
-		this.soundEffects.play();
+	public void playSoundEffects(Sound sound) {
+		sound.play();
+//		this.soundEffects.play(index);
 	}
 
 	public void finishedGame() {
@@ -346,8 +356,24 @@ public class GamePanel extends JPanel implements Runnable {
 		return monsters;
 	}
 
-	public Sound getSoundEffects() {
-		return soundEffects;
+	public Sound getReceiveDamage() {
+		return receiveDamage;
+	}
+
+	public Sound getPowerUp() {
+		return powerUp;
+	}
+
+	public Sound getMusic() {
+		return music;
+	}
+
+	public Sound getHitMonster() {
+		return hitMonster;
+	}
+
+	public Sound getSwingWeapon() {
+		return swingWeapon;
 	}
 
 }

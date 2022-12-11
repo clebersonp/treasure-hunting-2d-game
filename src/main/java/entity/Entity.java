@@ -1,13 +1,13 @@
 package entity;
 
 import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -57,9 +57,15 @@ public abstract class Entity {
 
 	private boolean attacking = false;
 
-	protected TYPE type;
+	protected EntityType type;
 
 	private GamePanel gp;
+
+	private boolean alive = true;
+	private boolean dying = false;
+	private int dyingCounter = 0;
+	private boolean hpBarOn = false;
+	private int hpBarCounter = 0;
 
 	public Entity(GamePanel gp) {
 		super();
@@ -80,6 +86,9 @@ public abstract class Entity {
 	public void setAction() {
 	}
 
+	public void damageReaction() {
+	}
+
 	public void update() {
 
 		this.setAction();
@@ -91,9 +100,10 @@ public abstract class Entity {
 		this.gp.getCollisionChecker().checkEntity(this, this.gp.getMonsters());
 		boolean contactedPlayer = this.gp.getCollisionChecker().checkPlayer(this);
 
-		if (TYPE.MONSTER.equals(this.type) && contactedPlayer) {
+		if (EntityType.MONSTER.equals(this.type) && contactedPlayer) {
 			if (!this.gp.getPlayer().isInvincible()) {
 				// we can give damage
+				this.gp.playSoundEffects(this.gp.getReceiveDamage());
 				this.gp.getPlayer().decreaseLife(1);
 				this.gp.getPlayer().setInvincible(Boolean.TRUE);
 			}
@@ -173,26 +183,71 @@ public abstract class Entity {
 			default -> throw new IllegalArgumentException("Unexpected value for player direction: " + this.direction);
 			};
 
+			// Monster HP bar
+			if (EntityType.MONSTER.equals(this.type) && this.isHpBarOn()) {
+				this.checkHealthBar(g2, screenX, screenY);
+
+				this.hpBarCounter++;
+				if (this.hpBarCounter > 600) { // 10 secs
+					this.hpBarCounter = 0;
+					this.hpBarOn = false;
+				}
+			}
+
 			if (this.isInvincible()) {
-				this.hitEffect(g2);
+				this.hpBarOn = true;
+				this.changeAlpha(g2, 0.4F);
+			}
+
+			if (this.dying) {
+				this.dyingAnimation(g2);
 			}
 
 			g2.drawImage(image, screenX, screenY, null);
 
 			// RESET ALPHA
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1F));
-
+			this.changeAlpha(g2, 1F);
 		}
-
 	}
 
-	public void hitEffect(Graphics2D g2) {
-		long modResult = System.currentTimeMillis() % 2 + new Random().nextInt(2);
-		if (modResult == 2) {
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.4F));
-		} else {
-			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.8F));
+	public void checkHealthBar(Graphics2D g2, int screenX, int screenY) {
+		double oneScale = (double) this.getGp().getTileSize() / this.maxLife; // Ex: 48 / 4 = 12.0 -> cada life sera de
+		double hpBarValue = oneScale * this.life; // Ex: 12.0 * 1 = 12.0 sera o tamanho da hpBar
+		g2.setColor(new Color(35, 35, 35));
+		g2.fillRect(screenX - 1, screenY - 16, this.getGp().getTileSize() + 2, 12);
+		g2.setColor(new Color(255, 0, 30));
+		g2.fillRect(screenX, screenY - 15, (int) hpBarValue, 10);
+	}
+
+	private void dyingAnimation(Graphics2D g2) {
+		this.dyingCounter++;
+
+		int counter = 5;
+
+		if (this.dyingCounter <= counter) {
+			this.changeAlpha(g2, 0F);
+		} else if (this.dyingCounter > counter && dyingCounter <= counter * 2) {
+			this.changeAlpha(g2, 1F);
+		} else if (this.dyingCounter > counter * 2 && dyingCounter <= counter * 3) {
+			this.changeAlpha(g2, 0F);
+		} else if (this.dyingCounter > counter * 3 && dyingCounter <= counter * 4) {
+			this.changeAlpha(g2, 1F);
+		} else if (this.dyingCounter > counter * 4 && dyingCounter <= counter * 5) {
+			this.changeAlpha(g2, 0F);
+		} else if (this.dyingCounter > counter * 5 && dyingCounter <= counter * 6) {
+			this.changeAlpha(g2, 1F);
+		} else if (this.dyingCounter > counter * 6 && dyingCounter <= counter * 7) {
+			this.changeAlpha(g2, 0F);
+		} else if (this.dyingCounter > counter * 7 && dyingCounter <= counter * 8) {
+			this.changeAlpha(g2, 1F);
+		} else if (this.dyingCounter > counter * 8) {
+			this.dying = Boolean.FALSE;
+			this.alive = Boolean.FALSE;
 		}
+	}
+
+	public void changeAlpha(Graphics2D g2, float alphaValue) {
+		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
 
 	public int getWorldX() {
@@ -351,11 +406,11 @@ public abstract class Entity {
 		return invincibleCounter;
 	}
 
-	public TYPE getType() {
+	public EntityType getType() {
 		return type;
 	}
 
-	public void setType(TYPE type) {
+	public void setType(EntityType type) {
 		this.type = type;
 	}
 
@@ -367,11 +422,51 @@ public abstract class Entity {
 		this.attacking = attacking;
 	}
 
+	public boolean isAlive() {
+		return alive;
+	}
+
+	public void setAlive(boolean alive) {
+		this.alive = alive;
+	}
+
+	public boolean isDying() {
+		return dying;
+	}
+
+	public void setDying(boolean dying) {
+		this.dying = dying;
+	}
+
+	public int getDyingCounter() {
+		return dyingCounter;
+	}
+
+	public void setDyingCounter(int dyingCounter) {
+		this.dyingCounter = dyingCounter;
+	}
+
+	public boolean isHpBarOn() {
+		return hpBarOn;
+	}
+
+	public void setHpBarOn(boolean hpBarOn) {
+		this.hpBarOn = hpBarOn;
+	}
+
+	public int getHpBarCounter() {
+		return hpBarCounter;
+	}
+
+	public void setHpBarCounter(int hpBarCounter) {
+		this.hpBarCounter = hpBarCounter;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT, ANY;
 	}
 
-	public static enum TYPE {
+	public static enum EntityType {
 		PLAYER, NPC, MONSTER;
 	}
 

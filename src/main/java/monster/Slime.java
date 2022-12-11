@@ -10,10 +10,10 @@ public class Slime extends Entity {
 	public Slime(GamePanel gp) {
 		super(gp);
 
-		this.type = TYPE.MONSTER;
+		this.type = EntityType.MONSTER;
 		this.name = "Green Slime";
 		this.speed = 1;
-		this.setMaxLife(4);
+		this.setMaxLife(20);
 		this.setLife(this.getMaxLife());
 
 		this.solidArea.x = 3;
@@ -62,6 +62,12 @@ public class Slime extends Entity {
 
 			this.setActionLockCounter(0);
 		}
+	}
+	
+	@Override
+	public void damageReaction() {
+		this.setActionLockCounter(0);
+		this.direction = this.getGp().getPlayer().getDirection(); // o monster ira p o mesmo sentido do player, fugindo dele
 	}
 
 }

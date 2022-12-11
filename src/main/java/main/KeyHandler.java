@@ -36,7 +36,7 @@ public class KeyHandler implements KeyListener {
 
 				if (this.gp.getUi().getCommandNum() == 0) {
 					this.gp.setGameState(GamePanel.PLAY_STATE);
-					this.gp.playMusic(0);
+					this.gp.playMusic(this.gp.getMusic());
 				} else if (this.gp.getUi().getCommandNum() == 1) {
 					// LOAD GAME LATER
 					System.out.println("// TODO LOAD GAME LATER");

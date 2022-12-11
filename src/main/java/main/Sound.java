@@ -1,37 +1,89 @@
 package main;
 
 import java.net.URL;
+import java.util.Objects;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineEvent;
 
 public class Sound {
 
 	private Clip clip;
 	private URL[] soundURL = new URL[30];
+	private int index;
 
-	public Sound() {
-		this.soundURL[0] = getClass().getResource("/sounds/BlueBoyAdventure.wav");
-		this.soundURL[1] = getClass().getResource("/sounds/coin.wav");
-		this.soundURL[2] = getClass().getResource("/sounds/powerup.wav");
-		this.soundURL[3] = getClass().getResource("/sounds/unlock.wav");
-		this.soundURL[4] = getClass().getResource("/sounds/fanfare.wav");
-		this.soundURL[5] = getClass().getResource("/sounds/receivedamage.wav");
-	}
+	/**
+	 * Index {@code 0}
+	 */
+	public static int BLUE_BOY_ADVENTURE = 0;
 
-	public void setFile(int index) {
-		try {
-			AudioInputStream ais = AudioSystem.getAudioInputStream(this.soundURL[index]);
-			this.clip = AudioSystem.getClip();
-			this.clip.open(ais);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	/**
+	 * Index {@code 1}
+	 */
+	public static int COIN = 1;
+
+	/**
+	 * Index {@code 2}
+	 */
+	public static int POWER_UP = 2;
+
+	/**
+	 * Index {@code 3}
+	 */
+	public static int UNLOCK = 3;
+
+	/**
+	 * Index {@code 4}
+	 */
+	public static int FANFARE = 4;
+
+	/**
+	 * Index {@code 5}
+	 */
+	public static int HIT_MONSTER = 5;
+
+	/**
+	 * Index {@code 6}
+	 */
+	public static int RECEIVE_DAMAGE = 6;
+
+	/**
+	 * Index {@code 7}
+	 */
+	public static int SWING_WEAPON = 7;
+
+	public Sound(int indexSound) {
+		this.index = indexSound;
+		this.soundURL[BLUE_BOY_ADVENTURE] = getClass().getResource("/sounds/BlueBoyAdventure.wav");
+		this.soundURL[COIN] = getClass().getResource("/sounds/coin.wav");
+		this.soundURL[POWER_UP] = getClass().getResource("/sounds/powerup.wav");
+		this.soundURL[UNLOCK] = getClass().getResource("/sounds/unlock.wav");
+		this.soundURL[FANFARE] = getClass().getResource("/sounds/fanfare.wav");
+		this.soundURL[HIT_MONSTER] = getClass().getResource("/sounds/hitmonster.wav");
+		this.soundURL[RECEIVE_DAMAGE] = getClass().getResource("/sounds/receivedamage.wav");
+		this.soundURL[SWING_WEAPON] = getClass().getResource("/sounds/swingweapon.wav");
 	}
 
 	public void play() {
-		this.clip.start();
+		try (AudioInputStream ais = AudioSystem.getAudioInputStream(this.soundURL[this.index ]);) {
+			if (Objects.isNull(this.clip)) {
+				this.clip = AudioSystem.getClip();
+				this.clip.addLineListener(event -> {
+					if (LineEvent.Type.STOP.equals(event.getType())) {
+						this.clip.close();
+					}
+				});
+			}
+			if (!this.clip.isOpen()) {
+				this.clip.open(ais);
+			}
+			this.clip.start();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loop() {
@@ -40,19 +92,8 @@ public class Sound {
 
 	public void stop() {
 		this.clip.stop();
+		this.clip.flush();
+		this.clip.close();
 	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

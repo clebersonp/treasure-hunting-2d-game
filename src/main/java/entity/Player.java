@@ -12,7 +12,6 @@ import java.util.Random;
 
 import main.GamePanel;
 import main.KeyHandler;
-import main.Sound;
 
 public class Player extends Entity {
 
@@ -52,8 +51,9 @@ public class Player extends Entity {
 		super.worldX = super.getGp().getTileSize() * 23; // 1104
 		super.worldY = super.getGp().getTileSize() * 21; // 1008
 
-		super.worldX = super.getGp().getTileSize() * 10;
-		super.worldY = super.getGp().getTileSize() * 13;
+		// Setar em qualquer posicao no mapa para testes 
+		super.worldX = super.getGp().getTileSize() * 23;
+		super.worldY = super.getGp().getTileSize() * 35;
 
 		super.speed = 4;
 		super.direction = DOWN;
@@ -88,6 +88,9 @@ public class Player extends Entity {
 			collisionOn = false;
 			super.getGp().getCollisionChecker().checkTile(this);
 
+			// CHECK EVENT
+			this.getGp().getEventHandler().checkEvent();
+
 			// CHECK OBJECT COLLISION
 			int objectIndex = super.getGp().getCollisionChecker().checkObject(this, true);
 			this.pickupObject(objectIndex);
@@ -100,9 +103,6 @@ public class Player extends Entity {
 			int collisionMonsterIndex = super.getGp().getCollisionChecker().checkEntity(this,
 					super.getGp().getMonsters());
 			this.contactMonster(collisionMonsterIndex);
-
-			// CHECK EVENT
-			this.getGp().getEventHandler().checkEvent();
 
 			// IF COLLISION IS FALSE AND ENTER KEY IS NOT PRESSED, PLAYER CAN MOVE
 			if (!collisionOn && !this.keyHandler.isEnterPressed()) {
@@ -196,11 +196,13 @@ public class Player extends Entity {
 			final Entity[] monsters = this.getGp().getMonsters();
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
+				this.getGp().playSoundEffects(this.getGp().getHitMonster());
 				monster.setLife(monster.getLife() - 1);
 				monster.setInvincible(Boolean.TRUE);
+				monster.damageReaction();
 			}
 			if (monster.getLife() <= 0) {
-				monsters[index] = null;
+				monsters[index].setDying(Boolean.TRUE);
 			}
 		}
 	}
@@ -219,7 +221,8 @@ public class Player extends Entity {
 			if (collisionNpcIndex >= 0) {
 				this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
 				this.getGp().getNpcs()[collisionNpcIndex].speak();
-			} else {
+			} else if (GamePanel.DIALOGUE_STATE != this.getGp().getGameState()) {
+				this.getGp().playSoundEffects(this.getGp().getSwingWeapon());
 				this.setAttacking(Boolean.TRUE);
 			}
 		}
@@ -349,16 +352,12 @@ public class Player extends Entity {
 
 	public void decreaseLife(int damage) {
 		this.setLife(this.getLife() - damage);
-		Sound soundEffects = this.getGp().getSoundEffects();
-		soundEffects.setFile(5);
-		soundEffects.play();
+		this.getGp().playSoundEffects(this.getGp().getReceiveDamage());
 	}
 
 	public void resetUpLife(int life) {
 		this.setLife(life);
-		Sound soundEffects = this.getGp().getSoundEffects();
-		soundEffects.setFile(2);
-		soundEffects.play();
+		this.getGp().playSoundEffects(this.getGp().getPowerUp());
 	}
 
 }
