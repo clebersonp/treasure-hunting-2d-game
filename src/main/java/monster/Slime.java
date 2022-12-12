@@ -13,8 +13,11 @@ public class Slime extends Entity {
 		this.setType(EntityType.MONSTER);
 		this.setName("Green Slime");
 		this.setSpeed(1);
-		this.setMaxLife(20);
+		this.setMaxLife(4);
 		this.setLife(this.getMaxLife());
+		this.setAttack(2);
+		this.setDefense(0);
+		this.setExp(2);
 
 		this.solidArea.x = 3;
 		this.solidArea.y = 18;
@@ -28,14 +31,22 @@ public class Slime extends Entity {
 
 	@Override
 	protected void loadImages() {
-		this.up1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.up2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.down1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.down2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.left1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.left2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.right1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
-		this.right2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+		this.up1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.up2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.down1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.down2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.left1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.left2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.right1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
+		this.right2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(),
+				this.getGp().getTileSize());
 	}
 
 	@Override
@@ -63,11 +74,12 @@ public class Slime extends Entity {
 			this.setActionLockCounter(0);
 		}
 	}
-	
+
 	@Override
 	public void damageReaction() {
 		this.setActionLockCounter(0);
-		this.direction = this.getGp().getPlayer().getDirection(); // o monster ira p o mesmo sentido do player, fugindo dele
+		this.direction = this.getGp().getPlayer().getDirection(); // o monster ira p o mesmo sentido do player, fugindo
+																	// dele
 	}
 
 }

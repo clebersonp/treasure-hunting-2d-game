@@ -219,23 +219,57 @@ public class Player extends Entity {
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
 				this.getGp().playSoundEffects(this.getGp().getHitMonster());
-				monster.setLife(monster.getLife() - 1);
+
+				int damage = this.getAttack() - monster.getDefense();
+				if (damage < 0) {
+					damage = 0;
+				}
+
+				monster.decreaseLife(damage);
+
+				this.getGp().getUi().addMessage(damage + " damage!");
+
 				monster.setInvincible(Boolean.TRUE);
 				monster.damageReaction();
-			}
-			if (monster.getLife() <= 0) {
-				monsters[index].setDying(Boolean.TRUE);
+
+				if (monster.getLife() <= 0) {
+					monster.setDying(Boolean.TRUE);
+					this.getGp().getUi().addMessage("Killed the " + monster.getName() + "!");
+					this.getGp().getUi().addMessage("Exp + " + monster.getExp());
+					this.setExp(this.getExp() + monster.getExp());
+					this.checkLevelUp();
+				}
 			}
 		}
 	}
 
+	public void checkLevelUp() {
+		if (this.getExp() >= this.getNextLevelExp()) {
+			this.setLevel(this.getLevel() + 1);
+			this.setNextLevelExp(this.getNextLevelExp() * 2);
+			this.setMaxLife(this.getMaxLife() + 2);
+			this.setStrength(this.getStrength() + 1);
+			this.setDexterity(this.getDexterity() + 1);
+			this.setAttack(this.getAttack());
+			this.setDefense(this.getDefense());
+
+			this.getGp().getLevelUp().play();
+			this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
+			this.getGp().getUi().setCurrentDialogue("You are level " + this.getLevel() + " now!\n"
+					+ "You feel stronger!");
+		}
+	}
+
 	private void contactMonster(int collisionMonsterIndex) {
-		if (collisionMonsterIndex >= 0) {
-			if (!this.isInvincible()) {
-				this.decreaseLife(1);
-				this.getGp().playSoundEffects(this.getGp().getReceiveDamage());
-				this.setInvincible(Boolean.TRUE);
+		if (collisionMonsterIndex >= 0 && !this.isInvincible()
+				&& this.getGp().getMonsters()[collisionMonsterIndex].getLife() > 0) {
+			int damage = this.getGp().getMonsters()[collisionMonsterIndex].getAttack() - this.getDefense();
+			if (damage < 0) {
+				damage = 0;
 			}
+			this.decreaseLife(damage);
+			this.getGp().playSoundEffects(this.getGp().getReceiveDamage());
+			this.setInvincible(Boolean.TRUE);
 		}
 	}
 
@@ -390,7 +424,11 @@ public class Player extends Entity {
 	}
 
 	public void decreaseLife(int damage) {
-		this.setLife(this.getLife() - damage);
+		if ((this.getLife() - damage) < 0) {
+			this.setLife(0);
+		} else {
+			this.setLife(this.getLife() - damage);
+		}
 	}
 
 	public void resetUpLife(int life) {

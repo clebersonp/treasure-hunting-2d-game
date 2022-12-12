@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import entity.Entity;
 import object.OBJ_Heart;
@@ -18,6 +20,9 @@ public class UI {
 	private String currentDialogue = "";
 	private int commandNum = 0;
 	private BufferedImage heart_full, heart_half, heart_blank;
+
+	List<String> messages = new ArrayList<>();
+	List<Integer> messagesCounter = new ArrayList<>();
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
@@ -54,6 +59,7 @@ public class UI {
 		case GamePanel.PLAY_STATE -> {
 			this.drawPlayerLife(g2);
 			this.drawPlayScreen(g2);
+			this.drawMessages(g2);
 		}
 		case GamePanel.PAUSE_STATE -> {
 			this.drawPlayerLife(g2);
@@ -68,6 +74,38 @@ public class UI {
 		}
 		}
 
+	}
+
+	private void drawMessages(Graphics2D g2) {
+
+		int messageX = this.gp.getTileSize();
+		int messageY = this.gp.getTileSize() * 4;
+
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 32F));
+
+		for (int i = 0; i < this.messages.size(); i++) {
+
+			if (this.messages.get(i) != null) {
+
+				// SHADOW
+				g2.setColor(Color.BLACK);
+				g2.drawString(this.messages.get(i), messageX + 2, messageY + 2);
+
+				g2.setColor(Color.WHITE);
+				g2.drawString(this.messages.get(i), messageX, messageY);
+
+				int counter = this.messagesCounter.get(i) + 1;
+				this.messagesCounter.set(i, counter);
+
+				messageY += 50;
+
+				if (this.messagesCounter.get(i) > 180) { // 3 seconds
+					this.messages.remove(i);
+					this.messagesCounter.remove(i);
+				}
+
+			}
+		}
 	}
 
 	private void drawPlayerLife(Graphics2D g2) {
@@ -339,6 +377,11 @@ public class UI {
 	private int getXTextPositionAlignToRight(Graphics2D g2, String text, int tailX) {
 		int length = (int) g2.getFontMetrics().getStringBounds(text, g2).getWidth();
 		return tailX - length;
+	}
+
+	public void addMessage(String text) {
+		this.messages.add(text);
+		this.messagesCounter.add(0);
 	}
 
 	public String getCurrentDialogue() {

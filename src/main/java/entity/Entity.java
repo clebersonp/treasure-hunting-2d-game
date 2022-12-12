@@ -109,13 +109,17 @@ public abstract class Entity {
 		this.gp.getCollisionChecker().checkObject(this, false);
 		this.gp.getCollisionChecker().checkEntity(this, this.gp.getNpcs());
 		this.gp.getCollisionChecker().checkEntity(this, this.gp.getMonsters());
-		boolean contactedPlayer = this.gp.getCollisionChecker().checkPlayer(this);
+		boolean entityContactedPlayer = this.gp.getCollisionChecker().checkPlayer(this);
 
-		if (EntityType.MONSTER.equals(this.type) && contactedPlayer) {
+		if (EntityType.MONSTER.equals(this.type) && entityContactedPlayer) {
 			if (!this.gp.getPlayer().isInvincible()) {
 				// we can give damage
 				this.gp.playSoundEffects(this.gp.getReceiveDamage());
-				this.gp.getPlayer().decreaseLife(1);
+				int damage = this.getAttack() - this.gp.getPlayer().getDefense();
+				if (damage < 0) {
+					damage = 0;
+				}
+				this.gp.getPlayer().decreaseLife(damage);
 				this.gp.getPlayer().setInvincible(Boolean.TRUE);
 			}
 		}
@@ -363,6 +367,14 @@ public abstract class Entity {
 
 	public void setLife(int life) {
 		this.life = life;
+	}
+	
+	public void decreaseLife(int damage) {
+		if ((this.life - damage) < 0) {
+			this.life = 0;
+		} else {
+			this.life -= damage;
+		}
 	}
 
 	public int getMaxLife() {

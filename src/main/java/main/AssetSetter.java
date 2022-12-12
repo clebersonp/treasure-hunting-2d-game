@@ -25,13 +25,26 @@ public class AssetSetter {
 	}
 
 	public void setMonsters() {
-		this.gp.getMonsters()[0] = new Slime(this.gp);
-		this.gp.getMonsters()[0].setWorldX(this.gp.getTileSize() * 21);
-		this.gp.getMonsters()[0].setWorldY(this.gp.getTileSize() * 41);
+		int i = 0;
+		this.gp.getMonsters()[i] = new Slime(this.gp);
+		this.gp.getMonsters()[i].setWorldX(this.gp.getTileSize() * 21);
+		this.gp.getMonsters()[i].setWorldY(this.gp.getTileSize() * 41);
+		i++;
 		
-		this.gp.getMonsters()[1] = new Slime(this.gp);
-		this.gp.getMonsters()[1].setWorldX(this.gp.getTileSize() * 23);
-		this.gp.getMonsters()[1].setWorldY(this.gp.getTileSize() * 40);
+		this.gp.getMonsters()[i] = new Slime(this.gp);
+		this.gp.getMonsters()[i].setWorldX(this.gp.getTileSize() * 23);
+		this.gp.getMonsters()[i].setWorldY(this.gp.getTileSize() * 40);
+		i++;
+		
+		this.gp.getMonsters()[i] = new Slime(this.gp);
+		this.gp.getMonsters()[i].setWorldX(this.gp.getTileSize() * 31);
+		this.gp.getMonsters()[i].setWorldY(this.gp.getTileSize() * 40);
+		i++;
+		
+		this.gp.getMonsters()[i] = new Slime(this.gp);
+		this.gp.getMonsters()[i].setWorldX(this.gp.getTileSize() * 35);
+		this.gp.getMonsters()[i].setWorldY(this.gp.getTileSize() * 41);
+		i++;
 	}
 
 }

@@ -2,6 +2,8 @@ package main;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.util.Arrays;
+import java.util.Objects;
 
 import entity.Entity;
 
@@ -140,6 +142,14 @@ public class EventHandler {
 				this.gp.playSoundEffects(this.gp.getPowerUp());
 				this.gp.getUi().setCurrentDialogue("You drink the water. \nYour life has been recovered.");
 				this.gp.getPlayer().resetUpLife(this.gp.getPlayer().getMaxLife());
+
+				// RESET Slimes to Teste
+				final boolean allMonstersNulls = Arrays.asList(this.gp.getMonsters()).stream()
+						.allMatch(m -> Objects.isNull(m));
+				if (this.gp.getMonsters().length == 0 || allMonstersNulls) {
+					this.gp.getAssetSetter().setMonsters();
+				}
+
 			} else {
 				this.gp.getUi().setCurrentDialogue("Your life already has been recovered.");
 			}

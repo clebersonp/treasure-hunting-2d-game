@@ -8,7 +8,7 @@ public class OBJ_SwordNormal extends Entity {
 	public OBJ_SwordNormal(GamePanel gp) {
 		super(gp);
 		this.setName("Normal Sword");
-		this.setAttackValue(4);
+		this.setAttackValue(1);
 		this.loadImages();
 	}
 

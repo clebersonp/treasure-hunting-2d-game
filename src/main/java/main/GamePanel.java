@@ -44,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Sound powerUp = new Sound(Sound.POWER_UP);
 	private Sound hitMonster = new Sound(Sound.HIT_MONSTER);
 	private Sound swingWeapon = new Sound(Sound.SWING_WEAPON);
+	private Sound levelUp = new Sound(Sound.LEVEL_UP);
 
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
 	private AssetSetter assetSetter = new AssetSetter(this);
@@ -374,6 +375,18 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public Sound getSwingWeapon() {
 		return swingWeapon;
+	}
+
+	public Sound getLevelUp() {
+		return levelUp;
+	}
+
+	public AssetSetter getAssetSetter() {
+		return assetSetter;
+	}
+
+	public void setAssetSetter(AssetSetter assetSetter) {
+		this.assetSetter = assetSetter;
 	}
 
 }

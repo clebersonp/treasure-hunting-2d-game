@@ -12,6 +12,17 @@ public class Sound {
 
 	private Clip clip;
 	private URL[] soundURL = new URL[30];
+	{
+		this.soundURL[BLUE_BOY_ADVENTURE] = getClass().getResource("/sounds/BlueBoyAdventure.wav");
+		this.soundURL[COIN] = getClass().getResource("/sounds/coin.wav");
+		this.soundURL[POWER_UP] = getClass().getResource("/sounds/powerup.wav");
+		this.soundURL[UNLOCK] = getClass().getResource("/sounds/unlock.wav");
+		this.soundURL[FANFARE] = getClass().getResource("/sounds/fanfare.wav");
+		this.soundURL[HIT_MONSTER] = getClass().getResource("/sounds/hitmonster.wav");
+		this.soundURL[RECEIVE_DAMAGE] = getClass().getResource("/sounds/receivedamage.wav");
+		this.soundURL[SWING_WEAPON] = getClass().getResource("/sounds/swingweapon.wav");
+		this.soundURL[LEVEL_UP] = getClass().getResource("/sounds/levelup.wav");
+	}
 	private int index;
 
 	/**
@@ -54,20 +65,20 @@ public class Sound {
 	 */
 	public static int SWING_WEAPON = 7;
 
+	/**
+	 * Index {@code 8}
+	 */
+	public static int LEVEL_UP = 8;
+
 	public Sound(int indexSound) {
+		if (indexSound < 0 || indexSound > this.soundURL.length - 1) {
+			throw new IllegalArgumentException("Index Sound Not Exists!");
+		}
 		this.index = indexSound;
-		this.soundURL[BLUE_BOY_ADVENTURE] = getClass().getResource("/sounds/BlueBoyAdventure.wav");
-		this.soundURL[COIN] = getClass().getResource("/sounds/coin.wav");
-		this.soundURL[POWER_UP] = getClass().getResource("/sounds/powerup.wav");
-		this.soundURL[UNLOCK] = getClass().getResource("/sounds/unlock.wav");
-		this.soundURL[FANFARE] = getClass().getResource("/sounds/fanfare.wav");
-		this.soundURL[HIT_MONSTER] = getClass().getResource("/sounds/hitmonster.wav");
-		this.soundURL[RECEIVE_DAMAGE] = getClass().getResource("/sounds/receivedamage.wav");
-		this.soundURL[SWING_WEAPON] = getClass().getResource("/sounds/swingweapon.wav");
 	}
 
 	public void play() {
-		try (AudioInputStream ais = AudioSystem.getAudioInputStream(this.soundURL[this.index ]);) {
+		try (AudioInputStream ais = AudioSystem.getAudioInputStream(this.soundURL[this.index]);) {
 			if (Objects.isNull(this.clip)) {
 				this.clip = AudioSystem.getClip();
 				this.clip.addLineListener(event -> {
