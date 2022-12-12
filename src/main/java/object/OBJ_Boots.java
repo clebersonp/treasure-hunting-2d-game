@@ -7,7 +7,7 @@ public class OBJ_Boots extends Entity {
 
 	public OBJ_Boots(GamePanel gp) {
 		super(gp);
-		this.name = "Boots";
+		this.setName("Boots");
 		this.loadImages();
 	}
 

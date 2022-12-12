@@ -19,9 +19,6 @@ public abstract class Entity {
 	// Entity position
 	protected int worldX, worldY;
 
-	// Entity speed
-	protected int speed;
-
 	// Entity Images
 	protected BufferedImage up1, up2, down1, down2, left1, left2, right1, right2;
 
@@ -43,21 +40,14 @@ public abstract class Entity {
 	private int dialogueIndex = 0;
 
 	protected BufferedImage image, image2, image3;
-	protected String name;
 	protected boolean collision;
 
 	private boolean invincible;
 	private int invincibleCounter = 0;
 
-	// CHARACTER LIFE
-	private int maxLife;
-	private int life;
-
 	private int actionLockCounter = 0;
 
 	private boolean attacking = false;
-
-	protected EntityType type;
 
 	private GamePanel gp;
 
@@ -66,6 +56,27 @@ public abstract class Entity {
 	private int dyingCounter = 0;
 	private boolean hpBarOn = false;
 	private int hpBarCounter = 0;
+
+	// CHARACTER ATTRIBUTES
+	private EntityType type;
+	private String name;
+	private int speed;
+	private int maxLife;
+	private int life;
+	private int level;
+	private int strength;
+	private int dexterity;
+	private int attack;
+	private int defense;
+	private int exp;
+	private int nextLevelExp;
+	private int coin;
+	private Entity currentWeapon;
+	private Entity currentShield;
+
+	// ITEM ATTRIBUTES
+	private int attackValue;
+	private int defenseValue;
 
 	public Entity(GamePanel gp) {
 		super();
@@ -460,6 +471,114 @@ public abstract class Entity {
 
 	public void setHpBarCounter(int hpBarCounter) {
 		this.hpBarCounter = hpBarCounter;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public int getStrength() {
+		return strength;
+	}
+
+	public void setStrength(int strength) {
+		this.strength = strength;
+	}
+
+	public int getDexterity() {
+		return dexterity;
+	}
+
+	public void setDexterity(int dexterity) {
+		this.dexterity = dexterity;
+	}
+
+	public int getAttack() {
+		return attack;
+	}
+
+	public void setAttack(int attack) {
+		this.attack = attack;
+	}
+
+	public int getDefense() {
+		return defense;
+	}
+
+	public void setDefense(int defense) {
+		this.defense = defense;
+	}
+
+	public int getExp() {
+		return exp;
+	}
+
+	public void setExp(int exp) {
+		this.exp = exp;
+	}
+
+	public int getNextLevelExp() {
+		return nextLevelExp;
+	}
+
+	public void setNextLevelExp(int nextLevelExp) {
+		this.nextLevelExp = nextLevelExp;
+	}
+
+	public int getCoin() {
+		return coin;
+	}
+
+	public void setCoin(int coin) {
+		this.coin = coin;
+	}
+
+	public Entity getCurrentWeapon() {
+		return currentWeapon;
+	}
+
+	public void setCurrentWeapon(Entity currentWeapon) {
+		this.currentWeapon = currentWeapon;
+	}
+
+	public Entity getCurrentShield() {
+		return currentShield;
+	}
+
+	public void setCurrentShield(Entity currentShield) {
+		this.currentShield = currentShield;
+	}
+
+	public int getAttackValue() {
+		return attackValue;
+	}
+
+	public void setAttackValue(int attackValue) {
+		this.attackValue = attackValue;
+	}
+
+	public int getDefenseValue() {
+		return defenseValue;
+	}
+
+	public void setDefenseValue(int defenseValue) {
+		this.defenseValue = defenseValue;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 
 	public static enum Direction {

@@ -7,7 +7,7 @@ public class OBJ_Heart extends Entity {
 
 	public OBJ_Heart(GamePanel gp) {
 		super(gp);
-		this.name = "Boots";
+		this.setName("Boots");
 		this.loadImages();
 	}
 

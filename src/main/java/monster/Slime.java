@@ -10,9 +10,9 @@ public class Slime extends Entity {
 	public Slime(GamePanel gp) {
 		super(gp);
 
-		this.type = EntityType.MONSTER;
-		this.name = "Green Slime";
-		this.speed = 1;
+		this.setType(EntityType.MONSTER);
+		this.setName("Green Slime");
+		this.setSpeed(1);
 		this.setMaxLife(20);
 		this.setLife(this.getMaxLife());
 

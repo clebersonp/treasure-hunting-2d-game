@@ -12,6 +12,8 @@ import java.util.Random;
 
 import main.GamePanel;
 import main.KeyHandler;
+import object.OBJ_ShieldWood;
+import object.OBJ_SwordNormal;
 
 public class Player extends Entity {
 
@@ -19,6 +21,7 @@ public class Player extends Entity {
 
 	private int screenX;
 	private int screenY;
+	private boolean attackCancel = false;
 
 	public Player(final GamePanel gp, final KeyHandler keyHandler) {
 		super(gp);
@@ -51,17 +54,28 @@ public class Player extends Entity {
 		super.worldX = super.getGp().getTileSize() * 23; // 1104
 		super.worldY = super.getGp().getTileSize() * 21; // 1008
 
-		// Setar em qualquer posicao no mapa para testes 
+		// Setar em qualquer posicao no mapa para testes
 		super.worldX = super.getGp().getTileSize() * 23;
 		super.worldY = super.getGp().getTileSize() * 35;
 
-		super.speed = 4;
+		super.setSpeed(4);
 		super.direction = DOWN;
 
-		// PLAYER LIFE
+		// PLAYER STATUS
+		this.setLevel(1);
 		int defaultLife = 6;
 		super.setMaxLife(defaultLife);
 		super.setLife(defaultLife);
+		this.setStrength(1); // The more strength he has, the more damage he gives.
+		this.setDexterity(1); // The more dexterity he has, the less damage he receives.
+		this.setExp(0);
+		this.setNextLevelExp(5);
+		this.setCoin(0);
+		this.setCurrentWeapon(new OBJ_SwordNormal(getGp()));
+		this.setCurrentShield(new OBJ_ShieldWood(getGp()));
+		this.setAttack(this.getAttack()); // The total attack value is decided by strength and weapon
+		this.setDefense(this.getDefense()); // The total defense value is decided by dexterity and shield
+
 	}
 
 	public void setAction() {
@@ -88,9 +102,6 @@ public class Player extends Entity {
 			collisionOn = false;
 			super.getGp().getCollisionChecker().checkTile(this);
 
-			// CHECK EVENT
-			this.getGp().getEventHandler().checkEvent();
-
 			// CHECK OBJECT COLLISION
 			int objectIndex = super.getGp().getCollisionChecker().checkObject(this, true);
 			this.pickupObject(objectIndex);
@@ -104,23 +115,34 @@ public class Player extends Entity {
 					super.getGp().getMonsters());
 			this.contactMonster(collisionMonsterIndex);
 
+			// CHECK EVENT
+			this.getGp().getEventHandler().checkEvent();
+
 			// IF COLLISION IS FALSE AND ENTER KEY IS NOT PRESSED, PLAYER CAN MOVE
 			if (!collisionOn && !this.keyHandler.isEnterPressed()) {
 				switch (super.direction) {
 				case UP:
-					super.worldY -= super.speed;
+					super.worldY -= super.getSpeed();
 					break;
 				case DOWN:
-					super.worldY += super.speed;
+					super.worldY += super.getSpeed();
 					break;
 				case LEFT:
-					super.worldX -= super.speed;
+					super.worldX -= super.getSpeed();
 					break;
 				case RIGHT:
-					super.worldX += super.speed;
+					super.worldX += super.getSpeed();
 					break;
 				}
 			}
+
+			if (this.keyHandler.isEnterPressed() && !this.attackCancel) {
+				this.getGp().playSoundEffects(this.getGp().getSwingWeapon());
+				this.setAttacking(Boolean.TRUE);
+				this.spriteCounter = 0;
+			}
+
+			this.attackCancel = false;
 
 			// Dps de checkar nos eventos a key, resetar
 			this.keyHandler.setEnterPressed(Boolean.FALSE);
@@ -211,6 +233,7 @@ public class Player extends Entity {
 		if (collisionMonsterIndex >= 0) {
 			if (!this.isInvincible()) {
 				this.decreaseLife(1);
+				this.getGp().playSoundEffects(this.getGp().getReceiveDamage());
 				this.setInvincible(Boolean.TRUE);
 			}
 		}
@@ -219,11 +242,9 @@ public class Player extends Entity {
 	private void interactNPC(int collisionNpcIndex) {
 		if (this.getGp().getKeyHandler().isEnterPressed()) {
 			if (collisionNpcIndex >= 0) {
+				this.attackCancel = true;
 				this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
 				this.getGp().getNpcs()[collisionNpcIndex].speak();
-			} else if (GamePanel.DIALOGUE_STATE != this.getGp().getGameState()) {
-				this.getGp().playSoundEffects(this.getGp().getSwingWeapon());
-				this.setAttacking(Boolean.TRUE);
 			}
 		}
 	}
@@ -350,14 +371,30 @@ public class Player extends Entity {
 		return screenY;
 	}
 
+	public boolean isAttackCancel() {
+		return attackCancel;
+	}
+
+	public void setAttackCancel(boolean attackCancel) {
+		this.attackCancel = attackCancel;
+	}
+
+	@Override
+	public int getAttack() {
+		return this.getStrength() * this.getCurrentWeapon().getAttackValue();
+	}
+
+	@Override
+	public int getDefense() {
+		return this.getDexterity() * this.getCurrentShield().getDefenseValue();
+	}
+
 	public void decreaseLife(int damage) {
 		this.setLife(this.getLife() - damage);
-		this.getGp().playSoundEffects(this.getGp().getReceiveDamage());
 	}
 
 	public void resetUpLife(int life) {
 		this.setLife(life);
-		this.getGp().playSoundEffects(this.getGp().getPowerUp());
 	}
 
 }

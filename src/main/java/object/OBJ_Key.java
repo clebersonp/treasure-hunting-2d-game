@@ -7,7 +7,7 @@ public class OBJ_Key extends Entity {
 
 	public OBJ_Key(GamePanel gp) {
 		super(gp);
-		this.name = "Key";
+		this.setName("Key");
 		this.loadImages();
 	}
 

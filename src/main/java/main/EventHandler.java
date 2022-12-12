@@ -124,6 +124,7 @@ public class EventHandler {
 
 	public void damagePit(int col, int row, int gameState) {
 		this.gp.setGameState(gameState);
+		this.gp.playSoundEffects(this.gp.getReceiveDamage());
 		this.gp.getUi().setCurrentDialogue("You fall into a pit!");
 		this.gp.getPlayer().decreaseLife(1);
 
@@ -134,7 +135,9 @@ public class EventHandler {
 	public void healingPool(int col, int row, int gameState) {
 		if (this.gp.getKeyHandler().isEnterPressed()) {
 			this.gp.setGameState(gameState);
+			this.gp.getPlayer().setAttackCancel(Boolean.TRUE);
 			if (this.gp.getPlayer().getLife() < this.gp.getPlayer().getMaxLife()) {
+				this.gp.playSoundEffects(this.gp.getPowerUp());
 				this.gp.getUi().setCurrentDialogue("You drink the water. \nYour life has been recovered.");
 				this.gp.getPlayer().resetUpLife(this.gp.getPlayer().getMaxLife());
 			} else {

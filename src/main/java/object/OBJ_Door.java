@@ -7,7 +7,7 @@ public class OBJ_Door extends Entity {
 
 	public OBJ_Door(GamePanel gp) {
 		super(gp);
-		this.name = "Door";
+		this.setName("Door");
 		this.collision = true;
 		this.loadImages();
 

@@ -17,7 +17,7 @@ public class NPC_OldMan extends Entity {
 		super.solidArea.height = 31;
 
 		this.direction = Entity.Direction.DOWN;
-		this.speed = 1;
+		this.setSpeed(1);
 		this.loadImages();
 		this.setDialogue();
 	}
