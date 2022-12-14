@@ -8,10 +8,14 @@ import static entity.Entity.Direction.UP;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import main.GamePanel;
 import main.KeyHandler;
+import main.Sound;
+import object.OBJ_Key;
 import object.OBJ_ShieldWood;
 import object.OBJ_SwordNormal;
 
@@ -22,6 +26,8 @@ public class Player extends Entity {
 	private int screenX;
 	private int screenY;
 	private boolean attackCancel = false;
+	private final List<Entity> inventory = new ArrayList<>();
+	private final int maxInventorySize = 20;
 
 	public Player(final GamePanel gp, final KeyHandler keyHandler) {
 		super(gp);
@@ -46,6 +52,7 @@ public class Player extends Entity {
 		this.setDefaultValues();
 		this.loadImages();
 		this.loadPlayerAttackImages();
+		this.setInventoryItems();
 	}
 
 	private void setDefaultValues() {
@@ -76,6 +83,12 @@ public class Player extends Entity {
 		this.setAttack(this.getAttack()); // The total attack value is decided by strength and weapon
 		this.setDefense(this.getDefense()); // The total defense value is decided by dexterity and shield
 
+	}
+
+	public void setInventoryItems() {
+		this.inventory.add(this.getCurrentWeapon());
+		this.inventory.add(this.getCurrentShield());
+		this.inventory.add(new OBJ_Key(this.getGp()));
 	}
 
 	public void setAction() {
@@ -137,7 +150,7 @@ public class Player extends Entity {
 			}
 
 			if (this.keyHandler.isEnterPressed() && !this.attackCancel) {
-				this.getGp().playSoundEffects(this.getGp().getSwingWeapon());
+				this.getGp().playSoundEffects(new Sound(Sound.SWING_WEAPON));
 				this.setAttacking(Boolean.TRUE);
 				this.spriteCounter = 0;
 			}
@@ -218,7 +231,7 @@ public class Player extends Entity {
 			final Entity[] monsters = this.getGp().getMonsters();
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
-				this.getGp().playSoundEffects(this.getGp().getHitMonster());
+				this.getGp().playSoundEffects(new Sound(Sound.HIT_MONSTER));
 
 				int damage = this.getAttack() - monster.getDefense();
 				if (damage < 0) {
@@ -253,10 +266,10 @@ public class Player extends Entity {
 			this.setAttack(this.getAttack());
 			this.setDefense(this.getDefense());
 
-			this.getGp().getLevelUp().play();
+			this.getGp().playSoundEffects(new Sound(Sound.LEVEL_UP));
 			this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
-			this.getGp().getUi().setCurrentDialogue("You are level " + this.getLevel() + " now!\n"
-					+ "You feel stronger!");
+			this.getGp().getUi()
+					.setCurrentDialogue("You are level " + this.getLevel() + " now!\n" + "You feel stronger!");
 		}
 	}
 
@@ -268,7 +281,7 @@ public class Player extends Entity {
 				damage = 0;
 			}
 			this.decreaseLife(damage);
-			this.getGp().playSoundEffects(this.getGp().getReceiveDamage());
+			this.getGp().playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
 			this.setInvincible(Boolean.TRUE);
 		}
 	}
@@ -433,6 +446,14 @@ public class Player extends Entity {
 
 	public void resetUpLife(int life) {
 		this.setLife(life);
+	}
+
+	public List<Entity> getInventory() {
+		return inventory;
+	}
+
+	public int getMaxInventorySize() {
+		return maxInventorySize;
 	}
 
 }

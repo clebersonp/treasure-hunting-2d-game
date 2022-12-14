@@ -12,6 +12,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import main.GamePanel;
+import main.Sound;
 import main.UtilityTool;
 
 public abstract class Entity {
@@ -77,6 +78,7 @@ public abstract class Entity {
 	// ITEM ATTRIBUTES
 	private int attackValue;
 	private int defenseValue;
+	private String description = "";
 
 	public Entity(GamePanel gp) {
 		super();
@@ -114,7 +116,7 @@ public abstract class Entity {
 		if (EntityType.MONSTER.equals(this.type) && entityContactedPlayer) {
 			if (!this.gp.getPlayer().isInvincible()) {
 				// we can give damage
-				this.gp.playSoundEffects(this.gp.getReceiveDamage());
+				this.gp.playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
 				int damage = this.getAttack() - this.gp.getPlayer().getDefense();
 				if (damage < 0) {
 					damage = 0;
@@ -368,7 +370,7 @@ public abstract class Entity {
 	public void setLife(int life) {
 		this.life = life;
 	}
-	
+
 	public void decreaseLife(int damage) {
 		if ((this.life - damage) < 0) {
 			this.life = 0;
@@ -591,6 +593,14 @@ public abstract class Entity {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public static enum Direction {

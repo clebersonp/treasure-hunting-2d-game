@@ -10,6 +10,7 @@ public class OBJ_SwordNormal extends Entity {
 		this.setName("Normal Sword");
 		this.setAttackValue(1);
 		this.loadImages();
+		this.setDescription("[" + this.getName() + "]\nAn old sword.");
 	}
 
 	@Override

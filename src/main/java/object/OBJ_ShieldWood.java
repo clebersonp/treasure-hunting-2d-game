@@ -10,6 +10,7 @@ public class OBJ_ShieldWood extends Entity {
 		this.setName("Shield Wood");
 		this.setDefenseValue(1);
 		this.loadImages();
+		this.setDescription("[" + this.getName() + "]\nMade by wood.");
 	}
 
 	@Override

@@ -23,6 +23,8 @@ public class UI {
 
 	List<String> messages = new ArrayList<>();
 	List<Integer> messagesCounter = new ArrayList<>();
+	private int slotInventoryCol = 0;
+	private int slotInventoryRow = 0;
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
@@ -71,9 +73,77 @@ public class UI {
 		}
 		case GamePanel.CHARACTER_STATE -> {
 			this.drawCharacterScreen(g2);
+			this.drawInventory(g2);
 		}
 		}
 
+	}
+
+	private void drawInventory(Graphics2D g2) {
+
+		// FRAME
+		final int frameX = (this.gp.getTileSize() * 9) + (this.gp.getTileSize() / 2);
+		final int frameY = this.gp.getTileSize();
+		final int frameWidth = this.gp.getTileSize() * 6;
+		final int frameHeight = this.gp.getTileSize() * 5;
+		this.drawSubWindow(g2, frameX, frameY, frameWidth, frameHeight);
+
+		// SLOT
+		final int slotXStart = frameX + 18;
+		final int slotYStart = frameY + 18;
+		int slotX = slotXStart;
+		int slotY = slotYStart;
+		int slotSize = this.gp.getTileSize() + 3;
+
+		// DRAW PLAYER'S INVENTORY ITEMS
+		for (int i = 0; i < this.gp.getPlayer().getInventory().size(); i++) {
+			g2.drawImage(this.gp.getPlayer().getInventory().get(i).getDown1(), slotX, slotY, null);
+
+			slotX += slotSize;
+			if (i == 4 || i == 9 || i == 14) {
+				slotX = slotXStart;
+				slotY += slotSize;
+			}
+		}
+
+		// CURSOR
+		int cursorX = slotXStart + (slotSize * this.slotInventoryCol);
+		int cursorY = slotYStart + (slotSize * this.slotInventoryRow);
+		int cursorWidth = this.gp.getTileSize();
+		int cursorHeight = this.gp.getTileSize();
+		// DRAW CURSOR
+		g2.setColor(Color.WHITE);
+		g2.setStroke(new BasicStroke(3F));
+		g2.drawRoundRect(cursorX, cursorY, cursorWidth, cursorHeight, 10, 10);
+
+		// DESCRIPTION FRAME
+		int dFrameX = frameX;
+		int dFrameY = frameY + frameHeight;
+		int dFrameWidth = frameWidth;
+		int dFrameHeight = this.gp.getTileSize() * 3;
+		this.drawSubWindow(g2, dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+		
+		// DRAW DESCRIPTION TEXT
+		int textX = dFrameX + 20;
+		int textY = dFrameY + this.gp.getTileSize();
+		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 22));
+		
+		int itemIndex = this.getInventoryItemIndexOnSlot();
+		if (itemIndex < this.gp.getPlayer().getInventory().size()) {
+			final Entity item = this.gp.getPlayer().getInventory().get(itemIndex);
+			String description = item.getDescription();
+			for (String line : description.split("\n")) {
+				g2.drawString(line, textX, textY);
+				textY += 32;
+			}
+		} else {
+			g2.drawString("Empty.", textX, textY);
+		}
+
+	}
+	
+	public int getInventoryItemIndexOnSlot() {
+		return this.slotInventoryCol + (this.slotInventoryRow * 5);
 	}
 
 	private void drawMessages(Graphics2D g2) {
@@ -398,6 +468,22 @@ public class UI {
 
 	public void setCommandNum(int commandNum) {
 		this.commandNum = commandNum;
+	}
+
+	public int getSlotInventoryCol() {
+		return slotInventoryCol;
+	}
+
+	public void setSlotInventoryCol(int slotInventoryCol) {
+		this.slotInventoryCol = slotInventoryCol;
+	}
+
+	public int getSlotInventoryRow() {
+		return slotInventoryRow;
+	}
+
+	public void setSlotInventoryRow(int slotInventoryRow) {
+		this.slotInventoryRow = slotInventoryRow;
 	}
 
 }

@@ -106,6 +106,23 @@ public class KeyHandler implements KeyListener {
 		if (keyCode == KeyEvent.VK_C) {
 			this.gp.setGameState(GamePanel.PLAY_STATE);
 		}
+		// Inventory Cursor
+		if ((keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) && (this.gp.getUi().getSlotInventoryRow() > 0)) {
+			this.gp.getUi().setSlotInventoryRow(this.gp.getUi().getSlotInventoryRow() - 1);
+			new Sound(Sound.INVENTORY_CURSOR).play();
+		}
+		if ((keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) && (this.gp.getUi().getSlotInventoryRow() < 3)) {
+			this.gp.getUi().setSlotInventoryRow(this.gp.getUi().getSlotInventoryRow() + 1);
+			new Sound(Sound.INVENTORY_CURSOR).play();
+		}
+		if ((keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) && (this.gp.getUi().getSlotInventoryCol() > 0)) {
+			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() - 1);
+			new Sound(Sound.INVENTORY_CURSOR).play();
+		}
+		if ((keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) && (this.gp.getUi().getSlotInventoryCol() < 4)) {
+			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() + 1);
+			new Sound(Sound.INVENTORY_CURSOR).play();
+		}
 	}
 
 	@Override

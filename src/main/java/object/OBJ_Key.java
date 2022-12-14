@@ -9,6 +9,7 @@ public class OBJ_Key extends Entity {
 		super(gp);
 		this.setName("Key");
 		this.loadImages();
+		this.setDescription("[" + this.getName() + "]\nIt opens a door.");
 	}
 
 	@Override

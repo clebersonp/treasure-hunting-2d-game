@@ -40,11 +40,6 @@ public class GamePanel extends JPanel implements Runnable {
 	private TileManager tileManager = new TileManager(this);
 	private KeyHandler keyHandler = new KeyHandler(this);
 	private Sound music = new Sound(Sound.BLUE_BOY_ADVENTURE);
-	private Sound receiveDamage = new Sound(Sound.RECEIVE_DAMAGE);
-	private Sound powerUp = new Sound(Sound.POWER_UP);
-	private Sound hitMonster = new Sound(Sound.HIT_MONSTER);
-	private Sound swingWeapon = new Sound(Sound.SWING_WEAPON);
-	private Sound levelUp = new Sound(Sound.LEVEL_UP);
 
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
 	private AssetSetter assetSetter = new AssetSetter(this);
@@ -357,28 +352,8 @@ public class GamePanel extends JPanel implements Runnable {
 		return monsters;
 	}
 
-	public Sound getReceiveDamage() {
-		return receiveDamage;
-	}
-
-	public Sound getPowerUp() {
-		return powerUp;
-	}
-
 	public Sound getMusic() {
 		return music;
-	}
-
-	public Sound getHitMonster() {
-		return hitMonster;
-	}
-
-	public Sound getSwingWeapon() {
-		return swingWeapon;
-	}
-
-	public Sound getLevelUp() {
-		return levelUp;
 	}
 
 	public AssetSetter getAssetSetter() {

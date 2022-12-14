@@ -22,6 +22,7 @@ public class Sound {
 		this.soundURL[RECEIVE_DAMAGE] = getClass().getResource("/sounds/receivedamage.wav");
 		this.soundURL[SWING_WEAPON] = getClass().getResource("/sounds/swingweapon.wav");
 		this.soundURL[LEVEL_UP] = getClass().getResource("/sounds/levelup.wav");
+		this.soundURL[INVENTORY_CURSOR] = getClass().getResource("/sounds/cursor.wav");
 	}
 	private int index;
 
@@ -69,6 +70,11 @@ public class Sound {
 	 * Index {@code 8}
 	 */
 	public static int LEVEL_UP = 8;
+
+	/**
+	 * Index {@code 9}
+	 */
+	public static int INVENTORY_CURSOR = 9;
 
 	public Sound(int indexSound) {
 		if (indexSound < 0 || indexSound > this.soundURL.length - 1) {
