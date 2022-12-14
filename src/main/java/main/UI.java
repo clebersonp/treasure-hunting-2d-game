@@ -121,27 +121,26 @@ public class UI {
 		int dFrameY = frameY + frameHeight;
 		int dFrameWidth = frameWidth;
 		int dFrameHeight = this.gp.getTileSize() * 3;
-		this.drawSubWindow(g2, dFrameX, dFrameY, dFrameWidth, dFrameHeight);
-		
+
 		// DRAW DESCRIPTION TEXT
 		int textX = dFrameX + 20;
 		int textY = dFrameY + this.gp.getTileSize();
 		g2.setFont(g2.getFont().deriveFont(Font.PLAIN, 22));
-		
+
 		int itemIndex = this.getInventoryItemIndexOnSlot();
 		if (itemIndex < this.gp.getPlayer().getInventory().size()) {
+
+			this.drawSubWindow(g2, dFrameX, dFrameY, dFrameWidth, dFrameHeight);
+
 			final Entity item = this.gp.getPlayer().getInventory().get(itemIndex);
 			String description = item.getDescription();
 			for (String line : description.split("\n")) {
 				g2.drawString(line, textX, textY);
 				textY += 32;
 			}
-		} else {
-			g2.drawString("Empty.", textX, textY);
 		}
-
 	}
-	
+
 	public int getInventoryItemIndexOnSlot() {
 		return this.slotInventoryCol + (this.slotInventoryRow * 5);
 	}
