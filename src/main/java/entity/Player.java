@@ -301,7 +301,7 @@ public class Player extends Entity {
 
 	private void contactMonster(int collisionMonsterIndex) {
 		if (collisionMonsterIndex >= 0 && !this.isInvincible()
-				&& this.getGp().getMonsters()[collisionMonsterIndex].getLife() > 0) {
+				&& !this.getGp().getMonsters()[collisionMonsterIndex].isDying()) {
 			int damage = this.getGp().getMonsters()[collisionMonsterIndex].getAttack() - this.getDefense();
 			if (damage < 0) {
 				damage = 0;
@@ -432,7 +432,7 @@ public class Player extends Entity {
 	}
 
 	public void loadPlayerAttackImages() {
-		
+
 		if (EntityType.SWORD.equals(this.getCurrentWeapon().getType())) {
 			this.attackUp1 = this.setup("/player/boy_attack_up_1.png", this.getGp().getTileSize(),
 					this.getGp().getTileSize() * 2);
@@ -469,7 +469,7 @@ public class Player extends Entity {
 			this.attackRight2 = this.setup("/player/boy_axe_right_2.png", this.getGp().getTileSize() * 2,
 					this.getGp().getTileSize());
 		}
-		
+
 	}
 
 	public int getScreenX() {

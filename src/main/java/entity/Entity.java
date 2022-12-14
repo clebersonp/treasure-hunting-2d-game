@@ -258,7 +258,6 @@ public abstract class Entity {
 		} else if (this.dyingCounter > counter * 7 && dyingCounter <= counter * 8) {
 			this.changeAlpha(g2, 1F);
 		} else if (this.dyingCounter > counter * 8) {
-			this.dying = Boolean.FALSE;
 			this.alive = Boolean.FALSE;
 		}
 	}
