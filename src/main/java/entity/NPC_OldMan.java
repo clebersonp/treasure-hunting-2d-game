@@ -8,7 +8,7 @@ public class NPC_OldMan extends Entity {
 
 	public NPC_OldMan(GamePanel gp) {
 		super(gp);
-
+		this.setType(EntityType.NPC);
 		super.solidArea.x = 8;
 		super.solidArea.y = 16;
 		super.solidAreaDefaultX = super.solidArea.x;

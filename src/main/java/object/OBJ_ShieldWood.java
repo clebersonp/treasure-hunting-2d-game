@@ -7,6 +7,7 @@ public class OBJ_ShieldWood extends Entity {
 
 	public OBJ_ShieldWood(GamePanel gp) {
 		super(gp);
+		this.setType(EntityType.SHIELD);
 		this.setName("Shield Wood");
 		this.setDefenseValue(1);
 		this.loadImages();

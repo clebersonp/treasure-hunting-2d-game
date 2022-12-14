@@ -16,6 +16,7 @@ import main.GamePanel;
 import main.KeyHandler;
 import main.Sound;
 import object.OBJ_Key;
+import object.OBJ_ShieldBlue;
 import object.OBJ_ShieldWood;
 import object.OBJ_SwordNormal;
 
@@ -34,6 +35,8 @@ public class Player extends Entity {
 
 		this.keyHandler = keyHandler;
 
+		this.setType(EntityType.PLAYER);
+
 		// posicao do player na screen centralizado
 		this.screenX = super.getGp().getScreenWidth() / 2 - (super.getGp().getTileSize() / 2); // 360
 		this.screenY = super.getGp().getScreenHeight() / 2 - (super.getGp().getTileSize() / 2); // 264
@@ -45,9 +48,6 @@ public class Player extends Entity {
 		this.solidAreaDefaultY = super.solidArea.y;
 		super.solidArea.width = 32;
 		super.solidArea.height = 31;
-
-		this.attackArea.width = 36;
-		this.attackArea.height = 36;
 
 		this.setDefaultValues();
 		this.loadImages();
@@ -273,6 +273,32 @@ public class Player extends Entity {
 		}
 	}
 
+	public void selectInventorySlotItem() {
+		int currentItemIndexOnSlot = this.getGp().getUi().getInventoryItemIndexOnSlot();
+
+		if (currentItemIndexOnSlot < this.inventory.size()) {
+			Entity selectedItem = this.inventory.get(currentItemIndexOnSlot);
+
+			if (EntityType.SWORD.equals(selectedItem.getType()) || EntityType.AXE.equals(selectedItem.getType())) {
+				this.setCurrentWeapon(selectedItem);
+				this.setAttack(this.getAttack());
+				this.loadPlayerAttackImages();
+			}
+
+			if (EntityType.SHIELD.equals(selectedItem.getType())) {
+				this.setCurrentShield(selectedItem);
+				this.setDefense(this.getDefense());
+			}
+
+			if (EntityType.CONSUMABLE.equals(selectedItem.getType())) {
+				boolean itemUsed = selectedItem.use(this);
+				if (itemUsed) {
+					this.inventory.remove(selectedItem);
+				}
+			}
+		}
+	}
+
 	private void contactMonster(int collisionMonsterIndex) {
 		if (collisionMonsterIndex >= 0 && !this.isInvincible()
 				&& this.getGp().getMonsters()[collisionMonsterIndex].getLife() > 0) {
@@ -298,7 +324,21 @@ public class Player extends Entity {
 
 	public void pickupObject(int objectIndex) {
 		if (objectIndex >= 0) {
+			String text;
+			if (this.inventory.size() < this.maxInventorySize) {
 
+				Entity object = this.getGp().getObjects()[objectIndex];
+				this.inventory.add(object);
+				new Sound(Sound.COIN).play();
+				text = "Got a " + object.getName() + "!";
+
+				// Remove the object from the map
+				this.getGp().getObjects()[objectIndex] = null;
+
+			} else {
+				text = "You cannot carry any more!";
+			}
+			this.getGp().getUi().addMessage(text);
 		}
 	}
 
@@ -392,22 +432,44 @@ public class Player extends Entity {
 	}
 
 	public void loadPlayerAttackImages() {
-		this.attackUp1 = this.setup("/player/boy_attack_up_1.png", this.getGp().getTileSize(),
-				this.getGp().getTileSize() * 2);
-		this.attackUp2 = this.setup("/player/boy_attack_up_2.png", this.getGp().getTileSize(),
-				this.getGp().getTileSize() * 2);
-		this.attackDown1 = this.setup("/player/boy_attack_down_1.png", this.getGp().getTileSize(),
-				this.getGp().getTileSize() * 2);
-		this.attackDown2 = this.setup("/player/boy_attack_down_2.png", this.getGp().getTileSize(),
-				this.getGp().getTileSize() * 2);
-		this.attackLeft1 = this.setup("/player/boy_attack_left_1.png", this.getGp().getTileSize() * 2,
-				this.getGp().getTileSize());
-		this.attackLeft2 = this.setup("/player/boy_attack_left_2.png", this.getGp().getTileSize() * 2,
-				this.getGp().getTileSize());
-		this.attackRight1 = this.setup("/player/boy_attack_right_1.png", this.getGp().getTileSize() * 2,
-				this.getGp().getTileSize());
-		this.attackRight2 = this.setup("/player/boy_attack_right_2.png", this.getGp().getTileSize() * 2,
-				this.getGp().getTileSize());
+		
+		if (EntityType.SWORD.equals(this.getCurrentWeapon().getType())) {
+			this.attackUp1 = this.setup("/player/boy_attack_up_1.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackUp2 = this.setup("/player/boy_attack_up_2.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackDown1 = this.setup("/player/boy_attack_down_1.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackDown2 = this.setup("/player/boy_attack_down_2.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackLeft1 = this.setup("/player/boy_attack_left_1.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+			this.attackLeft2 = this.setup("/player/boy_attack_left_2.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+			this.attackRight1 = this.setup("/player/boy_attack_right_1.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+			this.attackRight2 = this.setup("/player/boy_attack_right_2.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+		}
+		if (EntityType.AXE.equals(this.getCurrentWeapon().getType())) {
+			this.attackUp1 = this.setup("/player/boy_axe_up_1.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackUp2 = this.setup("/player/boy_axe_up_2.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackDown1 = this.setup("/player/boy_axe_down_1.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackDown2 = this.setup("/player/boy_axe_down_2.png", this.getGp().getTileSize(),
+					this.getGp().getTileSize() * 2);
+			this.attackLeft1 = this.setup("/player/boy_axe_left_1.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+			this.attackLeft2 = this.setup("/player/boy_axe_left_2.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+			this.attackRight1 = this.setup("/player/boy_axe_right_1.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+			this.attackRight2 = this.setup("/player/boy_axe_right_2.png", this.getGp().getTileSize() * 2,
+					this.getGp().getTileSize());
+		}
+		
 	}
 
 	public int getScreenX() {
@@ -428,6 +490,7 @@ public class Player extends Entity {
 
 	@Override
 	public int getAttack() {
+		this.attackArea = this.getCurrentWeapon().getAttackArea();
 		return this.getStrength() * this.getCurrentWeapon().getAttackValue();
 	}
 

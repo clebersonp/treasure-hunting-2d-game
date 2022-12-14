@@ -97,6 +97,16 @@ public class UI {
 
 		// DRAW PLAYER'S INVENTORY ITEMS
 		for (int i = 0; i < this.gp.getPlayer().getInventory().size(); i++) {
+			
+			// EQUIP CURSOR
+			if (this.gp.getPlayer().getInventory().get(i) == this.gp.getPlayer().getCurrentWeapon()
+					|| this.gp.getPlayer().getInventory().get(i) == this.gp.getPlayer().getCurrentShield()) {
+				
+				g2.setColor(new Color(240, 190, 90));
+				g2.fillRoundRect(slotX, slotY, this.gp.getTileSize(), this.gp.getTileSize(), 10, 10);
+				
+			}
+			
 			g2.drawImage(this.gp.getPlayer().getInventory().get(i).getDown1(), slotX, slotY, null);
 
 			slotX += slotSize;

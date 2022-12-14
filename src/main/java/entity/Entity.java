@@ -266,6 +266,10 @@ public abstract class Entity {
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
+	
+	public boolean use(Entity entity) {
+		return false;
+	}
 
 	public int getWorldX() {
 		return worldX;
@@ -603,12 +607,16 @@ public abstract class Entity {
 		this.description = description;
 	}
 
+	public Rectangle getAttackArea() {
+		return attackArea;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT, ANY;
 	}
 
 	public static enum EntityType {
-		PLAYER, NPC, MONSTER;
+		PLAYER, NPC, MONSTER, SWORD, AXE, SHIELD, CONSUMABLE;
 	}
 
 }

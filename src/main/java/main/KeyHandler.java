@@ -123,6 +123,9 @@ public class KeyHandler implements KeyListener {
 			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() + 1);
 			new Sound(Sound.INVENTORY_CURSOR).play();
 		}
+		if (keyCode == KeyEvent.VK_ENTER) {
+			this.gp.getPlayer().selectInventorySlotItem();
+		}
 	}
 
 	@Override

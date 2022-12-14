@@ -2,6 +2,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
@@ -248,10 +249,20 @@ public class GamePanel extends JPanel implements Runnable {
 		if (this.keyHandler.isCheckDrawTime()) {
 			long drawEnd = System.nanoTime();
 			long passed = drawEnd - drawStart;
-			g2.setColor(Color.WHITE);
-			String drawPassedMsg = String.format("Draw TIme: %s", passed);
-			g2.drawString(drawPassedMsg, 10, 400);
-			System.out.println(drawPassedMsg);
+			g2.setFont(g2.getFont().deriveFont(Font.BOLD, 12));
+			g2.setColor(new Color(240, 250, 0));
+			int yPostion = 480;
+			String worldX = "WorldX > " + this.getPlayer().getWorldX();
+			g2.drawString(worldX, 10, yPostion);
+			String worldY = "WorldY > " + this.getPlayer().getWorldY();
+			g2.drawString(worldY, 10, yPostion += 20);
+			String col = "Col > " + this.getPlayer().getWorldX() / this.getTileSize();
+			g2.drawString(col, 10, yPostion += 20);
+			String row = "Row > " + this.getPlayer().getWorldY() / this.getTileSize();
+			g2.drawString(row, 10, yPostion += 20);
+			String drawPassedMsg = String.format("Draw TIme > %s", passed);
+			g2.drawString(drawPassedMsg, 10, yPostion += 20);
+//			System.out.println(drawPassedMsg);
 		}
 
 		g2.dispose();
