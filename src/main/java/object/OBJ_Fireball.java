@@ -1,5 +1,6 @@
 package object;
 
+import entity.Entity;
 import entity.Projectile;
 import main.GamePanel;
 
@@ -8,7 +9,7 @@ public class OBJ_Fireball extends Projectile {
 	public OBJ_Fireball(GamePanel gp) {
 		super(gp);
 		this.setName("Fireball");
-		this.setSpeed(10);
+		this.setSpeed(5);
 		this.setMaxLife(80);
 		this.setLife(this.getMaxLife());
 		this.setAttack(1);

@@ -68,6 +68,8 @@ public abstract class Entity {
 	private int life;
 	private int maxMana;
 	private int mana;
+	private int ammo;
+	private int maxAmmo;
 	private int level;
 	private int strength;
 	private int dexterity;
@@ -120,16 +122,7 @@ public abstract class Entity {
 		boolean entityContactedPlayer = this.gp.getCollisionChecker().checkPlayer(this);
 
 		if (EntityType.MONSTER.equals(this.type) && entityContactedPlayer) {
-			if (!this.gp.getPlayer().isInvincible()) {
-				// we can give damage
-				this.gp.playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
-				int damage = this.getAttack() - this.gp.getPlayer().getDefense();
-				if (damage < 0) {
-					damage = 0;
-				}
-				this.gp.getPlayer().decreaseLife(damage);
-				this.gp.getPlayer().setInvincible(Boolean.TRUE);
-			}
+			this.damagePlayer(this.attack);
 		}
 
 		// IF COLLISION IS FALSE< PLAYER CAN MOVE
@@ -159,6 +152,24 @@ public abstract class Entity {
 				this.setInvincible(Boolean.FALSE);
 				this.resetInvincibleCounter();
 			}
+		}
+
+		// COUNTER FOR SHOT A NEW PROJECTILE
+		if (this.getShotAvailableCounter() < 40) {
+			this.setShotAvailableCounter(this.getShotAvailableCounter() + 1);
+		}
+	}
+
+	public void damagePlayer(int attack) {
+		if (!this.gp.getPlayer().isInvincible()) {
+			// we can give damage
+			this.gp.playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
+			int damage = this.getAttack() - this.gp.getPlayer().getDefense();
+			if (damage < 0) {
+				damage = 0;
+			}
+			this.gp.getPlayer().decreaseLife(damage);
+			this.gp.getPlayer().setInvincible(Boolean.TRUE);
 		}
 	}
 
@@ -654,6 +665,22 @@ public abstract class Entity {
 
 	public void setShotAvailableCounter(int shotAvailableCounter) {
 		this.shotAvailableCounter = shotAvailableCounter;
+	}
+
+	public int getAmmo() {
+		return ammo;
+	}
+
+	public void setAmmo(int ammo) {
+		this.ammo = ammo;
+	}
+
+	public int getMaxAmmo() {
+		return maxAmmo;
+	}
+
+	public void setMaxAmmo(int maxAmmo) {
+		this.maxAmmo = maxAmmo;
 	}
 
 	public static enum Direction {

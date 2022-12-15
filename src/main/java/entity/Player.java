@@ -73,6 +73,10 @@ public class Player extends Entity {
 		int defaultLife = 6;
 		super.setMaxLife(defaultLife);
 		super.setLife(defaultLife);
+		super.setMaxMana(4);
+		super.setMana(super.getMaxMana());
+		super.setMaxAmmo(10);
+		super.setAmmo(super.getMaxAmmo());
 		this.setStrength(1); // The more strength he has, the more damage he gives.
 		this.setDexterity(1); // The more dexterity he has, the less damage he receives.
 		this.setExp(0);
@@ -83,6 +87,7 @@ public class Player extends Entity {
 		this.setAttack(this.getAttack()); // The total attack value is decided by strength and weapon
 		this.setDefense(this.getDefense()); // The total defense value is decided by dexterity and shield
 		this.setProjectile(new OBJ_Fireball(getGp()));
+//		this.setProjectile(new OBJ_Rock(getGp()));
 
 	}
 
@@ -175,7 +180,7 @@ public class Player extends Entity {
 
 		// PROJECTILE
 		if (this.getGp().getKeyHandler().isShotKeyPressed() && !this.getProjectile().isAlive()
-				&& this.getShotAvailableCounter() == 40) {
+				&& this.getShotAvailableCounter() == 40 && this.getProjectile().haveResource(this)) {
 			// SET DEFAULT COORDINATES, DIRECTION AND USER
 			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
 
@@ -183,6 +188,9 @@ public class Player extends Entity {
 			this.getGp().getProjectiles().add(this.getProjectile());
 			new Sound(Sound.BURNING).play();
 			this.setShotAvailableCounter(0);
+
+			// DECREASE THE PLAYER MANA
+			this.getProjectile().subtractResource(this);
 		}
 
 		// This needs to be outside of key if statement!
@@ -283,6 +291,7 @@ public class Player extends Entity {
 			this.setDexterity(this.getDexterity() + 1);
 			this.setAttack(this.getAttack());
 			this.setDefense(this.getDefense());
+			this.setMaxMana(this.getMaxMana() + 1);
 
 			this.getGp().playSoundEffects(new Sound(Sound.LEVEL_UP));
 			this.getGp().setGameState(GamePanel.DIALOGUE_STATE);

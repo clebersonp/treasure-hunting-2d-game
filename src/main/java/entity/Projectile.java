@@ -26,7 +26,7 @@ public abstract class Projectile extends Entity {
 
 	@Override
 	public void update() {
-		
+
 		// check the collision do projectile em um monstro
 		if (EntityType.PLAYER.equals(this.user.getType())) {
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
@@ -34,8 +34,15 @@ public abstract class Projectile extends Entity {
 				this.getGp().getPlayer().damageMonster(monsterIndex, this.getAttack());
 				this.setAlive(Boolean.FALSE); // destroi o projectile
 			}
+		} else if (EntityType.MONSTER.equals(this.user.getType())) {
+			boolean contactPlayer = this.getGp().getCollisionChecker().checkPlayer(this);
+			if (!this.getGp().getPlayer().isInvincible() && contactPlayer) {
+				// GIVE DAMAGE FOR THE PLAYER
+				this.damagePlayer(this.getAttack());
+				this.setAlive(Boolean.FALSE); // destroi o projectile apos o dano no player
+			}
 		}
-		
+
 		// controla a direcao e velocidade o projetil
 		switch (direction) {
 		case UP -> this.worldY -= this.getSpeed();
@@ -63,4 +70,12 @@ public abstract class Projectile extends Entity {
 		}
 	}
 
+	public boolean haveResource(Entity user) {
+		return user.getMana() >= this.getUseCost();
+	}
+
+	public void subtractResource(Entity user) {
+		int newMana = user.getMana() - this.getUseCost();
+		user.setMana(newMana);
+	}
 }

@@ -12,6 +12,7 @@ import java.util.List;
 
 import entity.Entity;
 import object.OBJ_Heart;
+import object.OBJ_Mana;
 
 public class UI {
 
@@ -19,7 +20,7 @@ public class UI {
 	private GamePanel gp;
 	private String currentDialogue = "";
 	private int commandNum = 0;
-	private BufferedImage heart_full, heart_half, heart_blank;
+	private BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank;
 
 	List<String> messages = new ArrayList<>();
 	List<Integer> messagesCounter = new ArrayList<>();
@@ -46,6 +47,11 @@ public class UI {
 		this.heart_full = obj_Heart.getImage();
 		this.heart_half = obj_Heart.getImage2();
 		this.heart_blank = obj_Heart.getImage3();
+
+		// CREATE MANA OBJECT
+		Entity obj_Mana = new OBJ_Mana(this.gp);
+		this.crystal_full = obj_Mana.getImage();
+		this.crystal_blank = obj_Mana.getImage2();
 
 	}
 
@@ -97,16 +103,16 @@ public class UI {
 
 		// DRAW PLAYER'S INVENTORY ITEMS
 		for (int i = 0; i < this.gp.getPlayer().getInventory().size(); i++) {
-			
+
 			// EQUIP CURSOR
 			if (this.gp.getPlayer().getInventory().get(i) == this.gp.getPlayer().getCurrentWeapon()
 					|| this.gp.getPlayer().getInventory().get(i) == this.gp.getPlayer().getCurrentShield()) {
-				
+
 				g2.setColor(new Color(240, 190, 90));
 				g2.fillRoundRect(slotX, slotY, this.gp.getTileSize(), this.gp.getTileSize(), 10, 10);
-				
+
 			}
-			
+
 			g2.drawImage(this.gp.getPlayer().getInventory().get(i).getDown1(), slotX, slotY, null);
 
 			slotX += slotSize;
@@ -215,6 +221,25 @@ public class UI {
 			x += this.gp.getTileSize();
 		}
 
+		// DRAW MAX MANA
+		x = this.gp.getTileSize() / 2;
+		y = this.gp.getTileSize() + 25;
+		i = 0;
+		while (i < this.gp.getPlayer().getMaxMana()) {
+			g2.drawImage(this.crystal_blank, x, y, null);
+			i++;
+			x += 33;
+		}
+
+		// DRAW MANA
+		x = this.gp.getTileSize() / 2;
+		y = this.gp.getTileSize() + 25;
+		i = 0;
+		while (i < this.gp.getPlayer().getMana()) {
+			g2.drawImage(crystal_full, x, y, null);
+			i++;
+			x += 33;
+		}
 	}
 
 	private void drawTitleScreen(Graphics2D g2) {
@@ -325,7 +350,7 @@ public class UI {
 		final int frameX = this.gp.getTileSize() / 2;
 		final int frameY = this.gp.getTileSize() / 2;
 		final int frameWidth = this.gp.getTileSize() * 5;
-		final int frameHeight = this.gp.getTileSize() * 10;
+		final int frameHeight = (this.gp.getTileSize() * 10) + 10;
 
 		this.drawSubWindow(g2, frameX, frameY, frameWidth, frameHeight);
 
@@ -342,6 +367,8 @@ public class UI {
 		textY += lineHeight;
 		g2.drawString("Life", textX, textY);
 		textY += lineHeight;
+		g2.drawString("Mana", textX, textY);
+		textY += lineHeight;
 		g2.drawString("Strength", textX, textY);
 		textY += lineHeight;
 		g2.drawString("Dexterity", textX, textY);
@@ -357,7 +384,7 @@ public class UI {
 		g2.drawString("Coin", textX, textY);
 		textY += this.gp.getPlayer().getCurrentWeapon().getDown1().getHeight() - 10;
 		g2.drawString("Weapon", textX, textY);
-		textY += this.gp.getPlayer().getCurrentShield().getDown1().getHeight() + 5;
+		textY += this.gp.getPlayer().getCurrentShield().getDown1().getHeight() - 10;
 		g2.drawString("Shield", textX, textY);
 
 		// VALUES
@@ -372,6 +399,11 @@ public class UI {
 		textY += lineHeight;
 
 		value = String.valueOf(this.gp.getPlayer().getLife() + "/" + this.gp.getPlayer().getMaxLife());
+		textX = this.getXTextPositionAlignToRight(g2, value, tailX);
+		g2.drawString(value, textX, textY);
+		textY += lineHeight;
+
+		value = String.valueOf(this.gp.getPlayer().getMana() + "/" + this.gp.getPlayer().getMaxMana());
 		textX = this.getXTextPositionAlignToRight(g2, value, tailX);
 		g2.drawString(value, textX, textY);
 		textY += lineHeight;
@@ -414,7 +446,7 @@ public class UI {
 		textX = tailX - this.gp.getPlayer().getCurrentWeapon().getDown1().getWidth() + 10;
 		g2.drawImage(this.gp.getPlayer().getCurrentWeapon().getDown1(), textX, textY, this.gp.getTileSize() - 10,
 				this.gp.getTileSize() - 10, null);
-		textY += this.gp.getPlayer().getCurrentWeapon().getDown1().getHeight() + 5;
+		textY += this.gp.getPlayer().getCurrentWeapon().getDown1().getHeight() - 10;
 
 		textX = tailX - this.gp.getPlayer().getCurrentShield().getDown1().getWidth() + 10;
 		g2.drawImage(this.gp.getPlayer().getCurrentShield().getDown1(), textX, textY, this.gp.getTileSize() - 10,

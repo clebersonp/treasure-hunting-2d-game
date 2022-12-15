@@ -4,6 +4,8 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
+import main.Sound;
+import object.OBJ_Rock;
 
 public class Slime extends Entity {
 
@@ -25,6 +27,8 @@ public class Slime extends Entity {
 		this.solidArea.height = 30;
 		this.solidAreaDefaultX = this.solidArea.x;
 		this.solidAreaDefaultY = this.solidArea.y;
+
+		this.setProjectile(new OBJ_Rock(gp));
 
 		this.loadImages();
 	}
@@ -72,6 +76,13 @@ public class Slime extends Entity {
 			}
 
 			this.setActionLockCounter(0);
+		}
+		
+		int i = new Random().nextInt(100) + 1;
+		if (i > 99 && !this.getProjectile().isAlive() && this.getShotAvailableCounter() == 40) {
+			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
+			this.getGp().getProjectiles().add(this.getProjectile());
+			this.setShotAvailableCounter(0);
 		}
 	}
 

@@ -140,8 +140,9 @@ public class EventHandler {
 			this.gp.getPlayer().setAttackCancel(Boolean.TRUE);
 			if (this.gp.getPlayer().getLife() < this.gp.getPlayer().getMaxLife()) {
 				this.gp.playSoundEffects(new Sound(Sound.POWER_UP));
-				this.gp.getUi().setCurrentDialogue("You drink the water. \nYour life has been recovered.");
+				this.gp.getUi().setCurrentDialogue("You drink the water. \nYour life and mana have been \nrecovered.");
 				this.gp.getPlayer().resetUpLife(this.gp.getPlayer().getMaxLife());
+				this.gp.getPlayer().setMana(this.gp.getPlayer().getMaxMana());
 
 				// RESET Slimes to Teste
 				final boolean allMonstersNulls = Arrays.asList(this.gp.getMonsters()).stream()
