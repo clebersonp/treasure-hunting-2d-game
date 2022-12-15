@@ -15,8 +15,8 @@ import java.util.Random;
 import main.GamePanel;
 import main.KeyHandler;
 import main.Sound;
+import object.OBJ_Fireball;
 import object.OBJ_Key;
-import object.OBJ_ShieldBlue;
 import object.OBJ_ShieldWood;
 import object.OBJ_SwordNormal;
 
@@ -82,6 +82,7 @@ public class Player extends Entity {
 		this.setCurrentShield(new OBJ_ShieldWood(getGp()));
 		this.setAttack(this.getAttack()); // The total attack value is decided by strength and weapon
 		this.setDefense(this.getDefense()); // The total defense value is decided by dexterity and shield
+		this.setProjectile(new OBJ_Fireball(getGp()));
 
 	}
 
@@ -172,6 +173,18 @@ public class Player extends Entity {
 
 		}
 
+		// PROJECTILE
+		if (this.getGp().getKeyHandler().isShotKeyPressed() && !this.getProjectile().isAlive()
+				&& this.getShotAvailableCounter() == 40) {
+			// SET DEFAULT COORDINATES, DIRECTION AND USER
+			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
+
+			// ADD IT TO THE LIST
+			this.getGp().getProjectiles().add(this.getProjectile());
+			new Sound(Sound.BURNING).play();
+			this.setShotAvailableCounter(0);
+		}
+
 		// This needs to be outside of key if statement!
 		if (this.isInvincible()) {
 			this.incrementInvincibleCounter();
@@ -179,6 +192,11 @@ public class Player extends Entity {
 				this.setInvincible(Boolean.FALSE);
 				this.resetInvincibleCounter();
 			}
+		}
+
+		// COUNTER FOR SHOT A NEW PROJECTILE
+		if (this.getShotAvailableCounter() < 40) {
+			this.setShotAvailableCounter(this.getShotAvailableCounter() + 1);
 		}
 	}
 
@@ -210,7 +228,7 @@ public class Player extends Entity {
 
 			// check monster collision with the updated worldX/Y and solidArea
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
-			this.damageMonster(monsterIndex);
+			this.damageMonster(monsterIndex, this.getAttack());
 
 			// Reset worldX/Y and solidArea of player
 			this.worldX = currentWorldX;
@@ -226,14 +244,14 @@ public class Player extends Entity {
 		}
 	}
 
-	private void damageMonster(int index) {
+	public void damageMonster(int index, int attack) {
 		if (index >= 0) {
 			final Entity[] monsters = this.getGp().getMonsters();
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
 				this.getGp().playSoundEffects(new Sound(Sound.HIT_MONSTER));
 
-				int damage = this.getAttack() - monster.getDefense();
+				int damage = attack - monster.getDefense();
 				if (damage < 0) {
 					damage = 0;
 				}

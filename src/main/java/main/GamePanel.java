@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.swing.JPanel;
 
@@ -54,6 +55,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Entity[] npcs = new NPC_OldMan[10];
 	private Entity[] monsters = new Entity[20];
 	private List<Entity> entities = new ArrayList<>();
+	private List<Entity> projectiles = new ArrayList<>();
 
 	// GAME STATE
 	private int gameState;
@@ -190,6 +192,17 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 
+			// PROJECTILES
+			for (int i = 0; i < this.projectiles.size(); i++) {
+				if (Objects.nonNull(this.projectiles.get(i))) {
+					if (this.projectiles.get(i).isAlive()) {
+						this.projectiles.get(i).update();
+					} else {
+						this.projectiles.remove(i);
+					}
+				}
+			}
+
 		} else if (this.gameState == PAUSE_STATE) {
 			// do nothing
 		} else if (this.gameState == DIALOGUE_STATE) {
@@ -229,6 +242,11 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity monster : this.monsters) {
 				if (monster != null) {
 					this.entities.add(monster);
+				}
+			}
+			for (Entity projectile : this.projectiles) {
+				if (Objects.nonNull(projectile)) {
+					this.entities.add(projectile);
 				}
 			}
 
@@ -373,6 +391,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void setAssetSetter(AssetSetter assetSetter) {
 		this.assetSetter = assetSetter;
+	}
+
+	public List<Entity> getProjectiles() {
+		return projectiles;
 	}
 
 }

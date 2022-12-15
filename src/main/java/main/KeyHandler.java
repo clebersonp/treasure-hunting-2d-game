@@ -5,7 +5,7 @@ import java.awt.event.KeyListener;
 
 public class KeyHandler implements KeyListener {
 
-	private boolean upPressed, downPressed, leftPressed, rightPressed;
+	private boolean upPressed, downPressed, leftPressed, rightPressed, shotKeyPressed;
 
 	private boolean enterPressed;
 
@@ -87,6 +87,7 @@ public class KeyHandler implements KeyListener {
 		case KeyEvent.VK_P -> this.gp.setGameState(GamePanel.PAUSE_STATE);
 		case KeyEvent.VK_C -> this.gp.setGameState(GamePanel.CHARACTER_STATE);
 		case KeyEvent.VK_ENTER -> this.enterPressed = true;
+		case KeyEvent.VK_F -> this.shotKeyPressed = true;
 		}
 	}
 
@@ -136,6 +137,7 @@ public class KeyHandler implements KeyListener {
 		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> this.downPressed = false;
 		case KeyEvent.VK_A, KeyEvent.VK_LEFT -> this.leftPressed = false;
 		case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> this.rightPressed = false;
+		case KeyEvent.VK_F -> this.shotKeyPressed = false;
 		}
 	}
 
@@ -169,6 +171,14 @@ public class KeyHandler implements KeyListener {
 
 	public void setEnterPressed(boolean enterPressed) {
 		this.enterPressed = enterPressed;
+	}
+
+	public boolean isShotKeyPressed() {
+		return shotKeyPressed;
+	}
+
+	public void setShotKeyPressed(boolean shotKeyPressed) {
+		this.shotKeyPressed = shotKeyPressed;
 	}
 
 }

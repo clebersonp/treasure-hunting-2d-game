@@ -30,7 +30,6 @@ public abstract class Entity {
 	// Entity direction, Default Down p objetos statics carregar como a image down
 	protected Direction direction = Direction.DOWN;
 
-	protected int spriteCounter = 0;
 	protected int sprintNum = 1;
 
 	protected Rectangle solidArea = new Rectangle(new Point(0, 0), new Dimension(48, 48));
@@ -44,9 +43,13 @@ public abstract class Entity {
 	protected boolean collision;
 
 	private boolean invincible;
-	private int invincibleCounter = 0;
 
+	// COUNTER
+	private int invincibleCounter = 0;
 	private int actionLockCounter = 0;
+	private int dyingCounter = 0;
+	protected int spriteCounter = 0;
+	private int shotAvailableCounter = 0;
 
 	private boolean attacking = false;
 
@@ -54,7 +57,6 @@ public abstract class Entity {
 
 	private boolean alive = true;
 	private boolean dying = false;
-	private int dyingCounter = 0;
 	private boolean hpBarOn = false;
 	private int hpBarCounter = 0;
 
@@ -64,6 +66,8 @@ public abstract class Entity {
 	private int speed;
 	private int maxLife;
 	private int life;
+	private int maxMana;
+	private int mana;
 	private int level;
 	private int strength;
 	private int dexterity;
@@ -74,11 +78,13 @@ public abstract class Entity {
 	private int coin;
 	private Entity currentWeapon;
 	private Entity currentShield;
+	private Projectile projectile;
 
 	// ITEM ATTRIBUTES
 	private int attackValue;
 	private int defenseValue;
 	private String description = "";
+	private int useCost;
 
 	public Entity(GamePanel gp) {
 		super();
@@ -265,7 +271,7 @@ public abstract class Entity {
 	public void changeAlpha(Graphics2D g2, float alphaValue) {
 		g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alphaValue));
 	}
-	
+
 	public boolean use(Entity entity) {
 		return false;
 	}
@@ -608,6 +614,46 @@ public abstract class Entity {
 
 	public Rectangle getAttackArea() {
 		return attackArea;
+	}
+
+	public int getMaxMana() {
+		return maxMana;
+	}
+
+	public void setMaxMana(int maxMana) {
+		this.maxMana = maxMana;
+	}
+
+	public int getMana() {
+		return mana;
+	}
+
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
+
+	public Projectile getProjectile() {
+		return projectile;
+	}
+
+	public void setProjectile(Projectile projectile) {
+		this.projectile = projectile;
+	}
+
+	public int getUseCost() {
+		return useCost;
+	}
+
+	public void setUseCost(int useCost) {
+		this.useCost = useCost;
+	}
+
+	public int getShotAvailableCounter() {
+		return shotAvailableCounter;
+	}
+
+	public void setShotAvailableCounter(int shotAvailableCounter) {
+		this.shotAvailableCounter = shotAvailableCounter;
 	}
 
 	public static enum Direction {
