@@ -351,21 +351,34 @@ public class Player extends Entity {
 
 	public void pickupObject(int objectIndex) {
 		if (objectIndex >= 0) {
-			String text;
-			if (this.inventory.size() < this.maxInventorySize) {
 
-				Entity object = this.getGp().getObjects()[objectIndex];
-				this.inventory.add(object);
-				new Sound(Sound.COIN).play();
-				text = "Got a " + object.getName() + "!";
+			// PICKUP ONLY ITEMS
+			if (EntityType.PICKUP_ONLY.equals(this.getGp().getObjects()[objectIndex].getType())) {
 
-				// Remove the object from the map
-				this.getGp().getObjects()[objectIndex] = null;
+				boolean isItemUsed = this.getGp().getObjects()[objectIndex].use(this);
+				if (isItemUsed) {
+					this.getGp().getObjects()[objectIndex] = null; // se for usado o item, entao sera removido do mapa
+				}
 
 			} else {
-				text = "You cannot carry any more!";
+
+				// INVENTORY ITEMS
+				String text;
+				if (this.inventory.size() < this.maxInventorySize) {
+
+					Entity object = this.getGp().getObjects()[objectIndex];
+					this.inventory.add(object);
+					new Sound(Sound.COIN).play();
+					text = "Got a " + object.getName() + "!";
+
+					// Remove the object from the map
+					this.getGp().getObjects()[objectIndex] = null;
+
+				} else {
+					text = "You cannot carry any more!";
+				}
+				this.getGp().getUi().addMessage(text);
 			}
-			this.getGp().getUi().addMessage(text);
 		}
 	}
 

@@ -4,7 +4,9 @@ import java.util.Random;
 
 import entity.Entity;
 import main.GamePanel;
-import main.Sound;
+import object.OBJ_CoinBronze;
+import object.OBJ_Heart;
+import object.OBJ_Mana;
 import object.OBJ_Rock;
 
 public class Slime extends Entity {
@@ -77,7 +79,7 @@ public class Slime extends Entity {
 
 			this.setActionLockCounter(0);
 		}
-		
+
 		int i = new Random().nextInt(100) + 1;
 		if (i > 99 && !this.getProjectile().isAlive() && this.getShotAvailableCounter() == 40) {
 			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
@@ -91,6 +93,20 @@ public class Slime extends Entity {
 		this.setActionLockCounter(0);
 		this.direction = this.getGp().getPlayer().getDirection(); // o monster ira p o mesmo sentido do player, fugindo
 																	// dele
+	}
+
+	@Override
+	public void checkDrop() {
+		int i = new Random().nextInt(1_000) + 1;
+
+		// SET THE MONSTER DROP ITEM
+		if (i >= 450 && i < 720) {
+			this.dropItem(new OBJ_CoinBronze(this.getGp()));
+		} else if (i >= 800 && i < 850) {
+			this.dropItem(new OBJ_Mana(this.getGp()));
+		} else if (i >= 999) {
+			this.dropItem(new OBJ_Heart(this.getGp()));
+		}
 	}
 
 }

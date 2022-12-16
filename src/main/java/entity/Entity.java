@@ -8,6 +8,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -40,7 +41,7 @@ public abstract class Entity {
 	private int dialogueIndex = 0;
 
 	protected BufferedImage image, image2, image3;
-	protected boolean collision;
+	private boolean collision;
 
 	private boolean invincible;
 
@@ -87,6 +88,7 @@ public abstract class Entity {
 	private int defenseValue;
 	private String description = "";
 	private int useCost;
+	private int value;
 
 	public Entity(GamePanel gp) {
 		super();
@@ -285,6 +287,20 @@ public abstract class Entity {
 
 	public boolean use(Entity entity) {
 		return false;
+	}
+	
+	public void checkDrop() {
+		
+	}
+	public void dropItem(Entity droppedItem) {
+		for (int i = 0; i < this.gp.getObjects().length; i++) {
+			if (Objects.isNull(this.gp.getObjects()[i])) {
+				this.gp.getObjects()[i] = droppedItem;
+				this.gp.getObjects()[i].worldX = this.worldX; // the dead monster's worldX
+				this.gp.getObjects()[i].worldY = this.worldY; // the dead monster's worldY
+				break;
+			}
+		}
 	}
 
 	public int getWorldX() {
@@ -683,12 +699,24 @@ public abstract class Entity {
 		this.maxAmmo = maxAmmo;
 	}
 
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public void setCollision(boolean collision) {
+		this.collision = collision;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT, ANY;
 	}
 
 	public static enum EntityType {
-		PLAYER, NPC, MONSTER, SWORD, AXE, SHIELD, CONSUMABLE;
+		PLAYER, NPC, MONSTER, SWORD, AXE, SHIELD, CONSUMABLE, PICKUP_ONLY;
 	}
 
 }

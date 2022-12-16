@@ -8,7 +8,7 @@ public class OBJ_Door extends Entity {
 	public OBJ_Door(GamePanel gp) {
 		super(gp);
 		this.setName("Door");
-		this.collision = true;
+		this.setCollision(true);
 		this.loadImages();
 
 		// Definir area de colisao do obj door
