@@ -16,6 +16,7 @@ import entity.Entity;
 import entity.NPC_OldMan;
 import entity.Player;
 import tile.TileManager;
+import tile_interactive.InteractiveTile;
 
 public class GamePanel extends JPanel implements Runnable {
 
@@ -49,11 +50,12 @@ public class GamePanel extends JPanel implements Runnable {
 	private EventHandler eventHandler = new EventHandler(this);
 	private Thread gameThread;
 
-	// ENTITY AND OBJECTS
+	// ENTITY, OBJECTS, MONSTERS, TILES, NPCS
 	private Player player = new Player(this, keyHandler);
 	private Entity[] objects = new Entity[20];
 	private Entity[] npcs = new NPC_OldMan[10];
 	private Entity[] monsters = new Entity[20];
+	private InteractiveTile[] interactiveTiles = new InteractiveTile[50];
 	private List<Entity> entities = new ArrayList<>();
 	private List<Entity> projectiles = new ArrayList<>();
 
@@ -79,6 +81,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.assetSetter.setObject();
 		this.assetSetter.setNPC();
 		this.assetSetter.setMonsters();
+		this.assetSetter.setInteractiveTiles();
 //		this.playMusic(0);
 		this.gameState = TITLE_STATE;
 	}
@@ -204,6 +207,13 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 
+			// INTERACTIVE TILES
+			for (int i = 0; i < this.interactiveTiles.length; i++) {
+				if (Objects.nonNull(this.interactiveTiles[i])) {
+					this.interactiveTiles[i].update();
+				}
+			}
+
 		} else if (this.gameState == PAUSE_STATE) {
 			// do nothing
 		} else if (this.gameState == DIALOGUE_STATE) {
@@ -225,10 +235,16 @@ public class GamePanel extends JPanel implements Runnable {
 			this.ui.draw(g2);
 
 		} else {
-			// A ordem de desenhar importa, pois o ultimo sobrepoe o anterior
 			// TILES
 			this.tileManager.draw(g2);
 
+			// INTERACTIVE TILES
+			for (int i = 0; i < this.interactiveTiles.length; i++) {
+				if (Objects.nonNull(this.interactiveTiles[i])) {
+					this.interactiveTiles[i].draw(g2);
+				}
+			}
+			
 			this.entities.add(player);
 			for (Entity npc : this.npcs) {
 				if (npc != null) {
@@ -250,7 +266,13 @@ public class GamePanel extends JPanel implements Runnable {
 					this.entities.add(projectile);
 				}
 			}
+			for (Entity interactiveTile : this.interactiveTiles) {
+				if (Objects.nonNull(interactiveTile)) {
+					this.entities.add(interactiveTile);
+				}
+			}
 
+			// A ordem de desenhar importa, pois o ultimo sobrepoe o anterior
 			// Sort entities collection by worldY para sobreposicao de entity
 			Collections.sort(this.entities, (e1, e2) -> Integer.compare(e1.getWorldY(), e2.getWorldY()));
 
@@ -380,6 +402,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public Entity[] getMonsters() {
 		return monsters;
+	}
+
+	public InteractiveTile[] getInteractiveTiles() {
+		return interactiveTiles;
+	}
+
+	public void setInteractiveTiles(InteractiveTile[] interactiveTiles) {
+		this.interactiveTiles = interactiveTiles;
 	}
 
 	public Sound getMusic() {

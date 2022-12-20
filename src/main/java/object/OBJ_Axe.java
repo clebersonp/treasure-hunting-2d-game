@@ -10,8 +10,8 @@ public class OBJ_Axe extends Entity {
 		this.setType(EntityType.AXE);
 		this.setName("Woodcutter's Axe");
 		this.setAttackValue(2);
-		this.attackArea.width = 30;
-		this.attackArea.height = 30;
+		this.attackArea.width = 25;
+		this.attackArea.height = 20;
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nA bit rusty but still cut\nsome trees.");
 	}

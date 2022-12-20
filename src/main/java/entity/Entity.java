@@ -121,6 +121,7 @@ public abstract class Entity {
 		this.gp.getCollisionChecker().checkObject(this, false);
 		this.gp.getCollisionChecker().checkEntity(this, this.gp.getNpcs());
 		this.gp.getCollisionChecker().checkEntity(this, this.gp.getMonsters());
+		this.gp.getCollisionChecker().checkEntity(this, this.gp.getInteractiveTiles());
 		boolean entityContactedPlayer = this.gp.getCollisionChecker().checkPlayer(this);
 
 		if (EntityType.MONSTER.equals(this.type) && entityContactedPlayer) {

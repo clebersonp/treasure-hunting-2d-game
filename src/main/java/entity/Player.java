@@ -15,10 +15,12 @@ import java.util.Random;
 import main.GamePanel;
 import main.KeyHandler;
 import main.Sound;
+import object.OBJ_Axe;
 import object.OBJ_Fireball;
 import object.OBJ_Key;
 import object.OBJ_ShieldWood;
 import object.OBJ_SwordNormal;
+import tile_interactive.InteractiveTile;
 
 public class Player extends Entity {
 
@@ -82,7 +84,8 @@ public class Player extends Entity {
 		this.setExp(0);
 		this.setNextLevelExp(5);
 		this.setCoin(0);
-		this.setCurrentWeapon(new OBJ_SwordNormal(getGp()));
+//		this.setCurrentWeapon(new OBJ_SwordNormal(getGp()));
+		this.setCurrentWeapon(new OBJ_Axe(getGp()));
 		this.setCurrentShield(new OBJ_ShieldWood(getGp()));
 		this.setAttack(this.getAttack()); // The total attack value is decided by strength and weapon
 		this.setDefense(this.getDefense()); // The total defense value is decided by dexterity and shield
@@ -133,6 +136,9 @@ public class Player extends Entity {
 			int collisionMonsterIndex = super.getGp().getCollisionChecker().checkEntity(this,
 					super.getGp().getMonsters());
 			this.contactMonster(collisionMonsterIndex);
+
+			// CHECK INTERACTIVE TILES COLLISION
+			super.getGp().getCollisionChecker().checkEntity(this, this.getGp().getInteractiveTiles());
 
 			// CHECK EVENT
 			this.getGp().getEventHandler().checkEvent();
@@ -238,6 +244,11 @@ public class Player extends Entity {
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
 			this.damageMonster(monsterIndex, this.getAttack());
 
+			// CHECK INTERACTIVE TILE COLLISON FOR INTERACT TO IT
+			int interactiveTitleIndex = this.getGp().getCollisionChecker().checkEntity(this,
+					this.getGp().getInteractiveTiles());
+			this.damageInteractiveTile(interactiveTitleIndex);
+
 			// Reset worldX/Y and solidArea of player
 			this.worldX = currentWorldX;
 			this.worldY = currentWorldY;
@@ -279,6 +290,24 @@ public class Player extends Entity {
 					this.checkLevelUp();
 				}
 			}
+		}
+	}
+
+	public void damageInteractiveTile(int interactiveTileIndex) {
+		if (interactiveTileIndex >= 0 && this.getGp().getInteractiveTiles()[interactiveTileIndex].isDestructible()
+				&& this.getGp().getInteractiveTiles()[interactiveTileIndex].isCorrectItem(this)
+				&& !this.getGp().getInteractiveTiles()[interactiveTileIndex].isInvincible()) {
+
+			InteractiveTile interactiveTile = this.getGp().getInteractiveTiles()[interactiveTileIndex];
+
+			interactiveTile.decreaseLife(1);
+			interactiveTile.playSE();
+			interactiveTile.setInvincible(Boolean.TRUE);
+
+			if (interactiveTile.getLife() <= 0) {
+				this.getGp().getInteractiveTiles()[interactiveTileIndex] = interactiveTile.getDestroyedForm();
+			}
+
 		}
 	}
 
