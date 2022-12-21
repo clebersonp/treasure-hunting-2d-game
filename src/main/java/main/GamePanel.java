@@ -58,6 +58,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private InteractiveTile[] interactiveTiles = new InteractiveTile[50];
 	private List<Entity> entities = new ArrayList<>();
 	private List<Entity> projectiles = new ArrayList<>();
+	private List<Entity> particles = new ArrayList<>();
 
 	// GAME STATE
 	private int gameState;
@@ -207,6 +208,17 @@ public class GamePanel extends JPanel implements Runnable {
 				}
 			}
 
+			// PARTICLES
+			for (int i = 0; i < this.particles.size(); i++) {
+				if (Objects.nonNull(this.particles.get(i))) {
+					if (this.particles.get(i).isAlive()) {
+						this.particles.get(i).update();
+					} else {
+						this.particles.remove(i);
+					}
+				}
+			}
+
 			// INTERACTIVE TILES
 			for (int i = 0; i < this.interactiveTiles.length; i++) {
 				if (Objects.nonNull(this.interactiveTiles[i])) {
@@ -244,7 +256,7 @@ public class GamePanel extends JPanel implements Runnable {
 					this.interactiveTiles[i].draw(g2);
 				}
 			}
-			
+
 			this.entities.add(player);
 			for (Entity npc : this.npcs) {
 				if (npc != null) {
@@ -269,6 +281,11 @@ public class GamePanel extends JPanel implements Runnable {
 			for (Entity interactiveTile : this.interactiveTiles) {
 				if (Objects.nonNull(interactiveTile)) {
 					this.entities.add(interactiveTile);
+				}
+			}
+			for (Entity particle : this.particles) {
+				if (Objects.nonNull(particle)) {
+					this.entities.add(particle);
 				}
 			}
 
@@ -426,6 +443,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public List<Entity> getProjectiles() {
 		return projectiles;
+	}
+
+	public List<Entity> getParticles() {
+		return particles;
+	}
+
+	public void setParticles(List<Entity> particles) {
+		this.particles = particles;
 	}
 
 }

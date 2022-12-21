@@ -1,10 +1,17 @@
 package object;
 
+import java.awt.Color;
+
 import entity.Entity;
 import entity.Projectile;
 import main.GamePanel;
 
 public class OBJ_Rock extends Projectile {
+
+	private static final Color BROWN_COLOR = new Color(40, 50, 0);
+	private static final int PARTICLE_SIZE = 5;
+	private static final int PARTICLE_SPEED = 1;
+	private static final int PARTICLE_MAX_LIFE = 20;
 
 	public OBJ_Rock(GamePanel gp) {
 		super(gp);
@@ -41,6 +48,26 @@ public class OBJ_Rock extends Projectile {
 	public void subtractResource(Entity user) {
 		int newAmmo = user.getAmmo() - this.getUseCost();
 		user.setAmmo(newAmmo);
+	}
+
+	@Override
+	public Color getParticleColor() {
+		return BROWN_COLOR;
+	}
+
+	@Override
+	public int getParticleSize() {
+		return PARTICLE_SIZE; // pixels
+	}
+
+	@Override
+	public int getParticleSpeed() {
+		return PARTICLE_SPEED;
+	}
+
+	@Override
+	public int getParticleMaxLife() {
+		return PARTICLE_MAX_LIFE;
 	}
 
 }

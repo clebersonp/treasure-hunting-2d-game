@@ -289,10 +289,11 @@ public abstract class Entity {
 	public boolean use(Entity entity) {
 		return false;
 	}
-	
+
 	public void checkDrop() {
-		
+
 	}
+
 	public void dropItem(Entity droppedItem) {
 		for (int i = 0; i < this.gp.getObjects().length; i++) {
 			if (Objects.isNull(this.gp.getObjects()[i])) {
@@ -302,6 +303,44 @@ public abstract class Entity {
 				break;
 			}
 		}
+	}
+
+	public Color getParticleColor() {
+		return null;
+	}
+
+	public int getParticleSize() {
+		return 0; // pixels
+	}
+
+	public int getParticleSpeed() {
+		return 0;
+	}
+
+	public int getParticleMaxLife() {
+		return 0;
+	}
+
+	public void generateParticle(Entity generator, Entity target) {
+
+		final Color particleColor = generator.getParticleColor();
+		final int particleMaxLife = generator.getParticleMaxLife();
+		final int particleSize = generator.getParticleSize();
+		final int particleSpeed = generator.getParticleSpeed();
+
+		final Particle p1 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+				particleMaxLife, -2, -1);
+		final Particle p2 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+				particleMaxLife, 2, -1);
+		final Particle p3 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+				particleMaxLife, -2, 1);
+		final Particle p4 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+				particleMaxLife, 2, 1);
+		this.gp.getParticles().add(p1);
+		this.gp.getParticles().add(p2);
+		this.gp.getParticles().add(p3);
+		this.gp.getParticles().add(p4);
+
 	}
 
 	public int getWorldX() {

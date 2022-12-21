@@ -1,5 +1,6 @@
 package tile_interactive;
 
+import java.awt.Color;
 import java.util.Objects;
 
 import entity.Entity;
@@ -7,6 +8,11 @@ import main.GamePanel;
 import main.Sound;
 
 public class IT_DryTree extends InteractiveTile {
+
+	private static final Color BROWN_COLOR = new Color(65, 50, 30);
+	private static final int PARTICLE_SIZE = 6;
+	private static final int PARTICLE_SPEED = 1;
+	private static final int PARTICLE_MAX_LIFE = 20;
 
 	public IT_DryTree(GamePanel gp, int col, int row) {
 		super(gp, col, row);
@@ -53,5 +59,25 @@ public class IT_DryTree extends InteractiveTile {
 		}
 
 	}
+	
+	@Override
+	public Color getParticleColor() {
+		return BROWN_COLOR;
+	}
 
+	@Override
+	public int getParticleSize() {
+		return PARTICLE_SIZE; // pixels
+	}
+	
+	@Override
+	public int getParticleSpeed() {
+		return PARTICLE_SPEED;
+	}
+	
+	@Override
+	public int getParticleMaxLife() {
+		return PARTICLE_MAX_LIFE;
+	}
+	
 }

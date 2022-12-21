@@ -32,6 +32,7 @@ public abstract class Projectile extends Entity {
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
 			if (monsterIndex != -1) {
 				this.getGp().getPlayer().damageMonster(monsterIndex, this.getAttack());
+				this.generateParticle(this.user.getProjectile(), this.getGp().getMonsters()[monsterIndex]);
 				this.setAlive(Boolean.FALSE); // destroi o projectile
 			}
 		} else if (EntityType.MONSTER.equals(this.user.getType())) {
@@ -39,6 +40,7 @@ public abstract class Projectile extends Entity {
 			if (!this.getGp().getPlayer().isInvincible() && contactPlayer) {
 				// GIVE DAMAGE FOR THE PLAYER
 				this.damagePlayer(this.getAttack());
+				this.generateParticle(this.user.getProjectile(), this.getGp().getPlayer());
 				this.setAlive(Boolean.FALSE); // destroi o projectile apos o dano no player
 			}
 		}

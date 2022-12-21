@@ -300,9 +300,12 @@ public class Player extends Entity {
 
 			InteractiveTile interactiveTile = this.getGp().getInteractiveTiles()[interactiveTileIndex];
 
-			interactiveTile.decreaseLife(1);
 			interactiveTile.playSE();
+			interactiveTile.decreaseLife(1);
 			interactiveTile.setInvincible(Boolean.TRUE);
+			
+			// Generate particles
+			this.generateParticle(interactiveTile, interactiveTile);
 
 			if (interactiveTile.getLife() <= 0) {
 				this.getGp().getInteractiveTiles()[interactiveTileIndex] = interactiveTile.getDestroyedForm();
