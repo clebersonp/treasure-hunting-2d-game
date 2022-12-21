@@ -88,7 +88,7 @@ public class UI {
 	private void drawInventory(Graphics2D g2) {
 
 		// FRAME
-		final int frameX = (this.gp.getTileSize() * 9) + (this.gp.getTileSize() / 2);
+		final int frameX = (this.gp.getTileSize() * 13) + (this.gp.getTileSize() / 2);
 		final int frameY = this.gp.getTileSize();
 		final int frameWidth = this.gp.getTileSize() * 6;
 		final int frameHeight = this.gp.getTileSize() * 5;
