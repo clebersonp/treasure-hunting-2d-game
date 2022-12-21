@@ -7,15 +7,15 @@ import main.GamePanel;
 
 public class Particle extends Entity {
 
-	private Entity generator;
+	private Entity target;
 	private Color color;
 	private int size;
 	private int xd;
 	private int yd;
 
-	public Particle(GamePanel gp, Entity generator, Color color, int size, int speed, int maxLife, int xd, int yd) {
+	public Particle(GamePanel gp, Entity target, Color color, int size, int speed, int maxLife, int xd, int yd) {
 		super(gp);
-		this.generator = generator;
+		this.target = target;
 		this.color = color;
 		this.size = size;
 		this.setSpeed(speed);
@@ -25,8 +25,8 @@ public class Particle extends Entity {
 		this.yd = yd;
 
 		int offset = (gp.getTileSize() / 2) - (size / 2);
-		this.worldX = generator.worldX + offset;
-		this.worldY = generator.worldY + offset;
+		this.worldX = target.worldX + offset;
+		this.worldY = target.worldY + offset;
 	}
 
 	@Override
@@ -36,16 +36,16 @@ public class Particle extends Entity {
 
 	@Override
 	public void update() {
-		
+
 		this.decreaseLife(1);
-		
+
 		this.worldX += this.xd * this.getSpeed();
 		this.worldY += this.yd * this.getSpeed();
-		
+
 		if (this.getLife() < this.getMaxLife() / 3) {
 			this.yd++;
 		}
-		
+
 		if (this.getLife() <= 0) {
 			this.setAlive(Boolean.FALSE);
 		}
@@ -59,19 +59,19 @@ public class Particle extends Entity {
 		g2.setColor(this.color);
 		if (this.getLife() < this.getMaxLife() / 3) {
 			this.changeAlpha(g2, 0.4F);
-		} 
+		}
 		g2.fillRoundRect(screenX, screenY, this.size, this.size, 1, 1);
-		
+
 		// RESET
 		this.changeAlpha(g2, 1.0F);
 	}
 
-	public Entity getGenerator() {
-		return generator;
+	public Entity getTarget() {
+		return target;
 	}
 
-	public void setGenerator(Entity generator) {
-		this.generator = generator;
+	public void setTarget(Entity target) {
+		this.target = target;
 	}
 
 	public Color getColor() {

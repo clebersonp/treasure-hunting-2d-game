@@ -328,13 +328,13 @@ public abstract class Entity {
 		final int particleSize = generator.getParticleSize();
 		final int particleSpeed = generator.getParticleSpeed();
 
-		final Particle p1 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+		final Particle p1 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
 				particleMaxLife, -2, -1);
-		final Particle p2 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+		final Particle p2 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
 				particleMaxLife, 2, -1);
-		final Particle p3 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+		final Particle p3 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
 				particleMaxLife, -2, 1);
-		final Particle p4 = new Particle(this.gp, generator, particleColor, particleSize, particleSpeed,
+		final Particle p4 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
 				particleMaxLife, 2, 1);
 		this.gp.getParticles().add(p1);
 		this.gp.getParticles().add(p2);
