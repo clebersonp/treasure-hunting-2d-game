@@ -35,7 +35,7 @@ public class OBJ_Mana extends Entity {
 			} else {
 				entity.setMana(entity.getMaxMana());
 			}
-			new Sound(Sound.POWER_UP).play();;
+			new Sound(Sound.POWER_UP, false).play();;
 			return true;
 		}
 		return false;

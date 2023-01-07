@@ -95,8 +95,10 @@ public class Sound {
 	 * Index {@code 11}
 	 */
 	public static int CUT_TREE = 11;
+	private boolean music;
 
-	public Sound(int indexSound) {
+	public Sound(int indexSound, boolean isMusic) {
+		this.music = isMusic;
 		if (indexSound < 0 || indexSound > this.soundURL.length - 1) {
 			throw new IllegalArgumentException("Index Sound Not Exists!");
 		}
@@ -118,9 +120,14 @@ public class Sound {
 			}
 
 			this.floatControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-			this.checkSeVolume();
-			this.clip.start();
+			if (this.music) {
+				this.checkMusicVolume();
+			} else {
+				this.checkSeVolume();
+			}
 
+			this.clip.start();
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -136,7 +143,6 @@ public class Sound {
 
 	public void setMusicVolumeScale(int musicVolumeScale) {
 		Sound.musicVolumeScale = musicVolumeScale;
-		this.checkMusicVolume();
 	}
 
 	public static int getSeVolumeScale() {
@@ -169,7 +175,7 @@ public class Sound {
 		this.clip.close();
 	}
 
-	private void checkMusicVolume() {
+	public void checkMusicVolume() {
 		switch (Sound.musicVolumeScale) {
 		case 0 -> Sound.musicVolume = -80F;
 		case 1 -> Sound.musicVolume = -20F;

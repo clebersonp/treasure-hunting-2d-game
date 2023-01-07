@@ -166,7 +166,7 @@ public abstract class Entity {
 	public void damagePlayer(int attack) {
 		if (!this.gp.getPlayer().isInvincible()) {
 			// we can give damage
-			this.gp.playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
+			new Sound(Sound.RECEIVE_DAMAGE, false).play();
 			int damage = this.getAttack() - this.gp.getPlayer().getDefense();
 			if (damage < 0) {
 				damage = 0;

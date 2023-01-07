@@ -234,6 +234,8 @@ public class UI {
 			if (this.gp.getKeyHandler().isEnterPressed()) {
 				this.commandNum = 0;
 				this.gp.setGameState(GamePanel.PLAY_STATE);
+				// CONFIG
+				this.gp.getConfig().save();
 			}
 		}
 
@@ -256,7 +258,7 @@ public class UI {
 		textY += this.gp.getTileSize();
 		g2.drawRect(textX, textY, 120, 24);
 		g2.fillRect(textX, textY, 24 * Sound.getSeVolumeScale(), 24);
-
+		
 	}
 
 	private void optionsFullScreenNotification(Graphics2D g2, int frameX, int frameY) {
@@ -397,6 +399,9 @@ public class UI {
 			if (this.gp.getKeyHandler().isEnterPressed()) {
 				this.subState = SubState.LEVEL_0;
 				this.gp.setGameState(GamePanel.TITLE_STATE);
+				// CONFIG
+				this.gp.getConfig().save();
+				this.gp.getMusic().stop();
 			}
 		}
 

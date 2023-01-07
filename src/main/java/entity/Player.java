@@ -162,7 +162,7 @@ public class Player extends Entity {
 			}
 
 			if (this.keyHandler.isEnterPressed() && !this.attackCancel) {
-				this.getGp().playSoundEffects(new Sound(Sound.SWING_WEAPON));
+				new Sound(Sound.SWING_WEAPON, false).play();
 				this.setAttacking(Boolean.TRUE);
 				this.spriteCounter = 0;
 			}
@@ -192,7 +192,7 @@ public class Player extends Entity {
 
 			// ADD IT TO THE LIST
 			this.getGp().getProjectiles().add(this.getProjectile());
-			new Sound(Sound.BURNING).play();
+			new Sound(Sound.BURNING, false).play();
 			this.setShotAvailableCounter(0);
 
 			// DECREASE THE PLAYER MANA
@@ -268,7 +268,7 @@ public class Player extends Entity {
 			final Entity[] monsters = this.getGp().getMonsters();
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
-				this.getGp().playSoundEffects(new Sound(Sound.HIT_MONSTER));
+				new Sound(Sound.HIT_MONSTER, false).play();
 
 				int damage = attack - monster.getDefense();
 				if (damage < 0) {
@@ -325,7 +325,7 @@ public class Player extends Entity {
 			this.setDefense(this.getDefense());
 			this.setMaxMana(this.getMaxMana() + 1);
 
-			this.getGp().playSoundEffects(new Sound(Sound.LEVEL_UP));
+			new Sound(Sound.LEVEL_UP, false).play();
 			this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
 			this.getGp().getUi()
 					.setCurrentDialogue("You are level " + this.getLevel() + " now!\n" + "You feel stronger!");
@@ -366,7 +366,7 @@ public class Player extends Entity {
 				damage = 0;
 			}
 			this.decreaseLife(damage);
-			this.getGp().playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
+			new Sound(Sound.RECEIVE_DAMAGE, false).play();
 			this.setInvincible(Boolean.TRUE);
 		}
 	}
@@ -400,7 +400,7 @@ public class Player extends Entity {
 
 					Entity object = this.getGp().getObjects()[objectIndex];
 					this.inventory.add(object);
-					new Sound(Sound.COIN).play();
+					new Sound(Sound.COIN, false).play();
 					text = "Got a " + object.getName() + "!";
 
 					// Remove the object from the map

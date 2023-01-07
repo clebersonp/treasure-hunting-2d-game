@@ -8,6 +8,18 @@
 	<name>Treasure Hunting</name>
 	<description>2D game treasure hunting</description>
 
+	<dependencies>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${gson.version}</version>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<gson.version>2.10.1</gson.version>
+	</properties>
+
 	<build>
 		<pluginManagement>
 			<plugins>

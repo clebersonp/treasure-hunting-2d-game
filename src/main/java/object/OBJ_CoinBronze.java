@@ -22,7 +22,7 @@ public class OBJ_CoinBronze extends Entity {
 	@Override
 	public boolean use(Entity entity) {
 
-		new Sound(Sound.COIN).play();
+		new Sound(Sound.COIN, false).play();
 		this.getGp().getUi().addMessage("Coin +" + this.getValue());
 		this.getGp().getPlayer().setCoin(this.getGp().getPlayer().getCoin() + 1);
 

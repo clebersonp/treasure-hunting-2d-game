@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import javax.swing.JPanel;
 
+import config.Config;
 import entity.Entity;
 import entity.NPC_OldMan;
 import entity.Player;
@@ -52,7 +53,7 @@ public class GamePanel extends JPanel implements Runnable {
 	// SYSTEM
 	private TileManager tileManager = new TileManager(this);
 	private KeyHandler keyHandler = new KeyHandler(this);
-	private Sound music = new Sound(Sound.BLUE_BOY_ADVENTURE);
+	private Sound music = new Sound(Sound.BLUE_BOY_ADVENTURE, true);
 
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
 	private AssetSetter assetSetter = new AssetSetter(this);
@@ -79,6 +80,9 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int CHARACTER_STATE = 4;
 	public static final int OPTIONS_STATE = 5;
 
+	// CONFIG
+	private Config config = new Config(this);
+
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
 		this.setBackground(Color.DARK_GRAY);
@@ -100,8 +104,10 @@ public class GamePanel extends JPanel implements Runnable {
 		// BLANK BufferedImage
 		this.tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		this.g2 = (Graphics2D) tempScreen.getGraphics();
-
-		this.setFullScreen();
+		
+		if (this.fullScreenOn) {
+			this.setFullScreen();
+		}
 	}
 
 	public void startGameThread() {
@@ -352,18 +358,12 @@ public class GamePanel extends JPanel implements Runnable {
 	}
 
 	public void playMusic(Sound sound) {
-//		this.music.play(index);
 		sound.play();
 		sound.loop();
 	}
 
 	public void stopMusic(Sound sound) {
 		sound.stop();
-	}
-
-	public void playSoundEffects(Sound sound) {
-		sound.play();
-//		this.soundEffects.play(index);
 	}
 
 	public void finishedGame() {
@@ -484,6 +484,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void setFullScreenOn(boolean fullScreenOn) {
 		this.fullScreenOn = fullScreenOn;
+	}
+
+	public Config getConfig() {
+		return config;
 	}
 
 }

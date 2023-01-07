@@ -71,18 +71,20 @@ public class KeyHandler implements KeyListener {
 			this.gp.getUi().setCommandNum(0);
 			this.gp.getUi().setSubState(UI.SubState.LEVEL_0);
 			this.gp.setGameState(GamePanel.PLAY_STATE);
+			// CONFIG
+			this.gp.getConfig().save();
 		}
 		case KeyEvent.VK_ENTER -> this.enterPressed = true;
 		case KeyEvent.VK_W, KeyEvent.VK_UP -> {
 			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
-			new Sound(Sound.INVENTORY_CURSOR).play();
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 			if (this.gp.getUi().getCommandNum() < 0) {
 				this.gp.getUi().setCommandNum(maxCommandNum);
 			}
 		}
 		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> {
 			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
-			new Sound(Sound.INVENTORY_CURSOR).play();
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 			if (this.gp.getUi().getCommandNum() > maxCommandNum) {
 				this.gp.getUi().setCommandNum(0);
 			}
@@ -91,11 +93,12 @@ public class KeyHandler implements KeyListener {
 			if (this.gp.getUi().getSubState() == UI.SubState.LEVEL_0) {
 				if (this.gp.getUi().getCommandNum() == 1 && this.gp.getMusic().getMusicVolumeScale() > 0) {
 					this.gp.getMusic().setMusicVolumeScale(this.gp.getMusic().getMusicVolumeScale() - 1);
-					new Sound(Sound.INVENTORY_CURSOR).play();
+					this.gp.getMusic().checkMusicVolume();
+					new Sound(Sound.INVENTORY_CURSOR, false).play();
 				}
 				if (this.gp.getUi().getCommandNum() == 2 && Sound.getSeVolumeScale() > 0) {
 					Sound.setSeVolumeScale(Sound.getSeVolumeScale() - 1);
-					new Sound(Sound.INVENTORY_CURSOR).play();
+					new Sound(Sound.INVENTORY_CURSOR, false).play();
 				}
 			}
 		}
@@ -103,11 +106,12 @@ public class KeyHandler implements KeyListener {
 			if (this.gp.getUi().getSubState() == UI.SubState.LEVEL_0) {
 				if (this.gp.getUi().getCommandNum() == 1 && this.gp.getMusic().getMusicVolumeScale() < 5) {
 					this.gp.getMusic().setMusicVolumeScale(this.gp.getMusic().getMusicVolumeScale() + 1);
-					new Sound(Sound.INVENTORY_CURSOR).play();
+					this.gp.getMusic().checkMusicVolume();
+					new Sound(Sound.INVENTORY_CURSOR, false).play();
 				}
 				if (this.gp.getUi().getCommandNum() == 2 && Sound.getSeVolumeScale() < 5) {
 					Sound.setSeVolumeScale(Sound.getSeVolumeScale() + 1);
-					new Sound(Sound.INVENTORY_CURSOR).play();
+					new Sound(Sound.INVENTORY_CURSOR, false).play();
 				}
 			}
 		}
@@ -172,19 +176,19 @@ public class KeyHandler implements KeyListener {
 		// Inventory Cursor
 		if ((keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) && (this.gp.getUi().getSlotInventoryRow() > 0)) {
 			this.gp.getUi().setSlotInventoryRow(this.gp.getUi().getSlotInventoryRow() - 1);
-			new Sound(Sound.INVENTORY_CURSOR).play();
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 		}
 		if ((keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) && (this.gp.getUi().getSlotInventoryRow() < 3)) {
 			this.gp.getUi().setSlotInventoryRow(this.gp.getUi().getSlotInventoryRow() + 1);
-			new Sound(Sound.INVENTORY_CURSOR).play();
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 		}
 		if ((keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) && (this.gp.getUi().getSlotInventoryCol() > 0)) {
 			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() - 1);
-			new Sound(Sound.INVENTORY_CURSOR).play();
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 		}
 		if ((keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) && (this.gp.getUi().getSlotInventoryCol() < 4)) {
 			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() + 1);
-			new Sound(Sound.INVENTORY_CURSOR).play();
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 		}
 		if (keyCode == KeyEvent.VK_ENTER) {
 			this.gp.getPlayer().selectInventorySlotItem();

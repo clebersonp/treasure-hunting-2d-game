@@ -37,7 +37,7 @@ public class OBJ_PotionRed extends Entity {
 			} else {
 				entity.setLife(entity.getMaxLife());
 			}
-			new Sound(Sound.POWER_UP).play();
+			new Sound(Sound.POWER_UP, false).play();
 			return true;
 		}
 		return false;

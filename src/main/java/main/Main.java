@@ -12,17 +12,22 @@ public class Main {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setResizable(Boolean.FALSE);
 		window.setTitle("2D Adventure");
-//		window.setUndecorated(Boolean.TRUE);
-		
+
 		GamePanel gamePanel = new GamePanel();
 		window.add(gamePanel);
 		
+		// CONFIG
+		gamePanel.getConfig().load();
+		if (gamePanel.isFullScreenOn()) {
+			window.setUndecorated(Boolean.TRUE);
+		}
+
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(Boolean.TRUE);
-		
+
 		gamePanel.setupGame();
 		gamePanel.startGameThread();
 	}
-	
+
 }

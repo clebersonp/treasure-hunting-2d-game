@@ -33,7 +33,7 @@ public class IT_DryTree extends InteractiveTile {
 
 	@Override
 	public void playSE() {
-		new Sound(Sound.CUT_TREE).play();
+		new Sound(Sound.CUT_TREE, false).play();
 	}
 
 	@Override

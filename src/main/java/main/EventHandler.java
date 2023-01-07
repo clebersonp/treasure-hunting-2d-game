@@ -126,7 +126,7 @@ public class EventHandler {
 
 	public void damagePit(int col, int row, int gameState) {
 		this.gp.setGameState(gameState);
-		this.gp.playSoundEffects(new Sound(Sound.RECEIVE_DAMAGE));
+		new Sound(Sound.RECEIVE_DAMAGE, false).play();
 		this.gp.getUi().setCurrentDialogue("You fall into a pit!");
 		this.gp.getPlayer().decreaseLife(1);
 
@@ -139,7 +139,7 @@ public class EventHandler {
 			this.gp.setGameState(gameState);
 			this.gp.getPlayer().setAttackCancel(Boolean.TRUE);
 			if (this.gp.getPlayer().getLife() < this.gp.getPlayer().getMaxLife()) {
-				this.gp.playSoundEffects(new Sound(Sound.POWER_UP));
+				new Sound(Sound.POWER_UP, false).play();
 				this.gp.getUi().setCurrentDialogue("You drink the water. \nYour life and mana have been \nrecovered.");
 				this.gp.getPlayer().resetUpLife(this.gp.getPlayer().getMaxLife());
 				this.gp.getPlayer().setMana(this.gp.getPlayer().getMaxMana());
