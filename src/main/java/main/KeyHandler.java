@@ -51,6 +51,67 @@ public class KeyHandler implements KeyListener {
 		else if (this.gp.getGameState() == GamePanel.CHARACTER_STATE) {
 			this.characterState(keyCode);
 		}
+
+		// OPTIONS STATE
+		else if (this.gp.getGameState() == GamePanel.OPTIONS_STATE) {
+			this.optionsState(keyCode);
+		}
+	}
+
+	public void optionsState(int keyCode) {
+
+		int maxCommandNum = 0;
+		switch (this.gp.getUi().getSubState()) {
+		case UI.SubState.LEVEL_0 -> maxCommandNum = 5;
+		case UI.SubState.LEVEL_3 -> maxCommandNum = 1;
+		}
+
+		switch (keyCode) {
+		case KeyEvent.VK_ESCAPE -> {
+			this.gp.getUi().setCommandNum(0);
+			this.gp.getUi().setSubState(UI.SubState.LEVEL_0);
+			this.gp.setGameState(GamePanel.PLAY_STATE);
+		}
+		case KeyEvent.VK_ENTER -> this.enterPressed = true;
+		case KeyEvent.VK_W, KeyEvent.VK_UP -> {
+			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
+			new Sound(Sound.INVENTORY_CURSOR).play();
+			if (this.gp.getUi().getCommandNum() < 0) {
+				this.gp.getUi().setCommandNum(maxCommandNum);
+			}
+		}
+		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> {
+			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
+			new Sound(Sound.INVENTORY_CURSOR).play();
+			if (this.gp.getUi().getCommandNum() > maxCommandNum) {
+				this.gp.getUi().setCommandNum(0);
+			}
+		}
+		case KeyEvent.VK_A, KeyEvent.VK_LEFT -> {
+			if (this.gp.getUi().getSubState() == UI.SubState.LEVEL_0) {
+				if (this.gp.getUi().getCommandNum() == 1 && this.gp.getMusic().getMusicVolumeScale() > 0) {
+					this.gp.getMusic().setMusicVolumeScale(this.gp.getMusic().getMusicVolumeScale() - 1);
+					new Sound(Sound.INVENTORY_CURSOR).play();
+				}
+				if (this.gp.getUi().getCommandNum() == 2 && Sound.getSeVolumeScale() > 0) {
+					Sound.setSeVolumeScale(Sound.getSeVolumeScale() - 1);
+					new Sound(Sound.INVENTORY_CURSOR).play();
+				}
+			}
+		}
+		case KeyEvent.VK_D, KeyEvent.VK_RIGHT -> {
+			if (this.gp.getUi().getSubState() == UI.SubState.LEVEL_0) {
+				if (this.gp.getUi().getCommandNum() == 1 && this.gp.getMusic().getMusicVolumeScale() < 5) {
+					this.gp.getMusic().setMusicVolumeScale(this.gp.getMusic().getMusicVolumeScale() + 1);
+					new Sound(Sound.INVENTORY_CURSOR).play();
+				}
+				if (this.gp.getUi().getCommandNum() == 2 && Sound.getSeVolumeScale() < 5) {
+					Sound.setSeVolumeScale(Sound.getSeVolumeScale() + 1);
+					new Sound(Sound.INVENTORY_CURSOR).play();
+				}
+			}
+		}
+		}
 	}
 
 	public void titleState(int keyCode) {
@@ -88,6 +149,7 @@ public class KeyHandler implements KeyListener {
 		case KeyEvent.VK_C -> this.gp.setGameState(GamePanel.CHARACTER_STATE);
 		case KeyEvent.VK_ENTER -> this.enterPressed = true;
 		case KeyEvent.VK_F -> this.shotKeyPressed = true;
+		case KeyEvent.VK_ESCAPE -> this.gp.setGameState(GamePanel.OPTIONS_STATE);
 		}
 	}
 

@@ -6,12 +6,20 @@ import java.util.Objects;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineEvent;
 
 public class Sound {
 
 	private Clip clip;
+	private FloatControl floatControl;
 	private URL[] soundURL = new URL[30];
+
+	public static int musicVolumeScale = 2;
+	public static float musicVolume;
+	public static int seVolumeScale = musicVolumeScale;
+	public static float seVolume;
+
 	{
 		this.soundURL[BLUE_BOY_ADVENTURE] = getClass().getResource("/sounds/BlueBoyAdventure.wav");
 		this.soundURL[COIN] = getClass().getResource("/sounds/coin.wav");
@@ -108,6 +116,9 @@ public class Sound {
 			if (!this.clip.isOpen()) {
 				this.clip.open(ais);
 			}
+
+			this.floatControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			this.checkSeVolume();
 			this.clip.start();
 
 		} catch (Exception e) {
@@ -119,10 +130,67 @@ public class Sound {
 		this.clip.loop(Clip.LOOP_CONTINUOUSLY);
 	}
 
+	public int getMusicVolumeScale() {
+		return Sound.musicVolumeScale;
+	}
+
+	public void setMusicVolumeScale(int musicVolumeScale) {
+		Sound.musicVolumeScale = musicVolumeScale;
+		this.checkMusicVolume();
+	}
+
+	public static int getSeVolumeScale() {
+		return Sound.seVolumeScale;
+	}
+
+	public static void setSeVolumeScale(int seVolumeScale) {
+		Sound.seVolumeScale = seVolumeScale;
+	}
+
+	public float getMusicVolume() {
+		return Sound.musicVolume;
+	}
+
+	public void setMusicVolume(float musicVolume) {
+		Sound.musicVolume = musicVolume;
+	}
+
+	public static float getSeVolume() {
+		return Sound.seVolume;
+	}
+
+	public static void setSeVolume(float seVolume) {
+		Sound.seVolume = seVolume;
+	}
+
 	public void stop() {
 		this.clip.stop();
 		this.clip.flush();
 		this.clip.close();
+	}
+
+	private void checkMusicVolume() {
+		switch (Sound.musicVolumeScale) {
+		case 0 -> Sound.musicVolume = -80F;
+		case 1 -> Sound.musicVolume = -20F;
+		case 2 -> Sound.musicVolume = -12F;
+		case 3 -> Sound.musicVolume = -5F;
+		case 4 -> Sound.musicVolume = 1F;
+		case 5 -> Sound.musicVolume = 6F;
+		}
+		this.floatControl.setValue(Sound.musicVolume);
+	}
+
+	private void checkSeVolume() {
+		switch (Sound.seVolumeScale) {
+		case 0 -> Sound.seVolume = -80F;
+		case 1 -> Sound.seVolume = -20F;
+		case 2 -> Sound.seVolume = -12F;
+		case 3 -> Sound.seVolume = -5F;
+		case 4 -> Sound.seVolume = 1F;
+		case 5 -> Sound.seVolume = 6F;
+		}
+		this.floatControl.setValue(Sound.seVolume);
 	}
 
 }

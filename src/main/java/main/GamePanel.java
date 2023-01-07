@@ -44,6 +44,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private int screenHeigth2 = this.screenHeight;
 	private BufferedImage tempScreen;
 	private Graphics2D g2;
+	private boolean fullScreenOn = false;
 
 	// FPS
 	final private int FPS = 60;
@@ -76,6 +77,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int PAUSE_STATE = 2;
 	public static final int DIALOGUE_STATE = 3;
 	public static final int CHARACTER_STATE = 4;
+	public static final int OPTIONS_STATE = 5;
 
 	public GamePanel() {
 		this.setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -99,7 +101,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		this.g2 = (Graphics2D) tempScreen.getGraphics();
 
-//		this.setFullScreen();
+		this.setFullScreen();
 	}
 
 	public void startGameThread() {
@@ -337,7 +339,7 @@ public class GamePanel extends JPanel implements Runnable {
 		graphics.drawImage(this.tempScreen, 0, 0, this.screenWidth2, this.screenHeigth2, null);
 		graphics.dispose();
 	}
-	
+
 	public void setFullScreen() {
 		// GET LOCAL SCREEN DEVICE
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -348,7 +350,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.screenWidth2 = Main.window.getWidth();
 		this.screenHeigth2 = Main.window.getHeight();
 	}
-	
+
 	public void playMusic(Sound sound) {
 //		this.music.play(index);
 		sound.play();
@@ -474,6 +476,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public void setParticles(List<Entity> particles) {
 		this.particles = particles;
+	}
+
+	public boolean isFullScreenOn() {
+		return fullScreenOn;
+	}
+
+	public void setFullScreenOn(boolean fullScreenOn) {
+		this.fullScreenOn = fullScreenOn;
 	}
 
 }

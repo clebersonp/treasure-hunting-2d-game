@@ -26,6 +26,7 @@ public class UI {
 	List<Integer> messagesCounter = new ArrayList<>();
 	private int slotInventoryCol = 0;
 	private int slotInventoryRow = 0;
+	private int subState = SubState.LEVEL_0;
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
@@ -81,8 +82,343 @@ public class UI {
 			this.drawCharacterScreen(g2);
 			this.drawInventory(g2);
 		}
+		case GamePanel.OPTIONS_STATE -> {
+			this.drawOptionsScreen(g2);
+		}
 		}
 
+	}
+
+	public void drawOptionsScreen(Graphics2D g2) {
+
+		g2.setColor(Color.WHITE);
+		g2.setFont(g2.getFont().deriveFont(32F));
+
+		// SUB WINDOW
+		final int frameX = this.gp.getTileSize() * 6;
+		final int frameY = this.gp.getTileSize();
+		final int frameWidth = this.gp.getTileSize() * 8;
+		final int frameHeight = this.gp.getTileSize() * 11;
+		this.drawSubWindow(g2, frameX, frameY, frameWidth, frameHeight);
+
+		switch (this.subState) {
+		case SubState.LEVEL_0 -> this.optionsTop(g2, frameX, frameY);
+		case SubState.LEVEL_1 -> this.optionsFullScreenNotification(g2, frameX, frameY);
+		case SubState.LEVEL_2 -> this.optionsControl(g2, frameX, frameY);
+		case SubState.LEVEL_3 -> this.optionsEndGameCofirmation(g2, frameX, frameY);
+		}
+
+		// RESET ENTER KEY
+		this.gp.getKeyHandler().setEnterPressed(false);
+
+	}
+
+	private void optionsTop(Graphics2D g2, int frameX, int frameY) {
+		int textX;
+		int textY;
+
+		// TITLE
+		String text = "Options";
+		textX = this.getXTextPositionCenter(g2, text);
+		textY = frameY + this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+
+		g2.setFont(g2.getFont().deriveFont(25F));
+
+		// FULL SCREEN ON/OFF
+		text = "Full Screen";
+		textX = frameX + this.gp.getTileSize();
+		textY += this.gp.getTileSize() * 2;
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 0) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.gp.setFullScreenOn(!this.gp.isFullScreenOn());
+				this.subState = SubState.LEVEL_1;
+			}
+		}
+
+		// MUSIC VOLUME
+		text = "Music";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 1) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+		}
+
+		// SE VOLUME
+		text = "SE";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 2) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+		}
+
+		// CONTROL
+		text = "Control";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 3) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.subState = SubState.LEVEL_2;
+				this.commandNum = 0;
+			}
+		}
+
+		// END GAME
+		text = "End Game";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 4) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.subState = SubState.LEVEL_3;
+				this.commandNum = 0;
+			}
+
+		}
+
+		// BACK
+		text = "Back";
+		textY += this.gp.getTileSize() * 2;
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 5) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.commandNum = 0;
+				this.gp.setGameState(GamePanel.PLAY_STATE);
+			}
+		}
+
+		g2.setStroke(new BasicStroke(3F));
+
+		// FULL SCREEN CHECK BOX
+		textX = frameX + (int) (this.gp.getTileSize() * 4.5);
+		textY = frameY + this.gp.getTileSize() * 2 + 24;
+		g2.drawRect(textX, textY, 24, 24);
+		if (this.gp.isFullScreenOn()) {
+			g2.fillRect(textX, textY, 24, 24);
+		}
+
+		// MUSIC VOLUME
+		textY += this.gp.getTileSize();
+		g2.drawRect(textX, textY, 120, 24);
+		g2.fillRect(textX, textY, 24 * this.gp.getMusic().getMusicVolumeScale(), 24);
+
+		// SE VOLUME
+		textY += this.gp.getTileSize();
+		g2.drawRect(textX, textY, 120, 24);
+		g2.fillRect(textX, textY, 24 * Sound.getSeVolumeScale(), 24);
+
+	}
+
+	private void optionsFullScreenNotification(Graphics2D g2, int frameX, int frameY) {
+		int textX = frameX + this.gp.getTileSize();
+		int textY = frameY + this.gp.getTileSize() * 3;
+
+		this.currentDialogue = "The change will take \neffect after restarting \nthe game.";
+		for (String line : this.currentDialogue.split("\n")) {
+			g2.drawString(line, textX, textY);
+			textY += 40;
+		}
+
+		// BACK
+		String text = "Back";
+		textY += this.gp.getTileSize() * 5;
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 0) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.subState = SubState.LEVEL_0;
+			}
+		}
+	}
+
+	private void optionsControl(Graphics2D g2, int frameX, int frameY) {
+
+		int textX;
+		int textY;
+
+		// TITLE
+		String text = "Control";
+		textX = this.getXTextPositionCenter(g2, text);
+		textY = frameY + this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+
+		textX = frameX + this.gp.getTileSize();
+		textY += this.gp.getTileSize();
+
+		g2.setFont(g2.getFont().deriveFont(20F));
+
+		text = "Move";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+
+		text = "Confirm/Attack";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+
+		text = "Shoot/Cast";
+		g2.drawString(text, textX, textY);
+
+		text = "Character Screen";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+
+		text = "Pause";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+
+		text = "Options";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize() * 2;
+
+		text = "Back";
+		if (this.commandNum == 0) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.subState = SubState.LEVEL_0;
+				this.commandNum = 3;
+			}
+		}
+
+		textX = frameX + this.gp.getTileSize() * 6;
+		textY = frameY + this.gp.getTileSize() * 2;
+
+		text = "AWSD";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+
+		text = "ENTER";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+		text = "F";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+		text = "C";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+		text = "P";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+		text = "ESC";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+
+	}
+
+	private void optionsEndGameCofirmation(Graphics2D g2, int frameX, int frameY) {
+		int textX = frameX + this.gp.getTileSize();
+		int textY = frameY + this.gp.getTileSize() * 3;
+
+		this.currentDialogue = "Quit the game and \nreturn to the title \nscreen?";
+
+		for (String line : this.currentDialogue.split("\n")) {
+			g2.drawString(line, textX, textY);
+			textY += 40;
+		}
+
+		// YES
+		String text = "Yes";
+		textX = this.getXTextPositionCenter(g2, text);
+		textY += this.gp.getTileSize() * 2;
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 0) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.subState = SubState.LEVEL_0;
+				this.gp.setGameState(GamePanel.TITLE_STATE);
+			}
+		}
+
+		// NO
+		text = "No";
+		textX = this.getXTextPositionCenter(g2, text);
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+		if (this.commandNum == 1) {
+			// SHADOW
+			g2.setColor(Color.DARK_GRAY);
+			g2.drawString(">", (textX - this.gp.getTileSize() / 2), textY + 2);
+			g2.drawString(text, textX + 3, textY + 2);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", textX - this.gp.getTileSize() / 2, textY);
+			g2.drawString(text, textX, textY);
+			if (this.gp.getKeyHandler().isEnterPressed()) {
+				this.subState = SubState.LEVEL_0;
+				this.commandNum = 4;
+			}
+		}
 	}
 
 	private void drawInventory(Graphics2D g2) {
@@ -525,6 +861,21 @@ public class UI {
 
 	public void setSlotInventoryRow(int slotInventoryRow) {
 		this.slotInventoryRow = slotInventoryRow;
+	}
+
+	public int getSubState() {
+		return subState;
+	}
+
+	public void setSubState(int subState) {
+		this.subState = subState;
+	}
+
+	public static interface SubState {
+		public static final int LEVEL_0 = 0;
+		public static final int LEVEL_1 = 1;
+		public static final int LEVEL_2 = 2;
+		public static final int LEVEL_3 = 3;
 	}
 
 }
