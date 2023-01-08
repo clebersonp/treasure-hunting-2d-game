@@ -328,14 +328,14 @@ public abstract class Entity {
 		final int particleSize = generator.getParticleSize();
 		final int particleSpeed = generator.getParticleSpeed();
 
-		final Particle p1 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
-				particleMaxLife, -2, -1);
-		final Particle p2 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
-				particleMaxLife, 2, -1);
-		final Particle p3 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
-				particleMaxLife, -2, 1);
-		final Particle p4 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed,
-				particleMaxLife, 2, 1);
+		final Particle p1 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed, particleMaxLife,
+				-2, -1);
+		final Particle p2 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed, particleMaxLife,
+				2, -1);
+		final Particle p3 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed, particleMaxLife,
+				-2, 1);
+		final Particle p4 = new Particle(this.gp, target, particleColor, particleSize, particleSpeed, particleMaxLife,
+				2, 1);
 		this.gp.getParticles().add(p1);
 		this.gp.getParticles().add(p2);
 		this.gp.getParticles().add(p3);
@@ -445,13 +445,20 @@ public abstract class Entity {
 
 	public void setLife(int life) {
 		this.life = life;
+		if (this.life <= 0) {
+			this.life = 0;
+			this.alive = false;
+		} else if (this.life >= this.maxLife) {
+			this.life = this.maxLife;
+			this.alive = true;
+		}
 	}
 
 	public void decreaseLife(int damage) {
-		if ((this.life - damage) < 0) {
+		this.life -= damage;
+		if (this.life <= 0) {
 			this.life = 0;
-		} else {
-			this.life -= damage;
+			this.alive = false;
 		}
 	}
 
@@ -697,6 +704,11 @@ public abstract class Entity {
 
 	public void setMana(int mana) {
 		this.mana = mana;
+		if (this.mana <= 0) {
+			this.mana = 0;
+		} else if (this.mana >= this.maxMana) {
+			this.mana = this.maxMana;
+		}
 	}
 
 	public Projectile getProjectile() {

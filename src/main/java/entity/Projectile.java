@@ -55,10 +55,7 @@ public abstract class Projectile extends Entity {
 
 		// no caso do projetil ele tem um tempo de vida a partir do disparo
 		// quando acabar seu tempo de vida sera removido
-		this.setLife(this.getLife() - 1);
-		if (this.getLife() <= 0) {
-			this.setAlive(false);
-		}
+		this.decreaseLife(1);
 
 		// controla a animacao, trocando as sprits a partir do counter
 		this.spriteCounter++;

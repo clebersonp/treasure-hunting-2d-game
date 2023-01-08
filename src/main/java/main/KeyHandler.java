@@ -56,9 +56,48 @@ public class KeyHandler implements KeyListener {
 		else if (this.gp.getGameState() == GamePanel.OPTIONS_STATE) {
 			this.optionsState(keyCode);
 		}
+
+		// GAME OVER STATE
+		else if (this.gp.getGameState() == GamePanel.GAME_OVER_STATE) {
+			this.gameOverState(keyCode);
+		}
 	}
 
-	public void optionsState(int keyCode) {
+	private void gameOverState(int keyCode) {
+		switch (keyCode) {
+		case KeyEvent.VK_W, KeyEvent.VK_UP -> {
+			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> {
+			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		case KeyEvent.VK_ENTER -> {
+			
+			// Retry
+			if (this.gp.getUi().getCommandNum() == 0) {
+				this.gp.setGameState(GamePanel.PLAY_STATE);
+				this.gp.retry();
+			}
+			
+			// Quit
+			if (this.gp.getUi().getCommandNum() == 1) {
+				this.gp.getUi().setCommandNum(0);
+				this.gp.setGameState(GamePanel.TITLE_STATE);
+				this.gp.restart();
+			}
+		}
+		}
+
+		if (this.gp.getUi().getCommandNum() < 0) {
+			this.gp.getUi().setCommandNum(1);
+		} else if (this.gp.getUi().getCommandNum() > 1) {
+			this.gp.getUi().setCommandNum(0);
+		}
+	}
+
+	private void optionsState(int keyCode) {
 
 		int maxCommandNum = 0;
 		switch (this.gp.getUi().getSubState()) {
@@ -118,7 +157,7 @@ public class KeyHandler implements KeyListener {
 		}
 	}
 
-	public void titleState(int keyCode) {
+	private void titleState(int keyCode) {
 		switch (keyCode) {
 		case KeyEvent.VK_W, KeyEvent.VK_UP -> this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
 		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
@@ -126,6 +165,7 @@ public class KeyHandler implements KeyListener {
 			if (this.gp.getUi().getCommandNum() == 0) {
 				this.gp.setGameState(GamePanel.PLAY_STATE);
 				this.gp.playMusic(this.gp.getMusic());
+				this.gp.restart();
 			} else if (this.gp.getUi().getCommandNum() == 1) {
 				// LOAD GAME LATER
 				System.out.println("// TODO LOAD GAME LATER");
@@ -142,7 +182,7 @@ public class KeyHandler implements KeyListener {
 		}
 	}
 
-	public void playState(int keyCode) {
+	private void playState(int keyCode) {
 		switch (keyCode) {
 		case KeyEvent.VK_W, KeyEvent.VK_UP -> this.upPressed = true;
 		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> this.downPressed = true;
@@ -157,19 +197,19 @@ public class KeyHandler implements KeyListener {
 		}
 	}
 
-	public void pauseState(int keyCode) {
+	private void pauseState(int keyCode) {
 		if (keyCode == KeyEvent.VK_P) {
 			this.gp.setGameState(GamePanel.PLAY_STATE);
 		}
 	}
 
-	public void dialogueState(int keyCode) {
+	private void dialogueState(int keyCode) {
 		if (keyCode == KeyEvent.VK_ENTER) {
 			this.gp.setGameState(GamePanel.PLAY_STATE);
 		}
 	}
 
-	public void characterState(int keyCode) {
+	private void characterState(int keyCode) {
 		if (keyCode == KeyEvent.VK_C) {
 			this.gp.setGameState(GamePanel.PLAY_STATE);
 		}

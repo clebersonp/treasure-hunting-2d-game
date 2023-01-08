@@ -46,9 +46,6 @@ public class Particle extends Entity {
 			this.yd++;
 		}
 
-		if (this.getLife() <= 0) {
-			this.setAlive(Boolean.FALSE);
-		}
 	}
 
 	@Override

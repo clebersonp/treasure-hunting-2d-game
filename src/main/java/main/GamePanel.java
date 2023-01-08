@@ -79,6 +79,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int DIALOGUE_STATE = 3;
 	public static final int CHARACTER_STATE = 4;
 	public static final int OPTIONS_STATE = 5;
+	public static final int GAME_OVER_STATE = 6;
 
 	// CONFIG
 	private Config config = new Config(this);
@@ -344,6 +345,23 @@ public class GamePanel extends JPanel implements Runnable {
 		Graphics graphics = this.getGraphics();
 		graphics.drawImage(this.tempScreen, 0, 0, this.screenWidth2, this.screenHeigth2, null);
 		graphics.dispose();
+	}
+	
+	public void retry() {
+		this.player.setDefaultPositions();
+		this.player.restoreLifeAndMana();
+		this.assetSetter.setNPC();
+		this.assetSetter.setMonsters();
+		this.playMusic(this.music);
+	}
+	
+	public void restart() {
+		this.player.setDefaultValues();
+		this.player.setInventoryItems();
+		this.assetSetter.setObject();
+		this.assetSetter.setNPC();
+		this.assetSetter.setMonsters();
+		this.assetSetter.setInteractiveTiles();
 	}
 
 	public void setFullScreen() {

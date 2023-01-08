@@ -57,26 +57,18 @@ public class Player extends Entity {
 		this.setInventoryItems();
 	}
 
-	private void setDefaultValues() {
+	public void setDefaultValues() {
 
-		// posicao do player no world fixa no centro p inicio do game
-		super.worldX = super.getGp().getTileSize() * 23; // 1104
-		super.worldY = super.getGp().getTileSize() * 21; // 1008
-
-		// Setar em qualquer posicao no mapa para testes
-		super.worldX = super.getGp().getTileSize() * 23;
-		super.worldY = super.getGp().getTileSize() * 35;
+		this.setDefaultPositions();
 
 		super.setSpeed(4);
-		super.direction = DOWN;
 
 		// PLAYER STATUS
 		this.setLevel(1);
 		int defaultLife = 6;
 		super.setMaxLife(defaultLife);
-		super.setLife(defaultLife);
 		super.setMaxMana(4);
-		super.setMana(super.getMaxMana());
+		this.restoreLifeAndMana();
 		super.setMaxAmmo(10);
 		super.setAmmo(super.getMaxAmmo());
 		this.setStrength(1); // The more strength he has, the more damage he gives.
@@ -94,7 +86,26 @@ public class Player extends Entity {
 
 	}
 
+	public void setDefaultPositions() {
+		// posicao do player no world fixa no centro p inicio do game
+		super.worldX = super.getGp().getTileSize() * 23; // 1104
+		super.worldY = super.getGp().getTileSize() * 21; // 1008
+
+		// Setar em qualquer posicao no mapa para testes
+		super.worldX = super.getGp().getTileSize() * 23;
+		super.worldY = super.getGp().getTileSize() * 35;
+		
+		super.direction = DOWN;
+	}
+	
+	public void restoreLifeAndMana() {
+		super.setLife(super.getMaxLife());
+		super.setMana(super.getMaxMana());
+		this.setInvincible(false);
+	}
+
 	public void setInventoryItems() {
+		this.inventory.clear();
 		this.inventory.add(this.getCurrentWeapon());
 		this.inventory.add(this.getCurrentShield());
 		this.inventory.add(new OBJ_Key(this.getGp()));
@@ -212,6 +223,13 @@ public class Player extends Entity {
 		if (this.getShotAvailableCounter() < 40) {
 			this.setShotAvailableCounter(this.getShotAvailableCounter() + 1);
 		}
+
+		// GAME OVER
+		if (!this.isAlive()) {
+			this.getGp().getMusic().stop();
+			new Sound(Sound.GAME_OVER, false).play();
+			this.getGp().setGameState(GamePanel.GAME_OVER_STATE);
+		}
 	}
 
 	private void attacking() {
@@ -282,7 +300,7 @@ public class Player extends Entity {
 				monster.setInvincible(Boolean.TRUE);
 				monster.damageReaction();
 
-				if (monster.getLife() <= 0) {
+				if (!monster.isAlive()) {
 					monster.setDying(Boolean.TRUE);
 					this.getGp().getUi().addMessage("Killed the " + monster.getName() + "!");
 					this.getGp().getUi().addMessage("Exp + " + monster.getExp());
@@ -303,11 +321,11 @@ public class Player extends Entity {
 			interactiveTile.playSE();
 			interactiveTile.decreaseLife(1);
 			interactiveTile.setInvincible(Boolean.TRUE);
-			
+
 			// Generate particles
 			this.generateParticle(interactiveTile, interactiveTile);
 
-			if (interactiveTile.getLife() <= 0) {
+			if (!interactiveTile.isAlive()) {
 				this.getGp().getInteractiveTiles()[interactiveTileIndex] = interactiveTile.getDestroyedForm();
 			}
 
@@ -569,14 +587,6 @@ public class Player extends Entity {
 	@Override
 	public int getDefense() {
 		return this.getDexterity() * this.getCurrentShield().getDefenseValue();
-	}
-
-	public void decreaseLife(int damage) {
-		if ((this.getLife() - damage) < 0) {
-			this.setLife(0);
-		} else {
-			this.setLife(this.getLife() - damage);
-		}
 	}
 
 	public void resetUpLife(int life) {

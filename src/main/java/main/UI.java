@@ -85,6 +85,63 @@ public class UI {
 		case GamePanel.OPTIONS_STATE -> {
 			this.drawOptionsScreen(g2);
 		}
+		case GamePanel.GAME_OVER_STATE -> {
+			this.drawGameOverScreen(g2);
+		}
+		}
+
+	}
+
+	private void drawGameOverScreen(Graphics2D g2) {
+		g2.setColor(new Color(0, 0, 0, 150));
+		g2.fillRect(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight());
+
+		int x;
+		int y;
+		String text;
+		g2.setFont(g2.getFont().deriveFont(Font.BOLD, 110F));
+
+		text = "Game Over";
+		// Shadow
+		g2.setColor(Color.BLACK);
+		x = this.getXTextPositionCenter(g2, text);
+		y = this.gp.getTileSize() * 4;
+		g2.drawString(text, x, y);
+		// Main
+		g2.setColor(Color.WHITE);
+		g2.drawString(text, x - 4, y - 4);
+
+		// Retry
+		g2.setFont(g2.getFont().deriveFont(50F));
+		text = "Retry";
+		x = this.getXTextPositionCenter(g2, text);
+		y += this.gp.getTileSize() * 4;
+		g2.drawString(text, x, y);
+		if (this.commandNum == 0) {
+			// SHADOW
+			g2.setColor(Color.BLACK);
+			g2.drawString(">", x - (this.gp.getTileSize() - 4), y + 4);
+			g2.drawString(text, x + 4, y + 4);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", x - this.gp.getTileSize(), y);
+			g2.drawString(text, x, y);
+		}
+
+		// Back to the title screen
+		text = "Quit";
+		x = this.getXTextPositionCenter(g2, text);
+		y += this.gp.getTileSize();
+		g2.drawString(text, x, y);
+		if (this.commandNum == 1) {
+			// SHADOW
+			g2.setColor(Color.BLACK);
+			g2.drawString(">", x - (this.gp.getTileSize() - 4), y + 4);
+			g2.drawString(text, x + 4, y + 4);
+
+			g2.setColor(Color.WHITE);
+			g2.drawString(">", x - this.gp.getTileSize(), y);
+			g2.drawString(text, x, y);
 		}
 
 	}
@@ -258,7 +315,7 @@ public class UI {
 		textY += this.gp.getTileSize();
 		g2.drawRect(textX, textY, 120, 24);
 		g2.fillRect(textX, textY, 24 * Sound.getSeVolumeScale(), 24);
-		
+
 	}
 
 	private void optionsFullScreenNotification(Graphics2D g2, int frameX, int frameY) {
