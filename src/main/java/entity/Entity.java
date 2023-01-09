@@ -295,11 +295,11 @@ public abstract class Entity {
 	}
 
 	public void dropItem(Entity droppedItem) {
-		for (int i = 0; i < this.gp.getObjects().length; i++) {
-			if (Objects.isNull(this.gp.getObjects()[i])) {
-				this.gp.getObjects()[i] = droppedItem;
-				this.gp.getObjects()[i].worldX = this.worldX; // the dead monster's worldX
-				this.gp.getObjects()[i].worldY = this.worldY; // the dead monster's worldY
+		for (int i = 0; i < this.gp.getObjects()[this.gp.getCurrentMap()].length; i++) {
+			if (Objects.isNull(this.gp.getObjects()[this.gp.getCurrentMap()][i])) {
+				this.gp.getObjects()[this.gp.getCurrentMap()][i] = droppedItem;
+				this.gp.getObjects()[this.gp.getCurrentMap()][i].worldX = this.worldX; // the dead monster's worldX
+				this.gp.getObjects()[this.gp.getCurrentMap()][i].worldY = this.worldY; // the dead monster's worldY
 				break;
 			}
 		}

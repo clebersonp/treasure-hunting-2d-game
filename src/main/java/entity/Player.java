@@ -94,10 +94,14 @@ public class Player extends Entity {
 		// Setar em qualquer posicao no mapa para testes
 		super.worldX = super.getGp().getTileSize() * 23;
 		super.worldY = super.getGp().getTileSize() * 35;
-		
+
+		// Setar em qualquer posicao no mapa para testes
+		super.worldX = super.getGp().getTileSize() * 10;
+		super.worldY = super.getGp().getTileSize() * 41;
+
 		super.direction = DOWN;
 	}
-	
+
 	public void restoreLifeAndMana() {
 		super.setLife(super.getMaxLife());
 		super.setMana(super.getMaxMana());
@@ -109,6 +113,7 @@ public class Player extends Entity {
 		this.inventory.add(this.getCurrentWeapon());
 		this.inventory.add(this.getCurrentShield());
 		this.inventory.add(new OBJ_Key(this.getGp()));
+		this.inventory.add(new OBJ_SwordNormal(this.getGp()));
 	}
 
 	public void setAction() {
@@ -283,7 +288,7 @@ public class Player extends Entity {
 
 	public void damageMonster(int index, int attack) {
 		if (index >= 0) {
-			final Entity[] monsters = this.getGp().getMonsters();
+			final Entity[] monsters = this.getGp().getMonsters()[this.getGp().getCurrentMap()];
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
 				new Sound(Sound.HIT_MONSTER, false).play();
@@ -312,11 +317,16 @@ public class Player extends Entity {
 	}
 
 	public void damageInteractiveTile(int interactiveTileIndex) {
-		if (interactiveTileIndex >= 0 && this.getGp().getInteractiveTiles()[interactiveTileIndex].isDestructible()
-				&& this.getGp().getInteractiveTiles()[interactiveTileIndex].isCorrectItem(this)
-				&& !this.getGp().getInteractiveTiles()[interactiveTileIndex].isInvincible()) {
+		if (interactiveTileIndex >= 0
+				&& this.getGp().getInteractiveTiles()[this.getGp().getCurrentMap()][interactiveTileIndex]
+						.isDestructible()
+				&& this.getGp().getInteractiveTiles()[this.getGp().getCurrentMap()][interactiveTileIndex]
+						.isCorrectItem(this)
+				&& !this.getGp().getInteractiveTiles()[this.getGp().getCurrentMap()][interactiveTileIndex]
+						.isInvincible()) {
 
-			InteractiveTile interactiveTile = this.getGp().getInteractiveTiles()[interactiveTileIndex];
+			InteractiveTile interactiveTile = this.getGp().getInteractiveTiles()[this.getGp()
+					.getCurrentMap()][interactiveTileIndex];
 
 			interactiveTile.playSE();
 			interactiveTile.decreaseLife(1);
@@ -326,7 +336,8 @@ public class Player extends Entity {
 			this.generateParticle(interactiveTile, interactiveTile);
 
 			if (!interactiveTile.isAlive()) {
-				this.getGp().getInteractiveTiles()[interactiveTileIndex] = interactiveTile.getDestroyedForm();
+				this.getGp().getInteractiveTiles()[this.getGp().getCurrentMap()][interactiveTileIndex] = interactiveTile
+						.getDestroyedForm();
 			}
 
 		}
@@ -378,8 +389,9 @@ public class Player extends Entity {
 
 	private void contactMonster(int collisionMonsterIndex) {
 		if (collisionMonsterIndex >= 0 && !this.isInvincible()
-				&& !this.getGp().getMonsters()[collisionMonsterIndex].isDying()) {
-			int damage = this.getGp().getMonsters()[collisionMonsterIndex].getAttack() - this.getDefense();
+				&& !this.getGp().getMonsters()[this.getGp().getCurrentMap()][collisionMonsterIndex].isDying()) {
+			int damage = this.getGp().getMonsters()[this.getGp().getCurrentMap()][collisionMonsterIndex].getAttack()
+					- this.getDefense();
 			if (damage < 0) {
 				damage = 0;
 			}
@@ -394,7 +406,7 @@ public class Player extends Entity {
 			if (collisionNpcIndex >= 0) {
 				this.attackCancel = true;
 				this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
-				this.getGp().getNpcs()[collisionNpcIndex].speak();
+				this.getGp().getNpcs()[this.getGp().getCurrentMap()][collisionNpcIndex].speak();
 			}
 		}
 	}
@@ -403,11 +415,12 @@ public class Player extends Entity {
 		if (objectIndex >= 0) {
 
 			// PICKUP ONLY ITEMS
-			if (EntityType.PICKUP_ONLY.equals(this.getGp().getObjects()[objectIndex].getType())) {
+			if (EntityType.PICKUP_ONLY
+					.equals(this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex].getType())) {
 
-				boolean isItemUsed = this.getGp().getObjects()[objectIndex].use(this);
+				boolean isItemUsed = this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex].use(this);
 				if (isItemUsed) {
-					this.getGp().getObjects()[objectIndex] = null; // se for usado o item, entao sera removido do mapa
+					this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex] = null; // se for usado o item, entao sera removido do mapa
 				}
 
 			} else {
@@ -416,13 +429,13 @@ public class Player extends Entity {
 				String text;
 				if (this.inventory.size() < this.maxInventorySize) {
 
-					Entity object = this.getGp().getObjects()[objectIndex];
+					Entity object = this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex];
 					this.inventory.add(object);
 					new Sound(Sound.COIN, false).play();
 					text = "Got a " + object.getName() + "!";
 
 					// Remove the object from the map
-					this.getGp().getObjects()[objectIndex] = null;
+					this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex] = null;
 
 				} else {
 					text = "You cannot carry any more!";

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entity.Entity;
+import entity.Player;
 import object.OBJ_Heart;
 import object.OBJ_Mana;
 
@@ -27,6 +28,10 @@ public class UI {
 	private int slotInventoryCol = 0;
 	private int slotInventoryRow = 0;
 	private int subState = SubState.LEVEL_0;
+
+	// COUNTER
+	int counter = 0;
+	private boolean isTransitionFadeOut = true;
 
 	public UI(GamePanel gp) {
 		this.gp = gp;
@@ -88,8 +93,41 @@ public class UI {
 		case GamePanel.GAME_OVER_STATE -> {
 			this.drawGameOverScreen(g2);
 		}
+		case GamePanel.TRANSITION_STATE -> {
+			this.drawTransition(g2);
+		}
 		}
 
+	}
+
+	private void drawTransition(Graphics2D g2) {
+		// Fade In
+		if (this.isTransitionFadeOut) {
+			this.counter++;
+			g2.setColor(new Color(0, 0, 0, this.counter * 10));
+			g2.fillRect(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight());
+			
+			if (this.counter == 25) {
+				// Update players position
+				this.gp.setCurrentMap(this.gp.getEventHandler().getTempMap());
+				Player player = this.gp.getPlayer();
+				player.setWorldX(this.gp.getTileSize() * this.gp.getEventHandler().getTempCol());
+				player.setWorldY(this.gp.getTileSize() * this.gp.getEventHandler().getTempRow());
+				this.gp.getEventHandler().setPreviousEventX(player.getWorldX());
+				this.gp.getEventHandler().setPreviousEventY(player.getWorldY());
+				
+				// CHANGE TO FADE IN
+				this.isTransitionFadeOut = false;
+			}
+		} else {
+			this.counter--;
+			g2.setColor(new Color(0, 0, 0, this.counter * 10));
+			g2.fillRect(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight());
+			if (counter == 0) {
+				this.gp.setGameState(GamePanel.PLAY_STATE);
+				this.isTransitionFadeOut = true;
+			}
+		}
 	}
 
 	private void drawGameOverScreen(Graphics2D g2) {

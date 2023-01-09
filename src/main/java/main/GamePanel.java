@@ -40,6 +40,10 @@ public class GamePanel extends JPanel implements Runnable {
 	private final int maxWorldCol = 50;
 	private final int maxWorldRow = 50;
 
+	// MAPS
+	private final int maxMap = 10;
+	private int currentMap = 0;
+
 	// FOR FULL SCREEN
 	private int screenWidth2 = this.screenWidth;
 	private int screenHeigth2 = this.screenHeight;
@@ -63,10 +67,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	// ENTITY, OBJECTS, MONSTERS, TILES, NPCS
 	private Player player = new Player(this, keyHandler);
-	private Entity[] objects = new Entity[20];
-	private Entity[] npcs = new NPC_OldMan[10];
-	private Entity[] monsters = new Entity[20];
-	private InteractiveTile[] interactiveTiles = new InteractiveTile[50];
+	private Entity[][] objects = new Entity[this.maxMap][20];
+	private Entity[][] npcs = new NPC_OldMan[this.maxMap][10];
+	private Entity[][] monsters = new Entity[this.maxMap][20];
+	private InteractiveTile[][] interactiveTiles = new InteractiveTile[this.maxMap][50];
 	private List<Entity> entities = new ArrayList<>();
 	private List<Entity> projectiles = new ArrayList<>();
 	private List<Entity> particles = new ArrayList<>();
@@ -80,6 +84,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int CHARACTER_STATE = 4;
 	public static final int OPTIONS_STATE = 5;
 	public static final int GAME_OVER_STATE = 6;
+	public static final int TRANSITION_STATE = 7;
 
 	// CONFIG
 	private Config config = new Config(this);
@@ -105,7 +110,7 @@ public class GamePanel extends JPanel implements Runnable {
 		// BLANK BufferedImage
 		this.tempScreen = new BufferedImage(screenWidth, screenHeight, BufferedImage.TYPE_INT_ARGB);
 		this.g2 = (Graphics2D) tempScreen.getGraphics();
-		
+
 		if (this.fullScreenOn) {
 			this.setFullScreen();
 		}
@@ -203,21 +208,21 @@ public class GamePanel extends JPanel implements Runnable {
 			this.player.update();
 
 			// NPCS
-			for (int i = 0; i < this.npcs.length; i++) {
-				if (this.npcs[i] != null) {
-					this.npcs[i].update();
+			for (int i = 0; i < this.npcs[this.currentMap].length; i++) {
+				if (this.npcs[this.currentMap][i] != null) {
+					this.npcs[this.currentMap][i].update();
 				}
 			}
 
 			// MONSTERS
-			for (int i = 0; i < this.monsters.length; i++) {
-				if (this.monsters[i] != null) {
-					if (this.monsters[i].isAlive() && !this.monsters[i].isDying()) {
-						this.monsters[i].update();
+			for (int i = 0; i < this.monsters[this.currentMap].length; i++) {
+				if (this.monsters[this.currentMap][i] != null) {
+					if (this.monsters[this.currentMap][i].isAlive() && !this.monsters[this.currentMap][i].isDying()) {
+						this.monsters[this.currentMap][i].update();
 					}
-					if (!this.monsters[i].isAlive()) {
-						this.monsters[i].checkDrop();
-						this.monsters[i] = null;
+					if (!this.monsters[this.currentMap][i].isAlive()) {
+						this.monsters[this.currentMap][i].checkDrop();
+						this.monsters[this.currentMap][i] = null;
 					}
 				}
 			}
@@ -245,9 +250,9 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			// INTERACTIVE TILES
-			for (int i = 0; i < this.interactiveTiles.length; i++) {
-				if (Objects.nonNull(this.interactiveTiles[i])) {
-					this.interactiveTiles[i].update();
+			for (int i = 0; i < this.interactiveTiles[this.currentMap].length; i++) {
+				if (Objects.nonNull(this.interactiveTiles[this.currentMap][i])) {
+					this.interactiveTiles[this.currentMap][i].update();
 				}
 			}
 
@@ -273,24 +278,24 @@ public class GamePanel extends JPanel implements Runnable {
 			this.tileManager.draw(g2);
 
 			// INTERACTIVE TILES
-			for (int i = 0; i < this.interactiveTiles.length; i++) {
-				if (Objects.nonNull(this.interactiveTiles[i])) {
-					this.interactiveTiles[i].draw(g2);
+			for (int i = 0; i < this.interactiveTiles[this.currentMap].length; i++) {
+				if (Objects.nonNull(this.interactiveTiles[this.currentMap][i])) {
+					this.interactiveTiles[this.currentMap][i].draw(g2);
 				}
 			}
 
 			this.entities.add(player);
-			for (Entity npc : this.npcs) {
+			for (Entity npc : this.npcs[this.currentMap]) {
 				if (npc != null) {
 					this.entities.add(npc);
 				}
 			}
-			for (Entity obj : this.objects) {
+			for (Entity obj : this.objects[this.currentMap]) {
 				if (obj != null) {
 					this.entities.add(obj);
 				}
 			}
-			for (Entity monster : this.monsters) {
+			for (Entity monster : this.monsters[this.currentMap]) {
 				if (monster != null) {
 					this.entities.add(monster);
 				}
@@ -331,10 +336,10 @@ public class GamePanel extends JPanel implements Runnable {
 			g2.drawString(worldX, 10, yPostion);
 			String worldY = "WorldY > " + this.getPlayer().getWorldY();
 			g2.drawString(worldY, 10, yPostion += 20);
-			String col = "Col > " + this.getPlayer().getWorldX() / this.getTileSize();
-			g2.drawString(col, 10, yPostion += 20);
 			String row = "Row > " + this.getPlayer().getWorldY() / this.getTileSize();
 			g2.drawString(row, 10, yPostion += 20);
+			String col = "Col > " + this.getPlayer().getWorldX() / this.getTileSize();
+			g2.drawString(col, 10, yPostion += 20);
 			String drawPassedMsg = String.format("Draw TIme > %s", passed);
 			g2.drawString(drawPassedMsg, 10, yPostion += 20);
 //					System.out.println(drawPassedMsg);
@@ -346,7 +351,7 @@ public class GamePanel extends JPanel implements Runnable {
 		graphics.drawImage(this.tempScreen, 0, 0, this.screenWidth2, this.screenHeigth2, null);
 		graphics.dispose();
 	}
-	
+
 	public void retry() {
 		this.player.setDefaultPositions();
 		this.player.restoreLifeAndMana();
@@ -354,8 +359,9 @@ public class GamePanel extends JPanel implements Runnable {
 		this.assetSetter.setMonsters();
 		this.playMusic(this.music);
 	}
-	
+
 	public void restart() {
+		this.currentMap = 0;
 		this.player.setDefaultValues();
 		this.player.setInventoryItems();
 		this.assetSetter.setObject();
@@ -420,7 +426,7 @@ public class GamePanel extends JPanel implements Runnable {
 		return collisionChecker;
 	}
 
-	public Entity[] getObjects() {
+	public Entity[][] getObjects() {
 		return objects;
 	}
 
@@ -448,7 +454,7 @@ public class GamePanel extends JPanel implements Runnable {
 		return PAUSE_STATE;
 	}
 
-	public Entity[] getNpcs() {
+	public Entity[][] getNpcs() {
 		return npcs;
 	}
 
@@ -460,15 +466,15 @@ public class GamePanel extends JPanel implements Runnable {
 		return keyHandler;
 	}
 
-	public Entity[] getMonsters() {
+	public Entity[][] getMonsters() {
 		return monsters;
 	}
 
-	public InteractiveTile[] getInteractiveTiles() {
+	public InteractiveTile[][] getInteractiveTiles() {
 		return interactiveTiles;
 	}
 
-	public void setInteractiveTiles(InteractiveTile[] interactiveTiles) {
+	public void setInteractiveTiles(InteractiveTile[][] interactiveTiles) {
 		this.interactiveTiles = interactiveTiles;
 	}
 
@@ -506,6 +512,18 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public Config getConfig() {
 		return config;
+	}
+
+	public int getCurrentMap() {
+		return currentMap;
+	}
+
+	public void setCurrentMap(int currentMap) {
+		this.currentMap = currentMap;
+	}
+
+	public int getMaxMap() {
+		return maxMap;
 	}
 
 }

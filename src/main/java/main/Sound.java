@@ -34,6 +34,7 @@ public class Sound {
 		this.soundURL[BURNING] = getClass().getResource("/sounds/burning.wav");
 		this.soundURL[CUT_TREE] = getClass().getResource("/sounds/cuttree.wav");
 		this.soundURL[GAME_OVER] = getClass().getResource("/sounds/gameover.wav");
+		this.soundURL[STAIRS] = getClass().getResource("/sounds/stairs.wav");
 	}
 	private int index;
 
@@ -101,6 +102,11 @@ public class Sound {
 	 * Index {@code 12}
 	 */
 	public static int GAME_OVER = 12;
+
+	/**
+	 * Index {@code 13}
+	 */
+	public static int STAIRS = 13;
 
 	private boolean music;
 

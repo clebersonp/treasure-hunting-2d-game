@@ -18,16 +18,17 @@ public class TileManager {
 
 	private GamePanel gp;
 	private Tile[] tiles;
-	private int[][] mapTileNum;
+	private int[][][] mapTileNum;
 
 	public TileManager(final GamePanel gp) {
 		this.gp = gp;
 		this.tiles = new Tile[50];
-		this.mapTileNum = new int[this.gp.getMaxWorldRow()][this.gp.getMaxWorldCol()];
+		this.mapTileNum = new int[this.gp.getMaxMap()][this.gp.getMaxWorldRow()][this.gp.getMaxWorldCol()];
 
 		this.getTileImage();
 
-		this.loadMap("/maps/worldV2.txt");
+		this.loadMap("/maps/worldV3.txt", 0);
+		this.loadMap("/maps/interior01.txt", 1);
 	}
 
 	public void getTileImage() {
@@ -77,6 +78,9 @@ public class TileManager {
 		this.setup(39, "earth", false);
 		this.setup(40, "wall", true);
 		this.setup(41, "tree", true);
+		this.setup(42, "hut", false);
+		this.setup(43, "floor01", false);
+		this.setup(44, "table01", true);
 	}
 
 	private void setup(int index, String fileName, boolean collision) {
@@ -90,14 +94,14 @@ public class TileManager {
 		}
 	}
 
-	private void loadMap(String mapPath) {
+	private void loadMap(String mapPath, int map) {
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(mapPath)))) {
 			final List<String> lines = br.lines().collect(Collectors.toList());
 			for (int row = 0; row < lines.size() && row < this.gp.getMaxWorldRow(); row++) {
 				int[] numbers = Arrays.asList(lines.get(row).split("\s")).stream().mapToInt(Integer::parseInt)
 						.toArray();
 				for (int col = 0; col < this.gp.getMaxWorldCol(); col++) {
-					this.mapTileNum[row][col] = numbers[col];
+					this.mapTileNum[map][row][col] = numbers[col];
 				}
 			}
 		} catch (IOException e) {
@@ -108,10 +112,10 @@ public class TileManager {
 	public void draw(final Graphics2D g2) {
 //		int count = 0;
 
-		for (int worldRow = 0; worldRow < this.mapTileNum.length && worldRow < this.gp.getMaxWorldRow(); worldRow++) {
-			for (int worldCol = 0; worldCol < this.mapTileNum[worldRow].length
+		for (int worldRow = 0; worldRow < this.mapTileNum[this.gp.getCurrentMap()].length && worldRow < this.gp.getMaxWorldRow(); worldRow++) {
+			for (int worldCol = 0; worldCol < this.mapTileNum[this.gp.getCurrentMap()][worldRow].length
 					&& worldCol < this.gp.getMaxWorldCol(); worldCol++) {
-				int tileNum = this.mapTileNum[worldRow][worldCol];
+				int tileNum = this.mapTileNum[this.gp.getCurrentMap()][worldRow][worldCol];
 
 				int worldX = worldCol * this.gp.getTileSize();
 				int worldY = worldRow * this.gp.getTileSize();
@@ -137,7 +141,7 @@ public class TileManager {
 //		System.out.println(String.format("Count tiles: %s", count));
 	}
 
-	public int[][] getMapTileNum() {
+	public int[][][] getMapTileNum() {
 		return mapTileNum;
 	}
 
