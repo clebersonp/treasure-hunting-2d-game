@@ -23,6 +23,7 @@ public class UI {
 	private String currentDialogue = "";
 	private int commandNum = 0;
 	private BufferedImage heart_full, heart_half, heart_blank, crystal_full, crystal_blank, coin;
+	private boolean merchantMusicOn = false;
 
 	List<String> messages = new ArrayList<>();
 	List<Integer> messagesCounter = new ArrayList<>();
@@ -105,10 +106,30 @@ public class UI {
 			this.drawTransition(g2);
 		}
 		case GamePanel.TRADE_STATE -> {
+
+			this.changeMusicToMerchant();
 			this.drawTradeScreen(g2);
 		}
 		}
 
+	}
+
+	private void changeMusicToMerchant() {
+		if (!this.merchantMusicOn) {
+			this.gp.getMusic().stop();
+			this.gp.setMusic(new Sound(Sound.MERCHANT_MUSIC, true));
+			this.gp.playMusic(this.gp.getMusic());
+			this.merchantMusicOn = true;
+		}
+	}
+
+	private void changeMusicToBlueBoy() {
+		if (this.merchantMusicOn) {
+			this.gp.getMusic().stop();
+			this.gp.setMusic(new Sound(Sound.BLUE_BOY_ADVENTURE, true));
+			this.gp.playMusic(this.gp.getMusic());
+			this.merchantMusicOn = false;
+		}
 	}
 
 	private void drawTradeScreen(Graphics2D g2) {
@@ -189,6 +210,9 @@ public class UI {
 				this.subState = 0;
 				this.commandNum = 0;
 				this.gp.setGameState(GamePanel.DIALOGUE_STATE);
+				
+				this.changeMusicToBlueBoy();
+				
 				this.currentDialogue = "Come again, hehe!";
 			}
 		}
@@ -243,12 +267,18 @@ public class UI {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
+					
+					this.changeMusicToBlueBoy();
+					
 					this.currentDialogue = "You need more coin to buy that!";
 					this.drawDialogScreen(g2);
 				} else if (this.gp.getPlayer().getInventory().size() == this.gp.getPlayer().getMaxInventorySize()) {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
+					
+					this.changeMusicToBlueBoy();
+					
 					this.currentDialogue = "You cannot carry any item more!";
 					this.drawDialogScreen(g2);
 				} else {
@@ -311,6 +341,9 @@ public class UI {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
+					
+					this.changeMusicToBlueBoy();
+					
 					this.currentDialogue = "You cannot sell an equipped item!";
 				} else {
 					this.gp.getPlayer().setCoin(this.gp.getPlayer().getCoin() + price);
@@ -1233,6 +1266,14 @@ public class UI {
 
 	public void setNpcSlotInventoryRow(int npcSlotInventoryRow) {
 		this.npcSlotInventoryRow = npcSlotInventoryRow;
+	}
+
+	public boolean isMerchantMusicOn() {
+		return merchantMusicOn;
+	}
+
+	public void setMerchantMusicOn(boolean merchantMusicOn) {
+		this.merchantMusicOn = merchantMusicOn;
 	}
 
 	public static interface SubState {

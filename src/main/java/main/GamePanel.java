@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 
 import config.Config;
 import entity.Entity;
-import entity.NPC_OldMan;
 import entity.Player;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
@@ -481,6 +480,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public Sound getMusic() {
 		return music;
+	}
+
+	public void setMusic(Sound music) {
+		this.music = music;
 	}
 
 	public AssetSetter getAssetSetter() {

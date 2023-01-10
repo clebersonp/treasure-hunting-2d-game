@@ -80,6 +80,12 @@ public class KeyHandler implements KeyListener {
 				this.gp.getUi().setSubState(0);
 				this.gp.getUi().setCommandNum(0);
 				this.gp.setGameState(GamePanel.PLAY_STATE);
+
+				// CHANGE MUSIC
+				this.gp.getMusic().stop();
+				this.gp.setMusic(new Sound(Sound.BLUE_BOY_ADVENTURE, true));
+				this.gp.playMusic(this.gp.getMusic());
+				this.gp.getUi().setMerchantMusicOn(false);
 			}
 		}
 		case KeyEvent.VK_W, KeyEvent.VK_UP -> {
