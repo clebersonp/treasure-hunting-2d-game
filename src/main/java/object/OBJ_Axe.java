@@ -14,6 +14,7 @@ public class OBJ_Axe extends Entity {
 		this.attackArea.height = 20;
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nA bit rusty but still cut\nsome trees.");
+		this.setPrice(75);
 	}
 
 	@Override

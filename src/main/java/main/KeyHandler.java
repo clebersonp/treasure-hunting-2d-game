@@ -61,6 +61,53 @@ public class KeyHandler implements KeyListener {
 		else if (this.gp.getGameState() == GamePanel.GAME_OVER_STATE) {
 			this.gameOverState(keyCode);
 		}
+
+		// TRADE STATE
+		else if (this.gp.getGameState() == GamePanel.TRADE_STATE) {
+			this.tradeState(keyCode);
+		}
+	}
+
+	private void tradeState(int keyCode) {
+		switch (keyCode) {
+		case KeyEvent.VK_ENTER -> {
+			this.enterPressed = true;
+		}
+		case KeyEvent.VK_ESCAPE -> {
+			if (this.gp.getUi().getSubState() != 0) {
+				this.gp.getUi().setSubState(0);
+			} else {
+				this.gp.getUi().setSubState(0);
+				this.gp.getUi().setCommandNum(0);
+				this.gp.setGameState(GamePanel.PLAY_STATE);
+			}
+		}
+		case KeyEvent.VK_W, KeyEvent.VK_UP -> {
+			if (this.gp.getUi().getSubState() == 0) {
+				this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
+				if (this.gp.getUi().getCommandNum() < 0) {
+					this.gp.getUi().setCommandNum(2);
+				}
+				new Sound(Sound.INVENTORY_CURSOR, false).play();
+			}
+		}
+		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> {
+			if (this.gp.getUi().getSubState() == 0) {
+				this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
+				if (this.gp.getUi().getCommandNum() > 2) {
+					this.gp.getUi().setCommandNum(0);
+				}
+				new Sound(Sound.INVENTORY_CURSOR, false).play();
+			}
+		}
+		}
+
+		if (this.gp.getUi().getSubState() == 1) {
+			this.npcInventory(keyCode);
+		}
+		if (this.gp.getUi().getSubState() == 2) {
+			this.playerInventory(keyCode);
+		}
 	}
 
 	private void gameOverState(int keyCode) {
@@ -74,13 +121,13 @@ public class KeyHandler implements KeyListener {
 			new Sound(Sound.INVENTORY_CURSOR, false).play();
 		}
 		case KeyEvent.VK_ENTER -> {
-			
+
 			// Retry
 			if (this.gp.getUi().getCommandNum() == 0) {
 				this.gp.setGameState(GamePanel.PLAY_STATE);
 				this.gp.retry();
 			}
-			
+
 			// Quit
 			if (this.gp.getUi().getCommandNum() == 1) {
 				this.gp.getUi().setCommandNum(0);
@@ -213,25 +260,56 @@ public class KeyHandler implements KeyListener {
 		if (keyCode == KeyEvent.VK_C) {
 			this.gp.setGameState(GamePanel.PLAY_STATE);
 		}
-		// Inventory Cursor
-		if ((keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) && (this.gp.getUi().getSlotInventoryRow() > 0)) {
-			this.gp.getUi().setSlotInventoryRow(this.gp.getUi().getSlotInventoryRow() - 1);
-			new Sound(Sound.INVENTORY_CURSOR, false).play();
-		}
-		if ((keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN) && (this.gp.getUi().getSlotInventoryRow() < 3)) {
-			this.gp.getUi().setSlotInventoryRow(this.gp.getUi().getSlotInventoryRow() + 1);
-			new Sound(Sound.INVENTORY_CURSOR, false).play();
-		}
-		if ((keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT) && (this.gp.getUi().getSlotInventoryCol() > 0)) {
-			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() - 1);
-			new Sound(Sound.INVENTORY_CURSOR, false).play();
-		}
-		if ((keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT) && (this.gp.getUi().getSlotInventoryCol() < 4)) {
-			this.gp.getUi().setSlotInventoryCol(this.gp.getUi().getSlotInventoryCol() + 1);
-			new Sound(Sound.INVENTORY_CURSOR, false).play();
-		}
 		if (keyCode == KeyEvent.VK_ENTER) {
 			this.gp.getPlayer().selectInventorySlotItem();
+		}
+		this.playerInventory(keyCode);
+	}
+
+	private void playerInventory(int keyCode) {
+		// Inventory Cursor
+		if ((keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP)
+				&& (this.gp.getUi().getPlayerSlotInventoryRow() > 0)) {
+			this.gp.getUi().setPlayerSlotInventoryRow(this.gp.getUi().getPlayerSlotInventoryRow() - 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		if ((keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN)
+				&& (this.gp.getUi().getPlayerSlotInventoryRow() < 3)) {
+			this.gp.getUi().setPlayerSlotInventoryRow(this.gp.getUi().getPlayerSlotInventoryRow() + 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		if ((keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT)
+				&& (this.gp.getUi().getPlayerSlotInventoryCol() > 0)) {
+			this.gp.getUi().setPlayerSlotInventoryCol(this.gp.getUi().getPlayerSlotInventoryCol() - 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		if ((keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT)
+				&& (this.gp.getUi().getPlayerSlotInventoryCol() < 4)) {
+			this.gp.getUi().setPlayerSlotInventoryCol(this.gp.getUi().getPlayerSlotInventoryCol() + 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+	}
+
+	private void npcInventory(int keyCode) {
+		// Inventory Cursor
+		if ((keyCode == KeyEvent.VK_W || keyCode == KeyEvent.VK_UP) && (this.gp.getUi().getNpcSlotInventoryRow() > 0)) {
+			this.gp.getUi().setNpcSlotInventoryRow(this.gp.getUi().getNpcSlotInventoryRow() - 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		if ((keyCode == KeyEvent.VK_S || keyCode == KeyEvent.VK_DOWN)
+				&& (this.gp.getUi().getNpcSlotInventoryRow() < 3)) {
+			this.gp.getUi().setNpcSlotInventoryRow(this.gp.getUi().getNpcSlotInventoryRow() + 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		if ((keyCode == KeyEvent.VK_A || keyCode == KeyEvent.VK_LEFT)
+				&& (this.gp.getUi().getNpcSlotInventoryCol() > 0)) {
+			this.gp.getUi().setNpcSlotInventoryCol(this.gp.getUi().getNpcSlotInventoryCol() - 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
+		}
+		if ((keyCode == KeyEvent.VK_D || keyCode == KeyEvent.VK_RIGHT)
+				&& (this.gp.getUi().getNpcSlotInventoryCol() < 4)) {
+			this.gp.getUi().setNpcSlotInventoryCol(this.gp.getUi().getNpcSlotInventoryCol() + 1);
+			new Sound(Sound.INVENTORY_CURSOR, false).play();
 		}
 	}
 

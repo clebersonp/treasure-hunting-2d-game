@@ -12,6 +12,7 @@ public class OBJ_ShieldWood extends Entity {
 		this.setDefenseValue(1);
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nMade by wood.");
+		this.setPrice(100);
 	}
 
 	@Override

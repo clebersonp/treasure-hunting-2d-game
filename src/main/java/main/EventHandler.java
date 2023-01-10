@@ -62,11 +62,21 @@ public class EventHandler {
 				this.teleport(1, 12, 13);
 			} else if (this.hit(1, 12, 13, Entity.Direction.DOWN)) {
 				this.teleport(0, 10, 39);
+			} else if (this.hit(1, 12, 9, Entity.Direction.UP)) {
+				this.speak(this.gp.getNpcs()[1][0]); // VALOR FIXO
 			}
 		}
 
 	}
-
+	
+	private void speak(Entity entity) {
+		if (this.gp.getKeyHandler().isEnterPressed()) {
+			this.gp.setGameState(GamePanel.DIALOGUE_STATE);
+			this.gp.getPlayer().setAttackCancel(true);
+			entity.speak();
+		}
+	}
+	
 	public void teleport(int mapNumber, int col, int row) {
 
 		this.gp.setGameState(GamePanel.TRANSITION_STATE);

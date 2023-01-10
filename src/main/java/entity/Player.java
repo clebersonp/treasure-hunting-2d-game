@@ -8,8 +8,6 @@ import static entity.Entity.Direction.UP;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import main.GamePanel;
@@ -29,8 +27,6 @@ public class Player extends Entity {
 	private int screenX;
 	private int screenY;
 	private boolean attackCancel = false;
-	private final List<Entity> inventory = new ArrayList<>();
-	private final int maxInventorySize = 20;
 
 	public Player(final GamePanel gp, final KeyHandler keyHandler) {
 		super(gp);
@@ -75,7 +71,7 @@ public class Player extends Entity {
 		this.setDexterity(1); // The more dexterity he has, the less damage he receives.
 		this.setExp(0);
 		this.setNextLevelExp(5);
-		this.setCoin(0);
+		this.setCoin(500);
 //		this.setCurrentWeapon(new OBJ_SwordNormal(getGp()));
 		this.setCurrentWeapon(new OBJ_Axe(getGp()));
 		this.setCurrentShield(new OBJ_ShieldWood(getGp()));
@@ -109,11 +105,11 @@ public class Player extends Entity {
 	}
 
 	public void setInventoryItems() {
-		this.inventory.clear();
-		this.inventory.add(this.getCurrentWeapon());
-		this.inventory.add(this.getCurrentShield());
-		this.inventory.add(new OBJ_Key(this.getGp()));
-		this.inventory.add(new OBJ_SwordNormal(this.getGp()));
+		this.getInventory().clear();
+		this.getInventory().add(this.getCurrentWeapon());
+		this.getInventory().add(this.getCurrentShield());
+		this.getInventory().add(new OBJ_Key(this.getGp()));
+		this.getInventory().add(new OBJ_SwordNormal(this.getGp()));
 	}
 
 	public void setAction() {
@@ -275,8 +271,8 @@ public class Player extends Entity {
 			// Reset worldX/Y and solidArea of player
 			this.worldX = currentWorldX;
 			this.worldY = currentWorldY;
-			this.solidArea.x = currentSolidAreaWidth;
-			this.solidArea.y = currentSolidAreaHeight;
+			this.solidArea.width = currentSolidAreaWidth;
+			this.solidArea.height = currentSolidAreaHeight;
 
 		}
 		if (super.spriteCounter > 25) {
@@ -362,10 +358,11 @@ public class Player extends Entity {
 	}
 
 	public void selectInventorySlotItem() {
-		int currentItemIndexOnSlot = this.getGp().getUi().getInventoryItemIndexOnSlot();
+		int currentItemIndexOnSlot = this.getGp().getUi().getInventoryItemIndexOnSlot(
+				this.getGp().getUi().getPlayerSlotInventoryCol(), this.getGp().getUi().getPlayerSlotInventoryRow());
 
-		if (currentItemIndexOnSlot < this.inventory.size()) {
-			Entity selectedItem = this.inventory.get(currentItemIndexOnSlot);
+		if (currentItemIndexOnSlot < this.getInventory().size()) {
+			Entity selectedItem = this.getInventory().get(currentItemIndexOnSlot);
 
 			if (EntityType.SWORD.equals(selectedItem.getType()) || EntityType.AXE.equals(selectedItem.getType())) {
 				this.setCurrentWeapon(selectedItem);
@@ -381,7 +378,7 @@ public class Player extends Entity {
 			if (EntityType.CONSUMABLE.equals(selectedItem.getType())) {
 				boolean itemUsed = selectedItem.use(this);
 				if (itemUsed) {
-					this.inventory.remove(selectedItem);
+					this.getInventory().remove(selectedItem);
 				}
 			}
 		}
@@ -420,17 +417,19 @@ public class Player extends Entity {
 
 				boolean isItemUsed = this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex].use(this);
 				if (isItemUsed) {
-					this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex] = null; // se for usado o item, entao sera removido do mapa
+					this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex] = null; // se for usado o item,
+																									// entao sera
+																									// removido do mapa
 				}
 
 			} else {
 
 				// INVENTORY ITEMS
 				String text;
-				if (this.inventory.size() < this.maxInventorySize) {
+				if (this.getInventory().size() < this.getMaxInventorySize()) {
 
 					Entity object = this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex];
-					this.inventory.add(object);
+					this.getInventory().add(object);
 					new Sound(Sound.COIN, false).play();
 					text = "Got a " + object.getName() + "!";
 
@@ -604,14 +603,6 @@ public class Player extends Entity {
 
 	public void resetUpLife(int life) {
 		this.setLife(life);
-	}
-
-	public List<Entity> getInventory() {
-		return inventory;
-	}
-
-	public int getMaxInventorySize() {
-		return maxInventorySize;
 	}
 
 }

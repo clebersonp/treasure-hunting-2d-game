@@ -12,6 +12,7 @@ public class OBJ_ShieldBlue extends Entity {
 		this.setDefenseValue(2);
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nA shiny blue shield.");
+		this.setPrice(150);
 	}
 
 	@Override

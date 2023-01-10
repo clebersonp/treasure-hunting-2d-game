@@ -14,6 +14,7 @@ public class OBJ_SwordNormal extends Entity {
 		this.attackArea.height = 36;
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nAn old sword.");
+		this.setPrice(45);
 	}
 
 	@Override

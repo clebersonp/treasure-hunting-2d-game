@@ -1,5 +1,6 @@
 package main;
 
+import entity.NPC_Merchant;
 import entity.NPC_OldMan;
 import monster.Slime;
 import object.OBJ_Axe;
@@ -65,7 +66,7 @@ public class AssetSetter {
 		
 		mapNum++;
 		i = 0;
-		this.gp.getNpcs()[mapNum][i] = new NPC_OldMan(this.gp);
+		this.gp.getNpcs()[mapNum][i] = new NPC_Merchant(this.gp);
 		this.gp.getNpcs()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
 		this.gp.getNpcs()[mapNum][i].setWorldY(this.gp.getTileSize() * 7);
 	}

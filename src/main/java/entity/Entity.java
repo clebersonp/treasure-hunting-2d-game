@@ -8,6 +8,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
@@ -89,6 +91,11 @@ public abstract class Entity {
 	private String description = "";
 	private int useCost;
 	private int value;
+	private int price;
+
+	// INVENTORY
+	private final List<Entity> inventory = new ArrayList<>();
+	private final int maxInventorySize = 20;
 
 	public Entity(GamePanel gp) {
 		super();
@@ -139,7 +146,7 @@ public abstract class Entity {
 		}
 
 		this.spriteCounter++;
-		if (this.spriteCounter > 10) {
+		if (this.spriteCounter > 25) {
 			if (this.sprintNum == 1) {
 				this.sprintNum++;
 			} else if (this.sprintNum == 2) {
@@ -180,18 +187,12 @@ public abstract class Entity {
 
 	public void speak() {
 
-		if (this.getDialogues()[this.getDialogueIndex()] == null) {
+		if (this.getDialogueIndex() >= this.getDialogues().length
+				|| this.getDialogues()[this.getDialogueIndex()] == null) {
 			this.setDialogueIndex(0);
 		}
 		this.getGp().getUi().setCurrentDialogue(this.getDialogues()[this.getDialogueIndex()]);
 		this.setDialogueIndex(this.getDialogueIndex() + 1);
-
-		switch (this.getGp().getPlayer().getDirection()) {
-		case UP -> this.direction = Direction.DOWN;
-		case DOWN -> this.direction = Direction.UP;
-		case LEFT -> this.direction = Direction.RIGHT;
-		case RIGHT -> this.direction = Direction.LEFT;
-		}
 
 	}
 
@@ -761,6 +762,22 @@ public abstract class Entity {
 
 	public void setCollision(boolean collision) {
 		this.collision = collision;
+	}
+
+	public List<Entity> getInventory() {
+		return inventory;
+	}
+
+	public int getMaxInventorySize() {
+		return maxInventorySize;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
 	}
 
 	public static enum Direction {

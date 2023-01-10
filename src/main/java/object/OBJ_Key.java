@@ -10,6 +10,7 @@ public class OBJ_Key extends Entity {
 		this.setName("Key");
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nIt opens a door.");
+		this.setPrice(15);
 	}
 
 	@Override

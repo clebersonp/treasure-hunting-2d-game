@@ -68,7 +68,7 @@ public class GamePanel extends JPanel implements Runnable {
 	// ENTITY, OBJECTS, MONSTERS, TILES, NPCS
 	private Player player = new Player(this, keyHandler);
 	private Entity[][] objects = new Entity[this.maxMap][20];
-	private Entity[][] npcs = new NPC_OldMan[this.maxMap][10];
+	private Entity[][] npcs = new Entity[this.maxMap][10];
 	private Entity[][] monsters = new Entity[this.maxMap][20];
 	private InteractiveTile[][] interactiveTiles = new InteractiveTile[this.maxMap][50];
 	private List<Entity> entities = new ArrayList<>();
@@ -85,6 +85,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int OPTIONS_STATE = 5;
 	public static final int GAME_OVER_STATE = 6;
 	public static final int TRANSITION_STATE = 7;
+	public static final int TRADE_STATE = 8;
 
 	// CONFIG
 	private Config config = new Config(this);

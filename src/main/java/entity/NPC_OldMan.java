@@ -2,6 +2,7 @@ package entity;
 
 import java.util.Random;
 
+import entity.Entity.Direction;
 import main.GamePanel;
 
 public class NPC_OldMan extends Entity {
@@ -68,5 +69,11 @@ public class NPC_OldMan extends Entity {
 
 	public void speak() {
 		super.speak();
+		switch (this.getGp().getPlayer().getDirection()) {
+		case UP -> this.direction = Direction.DOWN;
+		case DOWN -> this.direction = Direction.UP;
+		case LEFT -> this.direction = Direction.RIGHT;
+		case RIGHT -> this.direction = Direction.LEFT;
+		}
 	}
 }
