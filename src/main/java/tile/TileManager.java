@@ -1,5 +1,6 @@
 package tile;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -19,7 +20,8 @@ public class TileManager {
 	private GamePanel gp;
 	private Tile[] tiles;
 	private int[][][] mapTileNum;
-
+	private boolean drawPath = true;
+	
 	public TileManager(final GamePanel gp) {
 		this.gp = gp;
 		this.tiles = new Tile[50];
@@ -136,6 +138,26 @@ public class TileManager {
 //					count++;
 					g2.drawImage(this.tiles[tileNum].getImage(), screenX, screenY, null);
 				}
+			}
+		}
+		
+		if (this.drawPath) {
+			for (int i = 0; i < this.gp.getPathFinder().getPathList().size(); i++) {
+				g2.setColor(new Color(255, 0, 0, 70));
+				int worldX = this.gp.getPathFinder().getPathList().get(i).getCol() * this.gp.getTileSize();
+				int worldY = this.gp.getPathFinder().getPathList().get(i).getRow() * this.gp.getTileSize();
+
+				// posicao do tile pelo seu tamanho - a posicao do player deve estar no world +
+				// a posicao do player deve estar em relacao a screen(tela do jogo)
+				int screenX = worldX - this.gp.getPlayer().getWorldX() + this.gp.getPlayer().getScreenX();
+				int screenY = worldY - this.gp.getPlayer().getWorldY() + this.gp.getPlayer().getScreenY();
+				
+				g2.fillRect(screenX, screenY, this.gp.getTileSize(), this.gp.getTileSize());
+				g2.setColor(Color.black);
+				g2.setFont(g2.getFont().deriveFont(12F));
+				g2.drawString("" + (i + 1), screenX + 10, screenY + 12);
+				g2.drawString("" + screenX, screenX + 10, screenY + 22);
+				g2.drawString("" + screenY, screenX + 10, screenY + 32);
 			}
 		}
 //		System.out.println(String.format("Count tiles: %s", count));

@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import javax.swing.JPanel;
 
+import ai.PathFinder;
 import config.Config;
 import entity.Entity;
 import entity.Player;
@@ -73,6 +74,9 @@ public class GamePanel extends JPanel implements Runnable {
 	private List<Entity> entities = new ArrayList<>();
 	private List<Entity> projectiles = new ArrayList<>();
 	private List<Entity> particles = new ArrayList<>();
+
+	// AI
+	private PathFinder pathFinder = new PathFinder(this);
 
 	// GAME STATE
 	private int gameState;
@@ -528,6 +532,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public int getMaxMap() {
 		return maxMap;
+	}
+
+	public PathFinder getPathFinder() {
+		return pathFinder;
 	}
 
 }

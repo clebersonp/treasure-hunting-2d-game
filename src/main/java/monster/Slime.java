@@ -56,43 +56,84 @@ public class Slime extends Entity {
 	}
 
 	@Override
-	public void setAction() {
-		this.setActionLockCounter(this.getActionLockCounter() + 1);
+	public void update() {
+		super.update();
 
-		if (this.getActionLockCounter() == 120) {
+		int xDistance = Math.abs(this.worldX - this.getGp().getPlayer().getWorldX());
+		int yDistance = Math.abs(this.worldY - this.getGp().getPlayer().getWorldY());
+		int tileDistance = (xDistance + yDistance) / this.getGp().getTileSize();
 
-			Random random = new Random();
-			int i = random.nextInt(100) + 1;
+		if (!this.isOnPath() && tileDistance < 5) {
 
-			if (i <= 25) {
-				super.direction = Entity.Direction.UP;
+			int random = new Random().nextInt(100) + 1;
+			if (random > 50) {
+				this.setOnPath(true);
 			}
-			if (i > 25 && i <= 50) {
-				super.direction = Entity.Direction.DOWN;
-			}
-			if (i > 50 && i <= 75) {
-				super.direction = Entity.Direction.LEFT;
-			}
-			if (i > 75 && i <= 100) {
-				super.direction = Entity.Direction.RIGHT;
-			}
-
-			this.setActionLockCounter(0);
 		}
 
-		int i = new Random().nextInt(100) + 1;
-		if (i > 99 && !this.getProjectile().isAlive() && this.getShotAvailableCounter() == 40) {
-			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
-			this.getGp().getProjectiles().add(this.getProjectile());
-			this.setShotAvailableCounter(0);
+		if (this.isOnPath() && tileDistance > 10) {
+//			int random = new Random().nextInt(100) + 1;
+//			if (random > 90) {
+				this.setOnPath(false);
+//			}
+		}
+
+	}
+
+	@Override
+	public void setAction() {
+
+		if (this.isOnPath()) {
+
+			int goalRow = (this.getGp().getPlayer().getWorldY() + this.getGp().getPlayer().getSolidArea().y)
+					/ this.getGp().getTileSize();
+			int goalCol = (this.getGp().getPlayer().getWorldX() + this.getGp().getPlayer().getSolidArea().x)
+					/ this.getGp().getTileSize();
+
+			this.searchPath(goalRow, goalCol);
+
+			int i = new Random().nextInt(200) + 1;
+			if (i > 197 && !this.getProjectile().isAlive() && this.getShotAvailableCounter() == 40) {
+				this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
+				this.getGp().getProjectiles().add(this.getProjectile());
+				this.setShotAvailableCounter(0);
+			}
+
+		} else {
+
+			this.setActionLockCounter(this.getActionLockCounter() + 1);
+
+			if (this.getActionLockCounter() == 120) {
+
+				Random random = new Random();
+				int i = random.nextInt(100) + 1;
+
+				if (i <= 25) {
+					super.direction = Entity.Direction.UP;
+				}
+				if (i > 25 && i <= 50) {
+					super.direction = Entity.Direction.DOWN;
+				}
+				if (i > 50 && i <= 75) {
+					super.direction = Entity.Direction.LEFT;
+				}
+				if (i > 75 && i <= 100) {
+					super.direction = Entity.Direction.RIGHT;
+				}
+
+				this.setActionLockCounter(0);
+			}
 		}
 	}
 
 	@Override
 	public void damageReaction() {
 		this.setActionLockCounter(0);
-		this.direction = this.getGp().getPlayer().getDirection(); // o monster ira p o mesmo sentido do player, fugindo
-																	// dele
+
+		this.setOnPath(true);
+
+		// o monster ira p o mesmo sentido do player, fugindo dele
+//		this.direction = this.getGp().getPlayer().getDirection();
 	}
 
 	@Override

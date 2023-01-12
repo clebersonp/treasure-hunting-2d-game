@@ -36,8 +36,8 @@ public class Player extends Entity {
 		this.setType(EntityType.PLAYER);
 
 		// posicao do player na screen centralizado
-		this.screenX = super.getGp().getScreenWidth() / 2 - (super.getGp().getTileSize() / 2); // 360
-		this.screenY = super.getGp().getScreenHeight() / 2 - (super.getGp().getTileSize() / 2); // 264
+		this.screenX = super.getGp().getScreenWidth() / 2 - (super.getGp().getTileSize() / 2);
+		this.screenY = super.getGp().getScreenHeight() / 2 - (super.getGp().getTileSize() / 2);
 
 		// Definir area de colisao do player
 		super.solidArea.x = 8;

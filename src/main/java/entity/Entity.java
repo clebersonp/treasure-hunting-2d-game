@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import ai.PathFinder;
 import main.GamePanel;
 import main.Sound;
 import main.UtilityTool;
@@ -62,6 +63,7 @@ public abstract class Entity {
 	private boolean dying = false;
 	private boolean hpBarOn = false;
 	private int hpBarCounter = 0;
+	private boolean onPath = false;
 
 	// CHARACTER ATTRIBUTES
 	private EntityType type;
@@ -119,10 +121,7 @@ public abstract class Entity {
 	public void damageReaction() {
 	}
 
-	public void update() {
-
-		this.setAction();
-
+	public void checkCollision() {
 		this.collisionOn = false;
 		this.gp.getCollisionChecker().checkTile(this);
 		this.gp.getCollisionChecker().checkObject(this, false);
@@ -134,6 +133,13 @@ public abstract class Entity {
 		if (EntityType.MONSTER.equals(this.type) && entityContactedPlayer) {
 			this.damagePlayer(this.attack);
 		}
+	}
+
+	public void update() {
+
+		this.setAction();
+
+		this.checkCollision();
 
 		// IF COLLISION IS FALSE< PLAYER CAN MOVE
 		if (!collisionOn) {
@@ -342,6 +348,78 @@ public abstract class Entity {
 		this.gp.getParticles().add(p3);
 		this.gp.getParticles().add(p4);
 
+	}
+
+	public void searchPath(int goalRow, int goalCol) {
+		int startRow = (this.worldY + this.solidArea.y) / this.gp.getTileSize();
+		int startCol = (this.worldX + this.solidArea.x) / this.gp.getTileSize();
+
+		final PathFinder pathFinder = this.gp.getPathFinder();
+		pathFinder.setNodes(startRow, startCol, goalRow, goalCol);
+
+		// If find the path
+		if (pathFinder.search() && !pathFinder.getPathList().isEmpty()) {
+
+			// Next WorldX & WorldY
+			int nextY = pathFinder.getPathList().get(0).getRow() * this.gp.getTileSize();
+			int nextX = pathFinder.getPathList().get(0).getCol() * this.gp.getTileSize();
+
+			// Entity's solidArea position(collision)
+			int entityLeftX = this.worldX + this.solidArea.x;
+			int entityRightX = this.worldX + this.solidArea.x + this.solidArea.width;
+			int entityTopY = this.worldY + this.solidArea.y;
+			int entityBottomY = this.worldY + this.solidArea.y + this.solidArea.height;
+
+			// Define the entity's directions
+			if (entityTopY > nextY && entityLeftX >= nextX && entityRightX < nextX + this.gp.getTileSize()) {
+				this.direction = Direction.UP;
+			} else if (entityTopY < nextY && entityLeftX >= nextX && entityRightX < nextX + this.gp.getTileSize()) {
+				this.direction = Direction.DOWN;
+			} else if (entityTopY >= nextY && entityBottomY < nextY + this.gp.getTileSize()) {
+				// left or right
+				if (entityLeftX > nextX) {
+					this.direction = Direction.LEFT;
+				} else if (entityLeftX < nextX) {
+					this.direction = Direction.RIGHT;
+				}
+			} else if (entityTopY > nextY && entityLeftX > nextX) {
+				// Up or Left
+				this.direction = Direction.UP;
+				this.checkCollision();
+				if (this.collisionOn) {
+					this.direction = Direction.LEFT;
+				}
+			} else if (entityTopY > nextY && entityLeftX < nextX) {
+				// Up or Right
+				this.direction = Direction.UP;
+				this.checkCollision();
+				if (this.collisionOn) {
+					this.direction = Direction.RIGHT;
+				}
+			} else if (entityTopY < nextY && entityLeftX < nextX) {
+				// Down or Right
+				this.direction = Direction.DOWN;
+				this.checkCollision();
+				if (this.collisionOn) {
+					this.direction = Direction.RIGHT;
+				}
+			} else if (entityTopY < nextY && entityLeftX > nextX) {
+				// Down or Left
+				this.direction = Direction.DOWN;
+				this.checkCollision();
+				if (this.collisionOn) {
+					this.direction = Direction.LEFT;
+				}
+			}
+			
+			// If reaches the goal, stop the search
+//			int nextRow = pathFinder.getPathList().get(0).getRow();
+//			int nextCol = pathFinder.getPathList().get(0).getCol();
+//			
+//			if(nextRow == goalRow && nextCol == goalCol) {
+//				this.onPath = false;
+//			}
+		}
 	}
 
 	public int getWorldX() {
@@ -778,6 +856,14 @@ public abstract class Entity {
 
 	public void setPrice(int price) {
 		this.price = price;
+	}
+
+	public boolean isOnPath() {
+		return onPath;
+	}
+
+	public void setOnPath(boolean onPath) {
+		this.onPath = onPath;
 	}
 
 	public static enum Direction {
