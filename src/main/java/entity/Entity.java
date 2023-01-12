@@ -54,6 +54,7 @@ public abstract class Entity {
 	private int dyingCounter = 0;
 	protected int spriteCounter = 0;
 	private int shotAvailableCounter = 0;
+	private int knockBackCounter = 0;
 
 	private boolean attacking = false;
 
@@ -64,10 +65,12 @@ public abstract class Entity {
 	private boolean hpBarOn = false;
 	private int hpBarCounter = 0;
 	private boolean onPath = false;
+	private boolean knockBack = false;
 
 	// CHARACTER ATTRIBUTES
 	private EntityType type;
 	private String name;
+	private int defaultSpeed;
 	private int speed;
 	private int maxLife;
 	private int life;
@@ -94,6 +97,7 @@ public abstract class Entity {
 	private int useCost;
 	private int value;
 	private int price;
+	private int knockBackPower = 0;
 
 	// INVENTORY
 	private final List<Entity> inventory = new ArrayList<>();
@@ -137,17 +141,43 @@ public abstract class Entity {
 
 	public void update() {
 
-		this.setAction();
+		if (this.knockBack) {
 
-		this.checkCollision();
+			this.checkCollision();
 
-		// IF COLLISION IS FALSE< PLAYER CAN MOVE
-		if (!collisionOn) {
-			switch (this.direction) {
-			case UP -> this.worldY -= this.speed;
-			case DOWN -> this.worldY += this.speed;
-			case LEFT -> this.worldX -= this.speed;
-			case RIGHT -> this.worldX += this.speed;
+			if (this.isCollisionOn()) {
+				this.knockBackCounter = 0;
+				this.knockBack = false;
+				this.speed = this.defaultSpeed;
+			} else {
+				switch (this.gp.getPlayer().getDirection()) {
+				case UP -> this.worldY -= this.speed;
+				case DOWN -> this.worldY += this.speed;
+				case LEFT -> this.worldX -= this.speed;
+				case RIGHT -> this.worldX += this.speed;
+				}
+			}
+
+			this.knockBackCounter++;
+			if (this.knockBackCounter == 10) {
+				this.knockBackCounter = 0;
+				this.knockBack = false;
+				this.speed = this.defaultSpeed;
+			}
+
+		} else {
+			this.setAction();
+
+			this.checkCollision();
+
+			// IF COLLISION IS FALSE< PLAYER CAN MOVE
+			if (!collisionOn) {
+				switch (this.direction) {
+				case UP -> this.worldY -= this.speed;
+				case DOWN -> this.worldY += this.speed;
+				case LEFT -> this.worldX -= this.speed;
+				case RIGHT -> this.worldX += this.speed;
+				}
 			}
 		}
 
@@ -411,7 +441,7 @@ public abstract class Entity {
 					this.direction = Direction.LEFT;
 				}
 			}
-			
+
 			// If reaches the goal, stop the search
 //			int nextRow = pathFinder.getPathList().get(0).getRow();
 //			int nextCol = pathFinder.getPathList().get(0).getCol();
@@ -864,6 +894,38 @@ public abstract class Entity {
 
 	public void setOnPath(boolean onPath) {
 		this.onPath = onPath;
+	}
+
+	public boolean isKnockBack() {
+		return knockBack;
+	}
+
+	public void setKnockBack(boolean knockBack) {
+		this.knockBack = knockBack;
+	}
+
+	public int getDefaultSpeed() {
+		return defaultSpeed;
+	}
+
+	public void setDefaultSpeed(int defaultSpeed) {
+		this.defaultSpeed = defaultSpeed;
+	}
+
+	public int getKnockBackCounter() {
+		return knockBackCounter;
+	}
+
+	public void setKnockBackCounter(int knockBackCounter) {
+		this.knockBackCounter = knockBackCounter;
+	}
+
+	public int getKnockBackPower() {
+		return knockBackPower;
+	}
+
+	public void setKnockBackPower(int knockBackPower) {
+		this.knockBackPower = knockBackPower;
 	}
 
 	public static enum Direction {

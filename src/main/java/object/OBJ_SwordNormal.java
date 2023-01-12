@@ -10,6 +10,7 @@ public class OBJ_SwordNormal extends Entity {
 		this.setType(EntityType.SWORD);
 		this.setName("Normal Sword");
 		this.setAttackValue(1);
+		this.setKnockBackPower(8);
 		this.attackArea.width = 36;
 		this.attackArea.height = 36;
 		this.loadImages();

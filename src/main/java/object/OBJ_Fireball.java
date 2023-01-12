@@ -15,7 +15,8 @@ public class OBJ_Fireball extends Projectile {
 	public OBJ_Fireball(GamePanel gp) {
 		super(gp);
 		this.setName("Fireball");
-		this.setSpeed(5);
+		this.setDefaultSpeed(5);
+		this.setSpeed(this.getDefaultSpeed());
 		this.setMaxLife(80);
 		this.setLife(this.getMaxLife());
 		this.setAttack(1);

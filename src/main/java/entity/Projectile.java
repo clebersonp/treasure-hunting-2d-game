@@ -31,7 +31,7 @@ public abstract class Projectile extends Entity {
 		if (EntityType.PLAYER.equals(this.user.getType())) {
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
 			if (monsterIndex != -1) {
-				this.getGp().getPlayer().damageMonster(monsterIndex, this.getAttack());
+				this.getGp().getPlayer().damageMonster(monsterIndex, this.getAttack(), this.getKnockBackPower());
 				this.generateParticle(this.user.getProjectile(),
 						this.getGp().getMonsters()[this.getGp().getCurrentMap()][monsterIndex]);
 				this.setAlive(Boolean.FALSE); // destroi o projectile

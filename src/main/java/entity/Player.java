@@ -57,8 +57,8 @@ public class Player extends Entity {
 	public void setDefaultValues() {
 
 		this.setDefaultPositions();
-
-		super.setSpeed(4);
+		super.setDefaultSpeed(4);
+		super.setSpeed(this.getDefaultSpeed());
 
 		// PLAYER STATUS
 		this.setLevel(1);
@@ -267,7 +267,7 @@ public class Player extends Entity {
 
 			// check monster collision with the updated worldX/Y and solidArea
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
-			this.damageMonster(monsterIndex, this.getAttack());
+			this.damageMonster(monsterIndex, this.getAttack(), this.getCurrentWeapon().getKnockBackPower());
 
 			// CHECK INTERACTIVE TILE COLLISON FOR INTERACT TO IT
 			int interactiveTitleIndex = this.getGp().getCollisionChecker().checkEntity(this,
@@ -292,6 +292,14 @@ public class Player extends Entity {
 		}
 	}
 
+	public void knockBack(Entity entity, int knockBackPower) {
+		if (knockBackPower > 0) {
+			entity.direction = this.direction;
+			entity.setSpeed(entity.getSpeed() + knockBackPower);
+			entity.setKnockBack(true);
+		}
+	}
+
 	public void damageProjectile(int index) {
 		if (index >= 0) {
 			Entity projectile = this.getGp().getProjectiles()[this.getGp().getCurrentMap()][index];
@@ -301,12 +309,14 @@ public class Player extends Entity {
 		}
 	}
 
-	public void damageMonster(int index, int attack) {
+	public void damageMonster(int index, int attack, int knockBackPower) {
 		if (index >= 0) {
 			final Entity[] monsters = this.getGp().getMonsters()[this.getGp().getCurrentMap()];
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
 				new Sound(Sound.HIT_MONSTER, false).play();
+
+				this.knockBack(monster, knockBackPower);
 
 				int damage = attack - monster.getDefense();
 				if (damage < 0) {

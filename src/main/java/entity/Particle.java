@@ -18,7 +18,8 @@ public class Particle extends Entity {
 		this.target = target;
 		this.color = color;
 		this.size = size;
-		this.setSpeed(speed);
+		this.setDefaultSpeed(speed);
+		this.setSpeed(this.getDefaultSpeed());
 		this.setMaxLife(maxLife);
 		this.setLife(maxLife);
 		this.xd = xd;

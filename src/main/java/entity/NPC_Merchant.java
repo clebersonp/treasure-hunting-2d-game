@@ -21,7 +21,8 @@ public class NPC_Merchant extends Entity {
 		super.solidArea.height = 31;
 
 		this.direction = Entity.Direction.DOWN;
-		this.setSpeed(1);
+		this.setDefaultSpeed(1);
+		this.setSpeed(this.getDefaultSpeed());
 		this.loadImages();
 		this.setDialogue();
 		this.setInventoryItems();

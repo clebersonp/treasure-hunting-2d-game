@@ -17,7 +17,8 @@ public class Slime extends Entity {
 
 		this.setType(EntityType.MONSTER);
 		this.setName("Green Slime");
-		this.setSpeed(1);
+		this.setDefaultSpeed(1);
+		this.setSpeed(this.getDefaultSpeed());
 		this.setMaxLife(4);
 		this.setLife(this.getMaxLife());
 		this.setAttack(2);

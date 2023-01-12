@@ -16,7 +16,8 @@ public class OBJ_Rock extends Projectile {
 	public OBJ_Rock(GamePanel gp) {
 		super(gp);
 		this.setName("Rock");
-		this.setSpeed(8);
+		this.setDefaultSpeed(4);
+		this.setSpeed(this.getDefaultSpeed());
 		this.setMaxLife(80);
 		this.setLife(this.getMaxLife());
 		this.setAttack(2);
