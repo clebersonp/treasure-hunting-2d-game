@@ -8,6 +8,7 @@ import static entity.Entity.Direction.UP;
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Objects;
 import java.util.Random;
 
 import main.GamePanel;
@@ -203,12 +204,17 @@ public class Player extends Entity {
 			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
 
 			// ADD IT TO THE LIST
-			this.getGp().getProjectiles().add(this.getProjectile());
-			new Sound(Sound.BURNING, false).play();
-			this.setShotAvailableCounter(0);
-
-			// DECREASE THE PLAYER MANA
-			this.getProjectile().subtractResource(this);
+			for (int i = 0; i < this.getGp().getProjectiles()[this.getGp().getCurrentMap()].length; i++) {
+				if (Objects.isNull(this.getGp().getProjectiles()[this.getGp().getCurrentMap()][i])) {
+					this.getGp().getProjectiles()[this.getGp().getCurrentMap()][i] = this.getProjectile();
+					new Sound(Sound.BURNING, false).play();
+					this.setShotAvailableCounter(0);
+					
+					// DECREASE THE PLAYER MANA
+					this.getProjectile().subtractResource(this);
+					break;
+				}
+			}
 		}
 
 		// This needs to be outside of key if statement!

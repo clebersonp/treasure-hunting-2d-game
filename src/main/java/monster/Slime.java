@@ -1,5 +1,6 @@
 package monster;
 
+import java.util.Objects;
 import java.util.Random;
 
 import entity.Entity;
@@ -95,8 +96,14 @@ public class Slime extends Entity {
 			int i = new Random().nextInt(200) + 1;
 			if (i > 197 && !this.getProjectile().isAlive() && this.getShotAvailableCounter() == 40) {
 				this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
-				this.getGp().getProjectiles().add(this.getProjectile());
-				this.setShotAvailableCounter(0);
+				
+				for (int y = 0; y < this.getGp().getProjectiles()[this.getGp().getCurrentMap()].length; y++) {
+					if (Objects.isNull(this.getGp().getProjectiles()[this.getGp().getCurrentMap()][y])) {
+						this.getGp().getProjectiles()[this.getGp().getCurrentMap()][y] = this.getProjectile();
+						this.setShotAvailableCounter(0);
+						break;
+					}
+				}
 			}
 
 		} else {

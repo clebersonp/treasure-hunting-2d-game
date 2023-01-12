@@ -72,7 +72,7 @@ public class GamePanel extends JPanel implements Runnable {
 	private Entity[][] monsters = new Entity[this.maxMap][20];
 	private InteractiveTile[][] interactiveTiles = new InteractiveTile[this.maxMap][50];
 	private List<Entity> entities = new ArrayList<>();
-	private List<Entity> projectiles = new ArrayList<>();
+	private Entity[][] projectiles = new Entity[this.maxMap][20];
 	private List<Entity> particles = new ArrayList<>();
 
 	// AI
@@ -232,12 +232,12 @@ public class GamePanel extends JPanel implements Runnable {
 			}
 
 			// PROJECTILES
-			for (int i = 0; i < this.projectiles.size(); i++) {
-				if (Objects.nonNull(this.projectiles.get(i))) {
-					if (this.projectiles.get(i).isAlive()) {
-						this.projectiles.get(i).update();
+			for (int i = 0; i < this.projectiles[this.currentMap].length; i++) {
+				if (Objects.nonNull(this.projectiles[this.currentMap][i])) {
+					if (this.projectiles[this.currentMap][i].isAlive()) {
+						this.projectiles[this.currentMap][i].update();
 					} else {
-						this.projectiles.remove(i);
+						this.projectiles[this.currentMap][i] = null;
 					}
 				}
 			}
@@ -304,7 +304,7 @@ public class GamePanel extends JPanel implements Runnable {
 					this.entities.add(monster);
 				}
 			}
-			for (Entity projectile : this.projectiles) {
+			for (Entity projectile : this.projectiles[this.currentMap]) {
 				if (Objects.nonNull(projectile)) {
 					this.entities.add(projectile);
 				}
@@ -498,7 +498,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.assetSetter = assetSetter;
 	}
 
-	public List<Entity> getProjectiles() {
+	public Entity[][] getProjectiles() {
 		return projectiles;
 	}
 
