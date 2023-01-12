@@ -73,8 +73,8 @@ public class Player extends Entity {
 		this.setExp(0);
 		this.setNextLevelExp(5);
 		this.setCoin(500);
-//		this.setCurrentWeapon(new OBJ_SwordNormal(getGp()));
-		this.setCurrentWeapon(new OBJ_Axe(getGp()));
+		this.setCurrentWeapon(new OBJ_SwordNormal(getGp()));
+//		this.setCurrentWeapon(new OBJ_Axe(getGp()));
 		this.setCurrentShield(new OBJ_ShieldWood(getGp()));
 		this.setAttack(this.getAttack()); // The total attack value is decided by strength and weapon
 		this.setDefense(this.getDefense()); // The total defense value is decided by dexterity and shield
@@ -110,7 +110,7 @@ public class Player extends Entity {
 		this.getInventory().add(this.getCurrentWeapon());
 		this.getInventory().add(this.getCurrentShield());
 		this.getInventory().add(new OBJ_Key(this.getGp()));
-		this.getInventory().add(new OBJ_SwordNormal(this.getGp()));
+		this.getInventory().add(new OBJ_Axe(this.getGp()));
 	}
 
 	public void setAction() {
@@ -209,7 +209,7 @@ public class Player extends Entity {
 					this.getGp().getProjectiles()[this.getGp().getCurrentMap()][i] = this.getProjectile();
 					new Sound(Sound.BURNING, false).play();
 					this.setShotAvailableCounter(0);
-					
+
 					// DECREASE THE PLAYER MANA
 					this.getProjectile().subtractResource(this);
 					break;
@@ -274,6 +274,10 @@ public class Player extends Entity {
 					this.getGp().getInteractiveTiles());
 			this.damageInteractiveTile(interactiveTitleIndex);
 
+			// CHECH THE WEAPON IS HITING A PROJECTILE WITH COLLISION
+			int projectileIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getProjectiles());
+			this.damageProjectile(projectileIndex);
+
 			// Reset worldX/Y and solidArea of player
 			this.worldX = currentWorldX;
 			this.worldY = currentWorldY;
@@ -285,6 +289,15 @@ public class Player extends Entity {
 			super.sprintNum = 1;
 			super.spriteCounter = 0;
 			this.setAttacking(Boolean.FALSE);
+		}
+	}
+
+	public void damageProjectile(int index) {
+		if (index >= 0) {
+			Entity projectile = this.getGp().getProjectiles()[this.getGp().getCurrentMap()][index];
+			projectile.setAlive(false);
+
+			this.generateParticle(projectile, projectile);
 		}
 	}
 
