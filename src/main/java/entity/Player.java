@@ -391,23 +391,23 @@ public class Player extends Entity {
 				this.getGp().getUi().getPlayerSlotInventoryCol(), this.getGp().getUi().getPlayerSlotInventoryRow());
 
 		if (currentItemIndexOnSlot < this.getInventory().size()) {
-			Entity selectedItem = this.getInventory().get(currentItemIndexOnSlot);
+			Entity selectedItemEntity = this.getInventory().get(currentItemIndexOnSlot);
 
-			if (EntityType.SWORD.equals(selectedItem.getType()) || EntityType.AXE.equals(selectedItem.getType())) {
-				this.setCurrentWeapon(selectedItem);
+			if (EntityType.SWORD.equals(selectedItemEntity.getType()) || EntityType.AXE.equals(selectedItemEntity.getType())) {
+				this.setCurrentWeapon(selectedItemEntity);
 				this.setAttack(this.getAttack());
 				this.loadPlayerAttackImages();
 			}
 
-			if (EntityType.SHIELD.equals(selectedItem.getType())) {
-				this.setCurrentShield(selectedItem);
+			if (EntityType.SHIELD.equals(selectedItemEntity.getType())) {
+				this.setCurrentShield(selectedItemEntity);
 				this.setDefense(this.getDefense());
 			}
 
-			if (EntityType.CONSUMABLE.equals(selectedItem.getType())) {
-				boolean itemUsed = selectedItem.use(this);
+			if (EntityType.CONSUMABLE.equals(selectedItemEntity.getType())) {
+				boolean itemUsed = selectedItemEntity.use(this);
 				if (itemUsed) {
-					this.getInventory().remove(selectedItem);
+					this.getInventory().remove(selectedItemEntity);
 				}
 			}
 		}
@@ -451,6 +451,13 @@ public class Player extends Entity {
 																									// removido do mapa
 				}
 
+			} else if (EntityType.OBSTACLE
+					.equals(this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex].getType())) {
+				if (this.getGp().getKeyHandler().isEnterPressed()) {
+					this.attackCancel = true;
+					this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex].interact();
+				}
+				
 			} else {
 
 				// INVENTORY ITEMS

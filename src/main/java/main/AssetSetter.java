@@ -5,7 +5,9 @@ import entity.NPC_OldMan;
 import monster.Slime;
 import object.OBJ_Axe;
 import object.OBJ_CoinBronze;
+import object.OBJ_Door;
 import object.OBJ_Heart;
+import object.OBJ_Key;
 import object.OBJ_Mana;
 import object.OBJ_PotionRed;
 import object.OBJ_ShieldBlue;
@@ -53,6 +55,27 @@ public class AssetSetter {
 		this.gp.getObjects()[mapNum][i] = new OBJ_Mana(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 26);
 		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 6);
+		i++;
+
+		this.gp.getObjects()[mapNum][i] = new OBJ_Door(this.gp);
+		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 12);
+		i++;
+		this.gp.getObjects()[mapNum][i] = new OBJ_Door(this.gp);
+		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 14);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 27);
+		i++;
+		this.gp.getObjects()[mapNum][i] = new OBJ_Door(this.gp);
+		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 11);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 41);
+		i++;
+		this.gp.getObjects()[mapNum][i] = new OBJ_Key(this.gp);
+		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 19);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 22);
+		i++;
+		this.gp.getObjects()[mapNum][i] = new OBJ_Key(this.gp);
+		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 15);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 34);
 		i++;
 	}
 

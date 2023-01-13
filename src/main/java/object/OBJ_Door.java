@@ -8,6 +8,7 @@ public class OBJ_Door extends Entity {
 	public OBJ_Door(GamePanel gp) {
 		super(gp);
 		this.setName("Door");
+		this.setType(EntityType.OBSTACLE);
 		this.setCollision(true);
 		this.loadImages();
 
@@ -23,6 +24,13 @@ public class OBJ_Door extends Entity {
 	@Override
 	protected void loadImages() {
 		this.down1 = this.setup("/objects/door.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+	}
+	
+	// Interage com este obj quando o player pressionar o enter key
+	@Override
+	public void interact() {
+		this.getGp().setGameState(GamePanel.DIALOGUE_STATE);
+		this.getGp().getUi().setCurrentDialogue("You need a key to open this.");
 	}
 
 }
