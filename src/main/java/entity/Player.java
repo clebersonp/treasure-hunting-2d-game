@@ -17,6 +17,7 @@ import main.Sound;
 import object.OBJ_Axe;
 import object.OBJ_Fireball;
 import object.OBJ_Key;
+import object.OBJ_PotionRed;
 import object.OBJ_ShieldWood;
 import object.OBJ_SwordNormal;
 import tile_interactive.InteractiveTile;
@@ -96,6 +97,10 @@ public class Player extends Entity {
 		super.worldX = super.getGp().getTileSize() * 10;
 		super.worldY = super.getGp().getTileSize() * 41;
 
+		// Setar em qualquer posicao no mapa para testes
+		super.worldX = super.getGp().getTileSize() * 12;
+		super.worldY = super.getGp().getTileSize() * 12;
+
 		super.direction = DOWN;
 	}
 
@@ -110,7 +115,23 @@ public class Player extends Entity {
 		this.getInventory().add(this.getCurrentWeapon());
 		this.getInventory().add(this.getCurrentShield());
 		this.getInventory().add(new OBJ_Key(this.getGp()));
+		this.getInventory().add(new OBJ_Key(this.getGp()));
 		this.getInventory().add(new OBJ_Axe(this.getGp()));
+		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
 	}
 
 	public void setAction() {
