@@ -50,13 +50,11 @@ public class OBJ_Chest extends Entity {
 
 			if (Objects.isNull(this.loot)) {
 				sb.append(String.format("\n... But the %s is empty!", this.getName()));
-			} else if (this.getGp().getPlayer().getInventory().size() == this.getGp().getPlayer()
-					.getMaxInventorySize()) {
-				sb.append("\n... But you cannot carry any more!");
-			} else {
+			} else if (this.getGp().getPlayer().canObtainItem(this.loot)) {
 				sb.append(String.format("\nYou obtain the %s!", this.loot.getName()));
-				this.getGp().getPlayer().getInventory().add(this.loot);
 				this.loot = null;
+			} else {
+				sb.append("\n... But you cannot carry any more!");
 			}
 			this.getGp().getUi().setCurrentDialogue(sb.toString());
 		} else {

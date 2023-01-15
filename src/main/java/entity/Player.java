@@ -114,10 +114,12 @@ public class Player extends Entity {
 		this.getInventory().clear();
 		this.getInventory().add(this.getCurrentWeapon());
 		this.getInventory().add(this.getCurrentShield());
-		this.getInventory().add(new OBJ_Key(this.getGp()));
-		this.getInventory().add(new OBJ_Key(this.getGp()));
+		OBJ_Key key = new OBJ_Key(this.getGp());
+//		key.setAmount(3);
+		this.getInventory().add(key);
 		this.getInventory().add(new OBJ_Axe(this.getGp()));
 		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
+//		this.getInventory().add(new OBJ_Key(this.getGp()));
 //		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
 //		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
 //		this.getInventory().add(new OBJ_PotionRed(this.getGp()));
@@ -414,7 +416,8 @@ public class Player extends Entity {
 		if (currentItemIndexOnSlot < this.getInventory().size()) {
 			Entity selectedItemEntity = this.getInventory().get(currentItemIndexOnSlot);
 
-			if (EntityType.SWORD.equals(selectedItemEntity.getType()) || EntityType.AXE.equals(selectedItemEntity.getType())) {
+			if (EntityType.SWORD.equals(selectedItemEntity.getType())
+					|| EntityType.AXE.equals(selectedItemEntity.getType())) {
 				this.setCurrentWeapon(selectedItemEntity);
 				this.setAttack(this.getAttack());
 				this.loadPlayerAttackImages();
@@ -428,10 +431,42 @@ public class Player extends Entity {
 			if (EntityType.CONSUMABLE.equals(selectedItemEntity.getType())) {
 				boolean itemUsed = selectedItemEntity.use(this);
 				if (itemUsed) {
-					this.getInventory().remove(selectedItemEntity);
+					if (selectedItemEntity.getAmount() > 1) {
+						selectedItemEntity.setAmount(selectedItemEntity.getAmount() - 1);
+					} else {
+						this.getInventory().remove(selectedItemEntity);
+					}
 				}
 			}
 		}
+	}
+
+	public boolean canObtainItem(Entity item) {
+		boolean canObtain = false;
+		int index = this.searchItemInInventory(item.getName());
+
+		// CHECK IF STACKABLE
+		if (item.isStackable() && index >= 0) {
+			this.getInventory().get(index).setAmount(this.getInventory().get(index).getAmount() + 1);
+			canObtain = true;
+
+		} else if (this.getInventory().size() != this.getMaxInventorySize()) {
+			this.getInventory().add(item);
+			canObtain = true;
+		}
+
+		return canObtain;
+	}
+
+	public int searchItemInInventory(String itemName) {
+		int index = -1;
+		for (int i = 0; i < this.getInventory().size(); i++) {
+			if (this.getInventory().get(i).getName().equalsIgnoreCase(itemName)) {
+				index = i;
+				break;
+			}
+		}
+		return index;
 	}
 
 	private void contactMonster(int collisionMonsterIndex) {
@@ -478,15 +513,14 @@ public class Player extends Entity {
 					this.attackCancel = true;
 					this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex].interact();
 				}
-				
+
 			} else {
 
 				// INVENTORY ITEMS
 				String text;
-				if (this.getInventory().size() < this.getMaxInventorySize()) {
+				if (this.canObtainItem(this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex])) {
 
 					Entity object = this.getGp().getObjects()[this.getGp().getCurrentMap()][objectIndex];
-					this.getInventory().add(object);
 					new Sound(Sound.COIN, false).play();
 					text = "Got a " + object.getName() + "!";
 

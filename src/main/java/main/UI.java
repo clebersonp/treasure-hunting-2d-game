@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entity.Entity;
+import entity.Entity.EntityType;
 import entity.Player;
 import object.OBJ_CoinBronze;
 import object.OBJ_Heart;
@@ -210,9 +211,9 @@ public class UI {
 				this.subState = 0;
 				this.commandNum = 0;
 				this.gp.setGameState(GamePanel.DIALOGUE_STATE);
-				
+
 				this.changeMusicToBlueBoy();
-				
+
 				this.currentDialogue = "Come again, hehe!";
 			}
 		}
@@ -267,24 +268,23 @@ public class UI {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
-					
+
 					this.changeMusicToBlueBoy();
-					
+
 					this.currentDialogue = "You need more coin to buy that!";
 					this.drawDialogScreen(g2);
-				} else if (this.gp.getPlayer().getInventory().size() == this.gp.getPlayer().getMaxInventorySize()) {
+				} else if (this.gp.getPlayer().canObtainItem(this.npc.getInventory().get(itemIndex))) {
+					this.gp.getPlayer()
+							.setCoin(this.gp.getPlayer().getCoin() - this.npc.getInventory().get(itemIndex).getPrice());
+				} else {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
-					
+
 					this.changeMusicToBlueBoy();
-					
+
 					this.currentDialogue = "You cannot carry any item more!";
 					this.drawDialogScreen(g2);
-				} else {
-					this.gp.getPlayer()
-							.setCoin(this.gp.getPlayer().getCoin() - this.npc.getInventory().get(itemIndex).getPrice());
-					this.gp.getPlayer().getInventory().add(this.npc.getInventory().get(itemIndex));
 				}
 			}
 
@@ -341,13 +341,19 @@ public class UI {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
-					
+
 					this.changeMusicToBlueBoy();
-					
+
 					this.currentDialogue = "You cannot sell an equipped item!";
 				} else {
 					this.gp.getPlayer().setCoin(this.gp.getPlayer().getCoin() + price);
-					this.gp.getPlayer().getInventory().remove(itemIndex);
+					if (this.gp.getPlayer().getInventory().get(itemIndex).isStackable()
+							&& this.gp.getPlayer().getInventory().get(itemIndex).getAmount() > 1) {
+						this.gp.getPlayer().getInventory().get(itemIndex)
+								.setAmount(this.gp.getPlayer().getInventory().get(itemIndex).getAmount() - 1);
+					} else {
+						this.gp.getPlayer().getInventory().remove(itemIndex);
+					}
 				}
 			}
 		}
@@ -822,6 +828,15 @@ public class UI {
 			}
 
 			g2.drawImage(entity.getInventory().get(i).getDown1(), slotX, slotY, null);
+			if (entity.getInventory().get(i).isStackable() && entity.getInventory().get(i).getAmount() > 1
+					&& entity.getType() == EntityType.PLAYER) {
+				g2.setColor(Color.white);
+				g2.setFont(g2.getFont().deriveFont(20F));
+				String text = Integer.toString(entity.getInventory().get(i).getAmount());
+				int x = this.getXTextPositionAlignToRight(g2, text, slotX + this.gp.getTileSize());
+				int y = slotY + this.gp.getTileSize() - 2;
+				g2.drawString(text, x, y);
+			}
 
 			slotX += slotSize;
 			if (i == 4 || i == 9 || i == 14) {

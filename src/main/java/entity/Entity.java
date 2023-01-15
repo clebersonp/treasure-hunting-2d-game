@@ -98,6 +98,8 @@ public abstract class Entity {
 	private int value;
 	private int price;
 	private int knockBackPower = 0;
+	private boolean stackable = false;
+	private int amount = 1;
 
 	// INVENTORY
 	private final List<Entity> inventory = new ArrayList<>();
@@ -231,9 +233,9 @@ public abstract class Entity {
 		this.setDialogueIndex(this.getDialogueIndex() + 1);
 
 	}
-	
+
 	public void interact() {
-		
+
 	}
 
 	public void draw(Graphics2D g2) {
@@ -333,39 +335,36 @@ public abstract class Entity {
 
 	public int getDetected(Entity user, Entity[][] target, String targetName) {
 		int objIndex = -1;
-		
+
 		// Check the surrounding object
 		int nextWorldX = user.getLeftX();
 		int nextWorldY = user.getTopY();
-		
-		switch(user.getDirection()) {
+
+		switch (user.getDirection()) {
 		case UP -> nextWorldY = user.getTopY() - 1;
 		case DOWN -> nextWorldY = user.getBottomY() + 1;
 		case LEFT -> nextWorldX = user.getLeftX() - 1;
 		case RIGHT -> nextWorldX = user.getRightX() + 1;
 		}
-		
+
 		int col = nextWorldX / this.gp.getTileSize();
 		int row = nextWorldY / this.gp.getTileSize();
-		
+
 		for (int i = 0; i < target[this.gp.getCurrentMap()].length; i++) {
 			Entity entityTarget = target[this.gp.getCurrentMap()][i];
 			if (Objects.nonNull(entityTarget)) {
-				if (entityTarget.getCol() == col
-						&& entityTarget.getRow() == row
+				if (entityTarget.getCol() == col && entityTarget.getRow() == row
 						&& entityTarget.getName().equalsIgnoreCase(targetName)) {
-					
+
 					objIndex = i;
 					break;
 				}
 			}
 		}
-		
-		
-		
+
 		return objIndex;
 	}
-	
+
 	public void checkDrop() {
 
 	}
@@ -494,27 +493,27 @@ public abstract class Entity {
 	public int getLeftX() {
 		return this.worldX + this.solidArea.x;
 	}
-	
+
 	public int getRightX() {
 		return this.getLeftX() + this.solidArea.width;
 	}
-	
+
 	public int getTopY() {
 		return this.worldY + this.solidArea.y;
 	}
-	
+
 	public int getBottomY() {
 		return this.getTopY() + this.solidArea.height;
 	}
-	
+
 	public int getCol() {
 		return this.getLeftX() / this.gp.getTileSize();
 	}
-	
+
 	public int getRow() {
 		return this.getTopY() / this.gp.getTileSize();
 	}
-	
+
 	public int getWorldX() {
 		return worldX;
 	}
@@ -989,6 +988,22 @@ public abstract class Entity {
 
 	public void setKnockBackPower(int knockBackPower) {
 		this.knockBackPower = knockBackPower;
+	}
+
+	public boolean isStackable() {
+		return stackable;
+	}
+
+	public void setStackable(boolean stackable) {
+		this.stackable = stackable;
+	}
+
+	public int getAmount() {
+		return amount;
+	}
+
+	public void setAmount(int amount) {
+		this.amount = amount;
 	}
 
 	public static enum Direction {

@@ -15,6 +15,7 @@ public class OBJ_PotionRed extends Entity {
 		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nHeals your life by " + this.getValue() + ".");
 		this.setPrice(35);
+		this.setStackable(true);
 	}
 
 	@Override
