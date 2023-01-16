@@ -29,6 +29,7 @@ public class Player extends Entity {
 	private int screenX;
 	private int screenY;
 	private boolean attackCancel = false;
+	private boolean lightUpdated = false;
 
 	public Player(final GamePanel gp, final KeyHandler keyHandler) {
 		super(gp);
@@ -438,6 +439,15 @@ public class Player extends Entity {
 					}
 				}
 			}
+
+			if (EntityType.LIGHT.equals(selectedItemEntity.getType())) {
+				if (this.getCurrentLight() == selectedItemEntity) {
+					this.setCurrentLight(null);
+				} else {
+					this.setCurrentLight(selectedItemEntity);
+				}
+				this.lightUpdated = true;
+			}
 		}
 	}
 
@@ -679,6 +689,14 @@ public class Player extends Entity {
 
 	public void setAttackCancel(boolean attackCancel) {
 		this.attackCancel = attackCancel;
+	}
+
+	public boolean isLightUpdated() {
+		return lightUpdated;
+	}
+
+	public void setLightUpdated(boolean lightUpdated) {
+		this.lightUpdated = lightUpdated;
 	}
 
 	@Override

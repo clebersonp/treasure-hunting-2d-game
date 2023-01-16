@@ -820,7 +820,8 @@ public class UI {
 
 			// EQUIP CURSOR
 			if (entity.getInventory().get(i) == entity.getCurrentWeapon()
-					|| entity.getInventory().get(i) == entity.getCurrentShield()) {
+					|| entity.getInventory().get(i) == entity.getCurrentShield()
+					|| entity.getInventory().get(i) == entity.getCurrentLight()) {
 
 				g2.setColor(new Color(240, 190, 90));
 				g2.fillRoundRect(slotX, slotY, this.gp.getTileSize(), this.gp.getTileSize(), 10, 10);

@@ -88,6 +88,7 @@ public abstract class Entity {
 	private int coin;
 	private Entity currentWeapon;
 	private Entity currentShield;
+	private Entity currentLight;
 	private Projectile projectile;
 
 	// ITEM ATTRIBUTES
@@ -100,6 +101,7 @@ public abstract class Entity {
 	private int knockBackPower = 0;
 	private boolean stackable = false;
 	private int amount = 1;
+	private int lightRadius;
 
 	// INVENTORY
 	private final List<Entity> inventory = new ArrayList<>();
@@ -1006,12 +1008,28 @@ public abstract class Entity {
 		this.amount = amount;
 	}
 
+	public Entity getCurrentLight() {
+		return currentLight;
+	}
+
+	public void setCurrentLight(Entity currentLight) {
+		this.currentLight = currentLight;
+	}
+
+	public int getLightRadius() {
+		return lightRadius;
+	}
+
+	public void setLightRadius(int lightRadius) {
+		this.lightRadius = lightRadius;
+	}
+
 	public static enum Direction {
 		UP, DOWN, LEFT, RIGHT, ANY;
 	}
 
 	public static enum EntityType {
-		PLAYER, NPC, MONSTER, SWORD, AXE, SHIELD, CONSUMABLE, PICKUP_ONLY, OBSTACLE;
+		PLAYER, NPC, MONSTER, SWORD, AXE, SHIELD, CONSUMABLE, PICKUP_ONLY, OBSTACLE, LIGHT;
 	}
 
 }

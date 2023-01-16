@@ -9,6 +9,7 @@ import object.OBJ_CoinBronze;
 import object.OBJ_Door;
 import object.OBJ_Heart;
 import object.OBJ_Key;
+import object.OBJ_Lantern;
 import object.OBJ_Mana;
 import object.OBJ_PotionRed;
 import object.OBJ_ShieldBlue;
@@ -58,9 +59,9 @@ public class AssetSetter {
 		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 6);
 		i++;
 
-		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
+		this.gp.getObjects()[mapNum][i] = new OBJ_Lantern(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
-		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 12);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 15);
 		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 14);
