@@ -3,10 +3,6 @@ package environment;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RadialGradientPaint;
-import java.awt.Shape;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import main.GamePanel;
@@ -27,27 +23,10 @@ public class Lighting {
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g2 = (Graphics2D) this.darknessFilter.getGraphics();
 
-		// Create a screen-sized rectangle Area
-		Area screenArea = new Area(new Rectangle2D.Double(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight()));
-
 		// Get the center x and y of the ligth circle
 		float centerX = this.gp.getPlayer().getScreenX() + (this.gp.getTileSize() / 2);
 		float centerY = this.gp.getPlayer().getScreenY() + (this.gp.getTileSize() / 2);
 
-		// Get the top left x and y position from the center of the light circle
-		double x = centerX - circleRadius;
-		double y = centerY - circleRadius;
-
-		// Create a light circle shape;
-		Shape circleShape = new Ellipse2D.Double(x, y, circleDiameter, circleDiameter);
-
-		// Create a light circle area
-		Area lightArea = new Area(circleShape);
-
-		// Subtract the light circle from the screen rectangle
-		screenArea.subtract(lightArea);
-
-		//
 		Color[] colors = new Color[12];
 		colors[0] = new Color(0, 0, 0, 0.1F);
 		colors[1] = new Color(0, 0, 0, 0.42F);
@@ -62,8 +41,6 @@ public class Lighting {
 		colors[10] = new Color(0, 0, 0, 0.96F);
 		colors[11] = new Color(0, 0, 0, 0.996F);
 
-
-		//
 		float[] factions = new float[12];
 		factions[0] = 0;
 		factions[1] = 0.4F;
@@ -77,19 +54,14 @@ public class Lighting {
 		factions[9] = 0.9F;
 		factions[10] = 0.95F;
 		factions[11] = 1F;
-		
 
 		// Create a gradation paint settings for the light circle
 		RadialGradientPaint radialPaint = new RadialGradientPaint(centerX, centerY, circleRadius, factions, colors);
-		
+
 		// Set the gradient data on g2
 		g2.setPaint(radialPaint);
-		
-		// Draw the light circle
-		g2.fill(lightArea);
 
-		// Draw the screen rectangle without the light circle area
-		g2.fill(screenArea);
+		g2.fillRect(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight());
 
 		g2.dispose();
 	}
