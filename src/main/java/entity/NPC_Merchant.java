@@ -3,6 +3,7 @@ package entity;
 import main.GamePanel;
 import object.OBJ_Axe;
 import object.OBJ_Key;
+import object.OBJ_Lantern;
 import object.OBJ_PotionRed;
 import object.OBJ_ShieldBlue;
 import object.OBJ_ShieldWood;
@@ -51,6 +52,7 @@ public class NPC_Merchant extends Entity {
 		this.getInventory().add(new OBJ_Axe(this.getGp()));
 		this.getInventory().add(new OBJ_ShieldWood(this.getGp()));
 		this.getInventory().add(new OBJ_ShieldBlue(this.getGp()));
+		this.getInventory().add(new OBJ_Lantern(this.getGp()));
 	}
 
 	@Override

@@ -337,7 +337,9 @@ public class UI {
 			if (this.gp.getKeyHandler().isEnterPressed()) {
 				if (this.gp.getPlayer().getInventory().get(itemIndex).equals(this.gp.getPlayer().getCurrentWeapon())
 						|| this.gp.getPlayer().getInventory().get(itemIndex)
-								.equals(this.gp.getPlayer().getCurrentShield())) {
+								.equals(this.gp.getPlayer().getCurrentShield())
+						|| this.gp.getPlayer().getInventory().get(itemIndex)
+								.equals(this.gp.getPlayer().getCurrentLight())) {
 					this.subState = 0;
 					this.commandNum = 0;
 					this.gp.setGameState(GamePanel.DIALOGUE_STATE);
