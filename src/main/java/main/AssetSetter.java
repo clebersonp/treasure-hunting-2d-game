@@ -33,10 +33,10 @@ public class AssetSetter {
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 20);
 		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 21);
 		i++;
-		this.gp.getObjects()[mapNum][i] = new OBJ_Door(this.gp);
-		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 14);
-		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 28);
-		i++;
+//		this.gp.getObjects()[mapNum][i] = new OBJ_Door(this.gp);
+//		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 14);
+//		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 28);
+//		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 26);
 		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 21);
