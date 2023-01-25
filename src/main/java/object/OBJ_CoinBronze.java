@@ -11,11 +11,11 @@ public class OBJ_CoinBronze extends Entity {
 		this.setName("Bronze Coin");
 		this.setType(EntityType.PICKUP_ONLY);
 		this.setValue(1);
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/coin_bronze.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

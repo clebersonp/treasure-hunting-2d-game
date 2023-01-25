@@ -10,14 +10,14 @@ public class OBJ_Key extends Entity {
 		super(gp);
 		this.setName("Key");
 		this.setType(EntityType.CONSUMABLE);
-		this.loadImages();
+		this.loadPlayerImages();
 		this.setDescription("[" + this.getName() + "]\nIt opens a door.");
 		this.setPrice(15);
 		this.setStackable(true);
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/key.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

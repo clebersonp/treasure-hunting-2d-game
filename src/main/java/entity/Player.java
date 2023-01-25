@@ -51,7 +51,7 @@ public class Player extends Entity {
 		super.solidArea.height = 31;
 
 		this.setDefaultValues();
-		this.loadImages();
+		this.loadPlayerImages();
 		this.loadPlayerAttackImages();
 		this.setInventoryItems();
 	}
@@ -623,7 +623,7 @@ public class Player extends Entity {
 		}
 	}
 
-	public void loadImages() {
+	public void loadPlayerImages() {
 		super.up1 = this.setup("/player/boy_up_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.up2 = this.setup("/player/boy_up_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.right1 = this.setup("/player/boy_right_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
@@ -632,6 +632,17 @@ public class Player extends Entity {
 		super.down2 = this.setup("/player/boy_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.left1 = this.setup("/player/boy_left_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.left2 = this.setup("/player/boy_left_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
+	}
+
+	public void loadSleepingImages(BufferedImage image) {
+		super.up1 = image;
+		super.up2 = image;
+		super.right1 = image;
+		super.right2 = image;
+		super.down1 = image;
+		super.down2 = image;
+		super.left1 = image;
+		super.left2 = image;
 	}
 
 	public void loadPlayerAttackImages() {

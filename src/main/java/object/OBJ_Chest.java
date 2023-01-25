@@ -25,11 +25,11 @@ public class OBJ_Chest extends Entity {
 		this.solidAreaDefaultX = this.solidArea.x;
 		this.solidAreaDefaultY = this.solidArea.y;
 
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.image = this.setup("/objects/chest.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		this.image2 = this.setup("/objects/chest_opened.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		this.down1 = image;

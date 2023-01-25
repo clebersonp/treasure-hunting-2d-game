@@ -11,11 +11,11 @@ public class OBJ_Heart extends Entity {
 		this.setName("Heart");
 		this.setType(EntityType.PICKUP_ONLY);
 		this.setValue(2);
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/heart_full.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		this.image = this.setup("/objects/heart_full.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		this.image2 = this.setup("/objects/heart_half.png", this.getGp().getTileSize(), this.getGp().getTileSize());

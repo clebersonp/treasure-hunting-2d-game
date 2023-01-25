@@ -13,6 +13,7 @@ import java.util.List;
 import entity.Entity;
 import entity.Entity.EntityType;
 import entity.Player;
+import environment.Lighting.DayState;
 import object.OBJ_CoinBronze;
 import object.OBJ_Heart;
 import object.OBJ_Mana;
@@ -110,6 +111,9 @@ public class UI {
 
 			this.changeMusicToMerchant();
 			this.drawTradeScreen(g2);
+		}
+		case GamePanel.SLEEP_STATE -> {
+			this.drawSleepScreen(g2);
 		}
 		}
 
@@ -1205,6 +1209,29 @@ public class UI {
 		int y = this.gp.getScreenHeight() / 2;
 
 		g2.drawString(text, x, y);
+	}
+
+	public void drawSleepScreen(Graphics2D g2) {
+		this.counter++;
+		if (this.counter < 120) {
+			this.gp.geteManager().getLighting()
+					.setFilterAlpha(this.gp.geteManager().getLighting().getFilterAlpha() + 0.01f);
+			if (this.gp.geteManager().getLighting().getFilterAlpha() >= 1f) {
+				this.gp.geteManager().getLighting().setFilterAlpha(1f);
+			}
+		}
+		if (this.counter >= 120) {
+			this.gp.geteManager().getLighting()
+					.setFilterAlpha(this.gp.geteManager().getLighting().getFilterAlpha() - 0.01f);
+			if (this.gp.geteManager().getLighting().getFilterAlpha() <= 0f) {
+				this.counter = 0;
+				this.gp.geteManager().getLighting().setFilterAlpha(0f);
+				this.gp.geteManager().getLighting().setDayState(DayState.DAY);
+				this.gp.geteManager().getLighting().setDayCounter(0);
+				this.gp.setGameState(GamePanel.PLAY_STATE);
+				this.gp.getPlayer().loadPlayerImages();
+			}
+		}
 	}
 
 	private int getXTextPositionCenter(Graphics2D g2, String text) {

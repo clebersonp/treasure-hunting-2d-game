@@ -11,11 +11,11 @@ public class OBJ_Mana extends Entity {
 		this.setName("Mana Crystal");
 		this.setType(EntityType.PICKUP_ONLY);
 		this.setValue(1);
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/manacrystal_full.png", this.getGp().getTileSize(),
 				this.getGp().getTileSize());
 		this.image = this.setup("/objects/manacrystal_full.png", this.getGp().getTileSize(),

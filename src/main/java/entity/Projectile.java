@@ -10,7 +10,7 @@ public abstract class Projectile extends Entity {
 		super(gp);
 	}
 
-	protected abstract void loadImages();
+	protected abstract void loadPlayerImages();
 
 	public void set(int worldX, int worldY, Entity.Direction direction, boolean alive, Entity user) {
 

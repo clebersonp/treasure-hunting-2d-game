@@ -13,6 +13,7 @@ import object.OBJ_Lantern;
 import object.OBJ_Mana;
 import object.OBJ_PotionRed;
 import object.OBJ_ShieldBlue;
+import object.OBJ_Tent;
 import tile_interactive.IT_DryTree;
 
 public class AssetSetter {
@@ -62,6 +63,10 @@ public class AssetSetter {
 		this.gp.getObjects()[mapNum][i] = new OBJ_Lantern(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
 		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 15);
+		i++;
+		this.gp.getObjects()[mapNum][i] = new OBJ_Tent(this.gp);
+		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 17);
 		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 14);

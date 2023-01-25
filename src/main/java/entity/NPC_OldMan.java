@@ -19,11 +19,11 @@ public class NPC_OldMan extends Entity {
 		this.direction = Entity.Direction.DOWN;
 		this.setDefaultSpeed(1);
 		this.setSpeed(this.getDefaultSpeed());
-		this.loadImages();
+		this.loadPlayerImages();
 		this.setDialogue();
 	}
 
-	public void loadImages() {
+	public void loadPlayerImages() {
 		super.up1 = this.setup("/npc/oldman_up_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.up2 = this.setup("/npc/oldman_up_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.right1 = this.setup("/npc/oldman_right_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());

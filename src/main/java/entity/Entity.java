@@ -223,7 +223,7 @@ public abstract class Entity {
 		}
 	}
 
-	protected abstract void loadImages();
+	protected abstract void loadPlayerImages();
 
 	public void speak() {
 

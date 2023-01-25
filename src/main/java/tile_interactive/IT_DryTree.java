@@ -22,11 +22,11 @@ public class IT_DryTree extends InteractiveTile {
 		this.setMaxLife(3);
 		this.setLife(this.getMaxLife());
 		this.setDestructible(Boolean.TRUE);
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/tiles_interactive/drytree.png", this.getGp().getTileSize(),
 				this.getGp().getTileSize());
 	}

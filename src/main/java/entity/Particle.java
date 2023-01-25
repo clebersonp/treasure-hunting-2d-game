@@ -31,7 +31,7 @@ public class Particle extends Entity {
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 
 	}
 

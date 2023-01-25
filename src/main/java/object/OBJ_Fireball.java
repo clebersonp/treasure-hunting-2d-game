@@ -22,11 +22,11 @@ public class OBJ_Fireball extends Projectile {
 		this.setAttack(1);
 		this.setUseCost(1);
 		this.setAlive(Boolean.FALSE);
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.up1 = this.setup("/projectiles/fireball_up_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		this.up2 = this.setup("/projectiles/fireball_up_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		this.down1 = this.setup("/projectiles/fireball_down_1.png", this.getGp().getTileSize(),

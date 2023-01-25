@@ -13,13 +13,13 @@ public class OBJ_SwordNormal extends Entity {
 		this.setKnockBackPower(8);
 		this.attackArea.width = 36;
 		this.attackArea.height = 36;
-		this.loadImages();
+		this.loadPlayerImages();
 		this.setDescription("[" + this.getName() + "]\nAn old sword.");
 		this.setPrice(45);
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/sword_normal.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

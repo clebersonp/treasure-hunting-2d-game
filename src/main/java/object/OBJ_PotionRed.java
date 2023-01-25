@@ -12,14 +12,14 @@ public class OBJ_PotionRed extends Entity {
 		this.setName("Red Potion");
 		this.setValue(5);
 		this.setDefenseValue(2);
-		this.loadImages();
+		this.loadPlayerImages();
 		this.setDescription("[" + this.getName() + "]\nHeals your life by " + this.getValue() + ".");
 		this.setPrice(35);
 		this.setStackable(true);
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/potion_red.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

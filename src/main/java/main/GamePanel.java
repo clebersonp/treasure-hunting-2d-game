@@ -91,6 +91,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int GAME_OVER_STATE = 6;
 	public static final int TRANSITION_STATE = 7;
 	public static final int TRADE_STATE = 8;
+	public static final int SLEEP_STATE = 9;
 
 	// CONFIG
 	private Config config = new Config(this);
@@ -270,8 +271,8 @@ public class GamePanel extends JPanel implements Runnable {
 		} else if (this.gameState == DIALOGUE_STATE) {
 
 		} else if (this.gameState == CHARACTER_STATE) {
-			this.eManager.update();
 		}
+		this.eManager.update();
 	}
 
 	public void drawToTempScreen() {

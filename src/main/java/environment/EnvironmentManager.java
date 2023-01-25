@@ -21,9 +21,13 @@ public class EnvironmentManager {
 	public void update() {
 		this.lighting.update();
 	}
-	
+
 	public void draw(Graphics2D g2) {
 		this.lighting.draw(g2);
+	}
+
+	public Lighting getLighting() {
+		return lighting;
 	}
 
 }

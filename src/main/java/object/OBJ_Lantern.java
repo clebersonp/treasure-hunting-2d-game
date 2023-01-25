@@ -9,14 +9,14 @@ public class OBJ_Lantern extends Entity {
 		super(gp);
 		this.setName("Lanter");
 		this.setType(EntityType.LIGHT);
-		this.loadImages();
+		this.loadPlayerImages();
 		this.setDescription("[" + this.getName() + "]\nIlluminates your \nsurroundings.");
 		this.setPrice(200);
-		this.setLightRadius(250);
+		this.setLightRadius(450);
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.down1 = this.setup("/objects/lantern.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

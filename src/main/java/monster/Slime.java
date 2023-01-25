@@ -34,11 +34,11 @@ public class Slime extends Entity {
 
 		this.setProjectile(new OBJ_Rock(gp));
 
-		this.loadImages();
+		this.loadPlayerImages();
 	}
 
 	@Override
-	protected void loadImages() {
+	protected void loadPlayerImages() {
 		this.up1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(),
 				this.getGp().getTileSize());
 		this.up2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(),
