@@ -74,7 +74,7 @@ public class AssetSetter {
 		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 11);
-		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 41);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 20);
 		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 19);
@@ -82,7 +82,7 @@ public class AssetSetter {
 		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_PotionRed(this.gp);
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 15);
-		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 34);
+		this.gp.getObjects()[mapNum][i].setWorldY(this.gp.getTileSize() * 30);
 		i++;
 		this.gp.getObjects()[mapNum][i] = new OBJ_Chest(this.gp, new OBJ_PotionRed(this.gp));
 		this.gp.getObjects()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
@@ -98,11 +98,10 @@ public class AssetSetter {
 		this.gp.getNpcs()[mapNum][i].setWorldY(this.gp.getTileSize() * 21);
 		i++;
 		
-		mapNum++;
 		i = 0;
 		this.gp.getNpcs()[mapNum][i] = new NPC_Merchant(this.gp);
-		this.gp.getNpcs()[mapNum][i].setWorldX(this.gp.getTileSize() * 12);
-		this.gp.getNpcs()[mapNum][i].setWorldY(this.gp.getTileSize() * 7);
+		this.gp.getNpcs()[mapNum][i].setWorldX(this.gp.getTileSize() * 6);
+		this.gp.getNpcs()[mapNum][i].setWorldY(this.gp.getTileSize() * 29);
 	}
 
 	public void setMonsters() {
@@ -110,12 +109,12 @@ public class AssetSetter {
 		int i = 0;
 		this.gp.getMonsters()[mapNum][i] = new Slime(this.gp);
 		this.gp.getMonsters()[mapNum][i].setWorldX(this.gp.getTileSize() * 21);
-		this.gp.getMonsters()[mapNum][i].setWorldY(this.gp.getTileSize() * 41);
+		this.gp.getMonsters()[mapNum][i].setWorldY(this.gp.getTileSize() * 5);
 		i++;
 
 		this.gp.getMonsters()[mapNum][i] = new Slime(this.gp);
 		this.gp.getMonsters()[mapNum][i].setWorldX(this.gp.getTileSize() * 23);
-		this.gp.getMonsters()[mapNum][i].setWorldY(this.gp.getTileSize() * 40);
+		this.gp.getMonsters()[mapNum][i].setWorldY(this.gp.getTileSize() * 8);
 		i++;
 //
 //		this.gp.getMonsters()[mapNum][i] = new Slime(this.gp);

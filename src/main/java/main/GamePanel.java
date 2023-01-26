@@ -38,8 +38,8 @@ public class GamePanel extends JPanel implements Runnable {
 	final private int screenHeight = tileSize * maxScreenRow; // 576 pixels
 
 	// WORLD SETTINGS
-	private final int maxWorldCol = 50;
-	private final int maxWorldRow = 50;
+	private int maxWorldCol;
+	private int maxWorldRow;
 
 	// MAPS
 	private final int maxMap = 10;
@@ -112,8 +112,7 @@ public class GamePanel extends JPanel implements Runnable {
 		this.assetSetter.setMonsters();
 		this.assetSetter.setInteractiveTiles();
 		this.eManager.setup();
-		
-		
+
 //		this.playMusic(0);
 		this.gameState = TITLE_STATE;
 
@@ -265,7 +264,7 @@ public class GamePanel extends JPanel implements Runnable {
 					this.interactiveTiles[this.currentMap][i].update();
 				}
 			}
-			
+
 		} else if (this.gameState == PAUSE_STATE) {
 			// do nothing
 		} else if (this.gameState == DIALOGUE_STATE) {
@@ -332,10 +331,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// clean the list
 			this.entities.clear();
-			
+
 			// Environment Manager
 			this.eManager.draw(g2);
-			
+
 			// UI
 			this.ui.draw(g2);
 		}
@@ -427,6 +426,14 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public int getMaxWorldRow() {
 		return maxWorldRow;
+	}
+
+	public void setMaxWorldCol(int maxWorldCol) {
+		this.maxWorldCol = maxWorldCol;
+	}
+
+	public void setMaxWorldRow(int maxWorldRow) {
+		this.maxWorldRow = maxWorldRow;
 	}
 
 	public Player getPlayer() {
