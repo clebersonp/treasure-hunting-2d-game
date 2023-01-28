@@ -2,7 +2,7 @@ package main;
 
 import entity.NPC_Merchant;
 import entity.NPC_OldMan;
-import monster.Slime;
+import monster.MON_GreenSlime;
 import object.OBJ_Axe;
 import object.OBJ_Chest;
 import object.OBJ_CoinBronze;
@@ -107,12 +107,12 @@ public class AssetSetter {
 	public void setMonsters() {
 		int mapNum = 0;
 		int i = 0;
-		this.gp.getMonsters()[mapNum][i] = new Slime(this.gp);
+		this.gp.getMonsters()[mapNum][i] = new MON_GreenSlime(this.gp);
 		this.gp.getMonsters()[mapNum][i].setWorldX(this.gp.getTileSize() * 21);
 		this.gp.getMonsters()[mapNum][i].setWorldY(this.gp.getTileSize() * 5);
 		i++;
 
-		this.gp.getMonsters()[mapNum][i] = new Slime(this.gp);
+		this.gp.getMonsters()[mapNum][i] = new MON_GreenSlime(this.gp);
 		this.gp.getMonsters()[mapNum][i].setWorldX(this.gp.getTileSize() * 23);
 		this.gp.getMonsters()[mapNum][i].setWorldY(this.gp.getTileSize() * 8);
 		i++;

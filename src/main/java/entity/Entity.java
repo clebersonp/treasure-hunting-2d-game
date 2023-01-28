@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -121,6 +122,84 @@ public abstract class Entity {
 			e.printStackTrace();
 		}
 		return scaledImage;
+	}
+
+	public int getxDistance(Entity target) {
+		return Math.abs(this.worldX - target.getWorldX());
+	}
+
+	public int getyDistance(Entity target) {
+		return Math.abs(this.worldY - target.getWorldY());
+	}
+
+	public int getTileDistance(Entity target) {
+		return (this.getxDistance(target) + this.getyDistance(target)) / this.getGp().getTileSize();
+	}
+
+	public int getGoalRow(Entity target) {
+		return (target.getWorldY() + target.getSolidArea().y) / this.getGp().getTileSize();
+	}
+
+	public int getGoalCol(Entity target) {
+		return (target.getWorldX() + target.getSolidArea().x) / this.getGp().getTileSize();
+	}
+
+	public void checkStopChasingOrNot(Entity target, int distance, int rate) {
+		if (this.getTileDistance(target) > distance) {
+			int i = new Random().nextInt(rate);
+			if (i == 0) {
+				this.onPath = false;
+			}
+		}
+	}
+
+	public void checkStartChasingOrNot(Entity target, int distance, int rate) {
+		if (this.getTileDistance(target) < distance) {
+			int i = new Random().nextInt(rate);
+			if (i == 0) {
+				this.onPath = true;
+			}
+		}
+	}
+
+	public void checkShootOrNot(int rate, int shotInterval) {
+		int i = new Random().nextInt(rate);
+		if (i == 0 && !this.getProjectile().isAlive() && this.getShotAvailableCounter() == shotInterval) {
+			this.getProjectile().set(this.worldX, this.worldY, this.direction, Boolean.TRUE, this);
+
+			for (int y = 0; y < this.getGp().getProjectiles()[this.getGp().getCurrentMap()].length; y++) {
+				if (Objects.isNull(this.getGp().getProjectiles()[this.getGp().getCurrentMap()][y])) {
+					this.getGp().getProjectiles()[this.getGp().getCurrentMap()][y] = this.getProjectile();
+					this.setShotAvailableCounter(0);
+					break;
+				}
+			}
+		}
+	}
+
+	public void getRandomDirection() {
+		this.setActionLockCounter(this.getActionLockCounter() + 1);
+
+		if (this.getActionLockCounter() == 120) {
+
+			Random random = new Random();
+			int i = random.nextInt(100) + 1;
+
+			if (i <= 25) {
+				this.direction = Entity.Direction.UP;
+			}
+			if (i > 25 && i <= 50) {
+				this.direction = Entity.Direction.DOWN;
+			}
+			if (i > 50 && i <= 75) {
+				this.direction = Entity.Direction.LEFT;
+			}
+			if (i > 75 && i <= 100) {
+				this.direction = Entity.Direction.RIGHT;
+			}
+
+			this.setActionLockCounter(0);
+		}
 	}
 
 	public void setAction() {

@@ -34,6 +34,7 @@ public class Map extends TileManager {
 					g2.drawImage(this.getTiles()[tileNum].getImage(), x, y, null);
 				}
 			}
+			g2.dispose();
 		}
 	}
 
