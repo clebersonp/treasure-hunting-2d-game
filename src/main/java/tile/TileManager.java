@@ -211,6 +211,10 @@ public class TileManager {
 		return tiles;
 	}
 
+	public GamePanel getGp() {
+		return gp;
+	}
+
 	public static final class TileData {
 		private final int index;
 		private final String name;

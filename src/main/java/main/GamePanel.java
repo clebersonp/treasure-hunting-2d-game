@@ -20,6 +20,7 @@ import config.Config;
 import entity.Entity;
 import entity.Player;
 import environment.EnvironmentManager;
+import tile.Map;
 import tile.TileManager;
 import tile_interactive.InteractiveTile;
 
@@ -59,13 +60,13 @@ public class GamePanel extends JPanel implements Runnable {
 	private TileManager tileManager = new TileManager(this);
 	private KeyHandler keyHandler = new KeyHandler(this);
 	private Sound music = new Sound(Sound.BLUE_BOY_ADVENTURE, true);
-
 	private CollisionChecker collisionChecker = new CollisionChecker(this);
 	private AssetSetter assetSetter = new AssetSetter(this);
 	private UI ui = new UI(this);
 	private EventHandler eventHandler = new EventHandler(this);
 	private Thread gameThread;
 	private final EnvironmentManager eManager = new EnvironmentManager(this);
+	private Map map = new Map(this);
 
 	// ENTITY, OBJECTS, MONSTERS, TILES, NPCS
 	private Player player = new Player(this, keyHandler);
@@ -92,6 +93,7 @@ public class GamePanel extends JPanel implements Runnable {
 	public static final int TRANSITION_STATE = 7;
 	public static final int TRADE_STATE = 8;
 	public static final int SLEEP_STATE = 9;
+	public static final int MAP_STATE = 10;
 
 	// CONFIG
 	private Config config = new Config(this);
@@ -284,7 +286,13 @@ public class GamePanel extends JPanel implements Runnable {
 			// UI
 			this.ui.draw(g2);
 
-		} else {
+		}
+		// MAP SCREEN
+		else if (this.gameState == MAP_STATE) {
+			this.map.drawFullMapScreen(this.g2);
+		}
+		// OTHERS
+		else {
 			// TILES
 			this.tileManager.draw(g2);
 
@@ -334,6 +342,9 @@ public class GamePanel extends JPanel implements Runnable {
 
 			// Environment Manager
 			this.eManager.draw(g2);
+
+			// MINI MAP
+			this.map.drawMiniMap(this.g2);
 
 			// UI
 			this.ui.draw(g2);
@@ -558,6 +569,10 @@ public class GamePanel extends JPanel implements Runnable {
 
 	public EnvironmentManager geteManager() {
 		return eManager;
+	}
+
+	public Map getMap() {
+		return map;
 	}
 
 }

@@ -685,10 +685,18 @@ public class UI {
 		textY += this.gp.getTileSize();
 		g2.drawString(text, textX, textY);
 
+		text = "Map";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+
+		text = "Mini Map";
+		textY += this.gp.getTileSize();
+		g2.drawString(text, textX, textY);
+
 		text = "Options";
 		textY += this.gp.getTileSize();
 		g2.drawString(text, textX, textY);
-		textY += this.gp.getTileSize() * 2;
+		textY += this.gp.getTileSize() + 10;
 
 		text = "Back";
 		if (this.commandNum == 0) {
@@ -723,6 +731,12 @@ public class UI {
 		g2.drawString(text, textX, textY);
 		textY += this.gp.getTileSize();
 		text = "P";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+		text = "M";
+		g2.drawString(text, textX, textY);
+		textY += this.gp.getTileSize();
+		text = "X";
 		g2.drawString(text, textX, textY);
 		textY += this.gp.getTileSize();
 		text = "ESC";
@@ -1319,6 +1333,18 @@ public class UI {
 
 	public void setMerchantMusicOn(boolean merchantMusicOn) {
 		this.merchantMusicOn = merchantMusicOn;
+	}
+
+	public Font getPurisaB() {
+		return purisaB;
+	}
+
+	public Font getUnderdog() {
+		return underdog;
+	}
+
+	public Font getPressStart() {
+		return pressStart;
 	}
 
 	public static interface SubState {

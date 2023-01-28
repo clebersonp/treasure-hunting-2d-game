@@ -66,6 +66,17 @@ public class KeyHandler implements KeyListener {
 		else if (this.gp.getGameState() == GamePanel.TRADE_STATE) {
 			this.tradeState(keyCode);
 		}
+
+		// MAP STATE
+		else if (this.gp.getGameState() == GamePanel.MAP_STATE) {
+			this.mapState(keyCode);
+		}
+	}
+
+	private void mapState(int keyCode) {
+		if (keyCode == KeyEvent.VK_M) {
+			this.gp.setGameState(GamePanel.PLAY_STATE);
+		}
 	}
 
 	private void tradeState(int keyCode) {
@@ -247,6 +258,8 @@ public class KeyHandler implements KeyListener {
 		case KeyEvent.VK_ENTER -> this.enterPressed = true;
 		case KeyEvent.VK_F -> this.shotKeyPressed = true;
 		case KeyEvent.VK_ESCAPE -> this.gp.setGameState(GamePanel.OPTIONS_STATE);
+		case KeyEvent.VK_M -> this.gp.setGameState(GamePanel.MAP_STATE);
+		case KeyEvent.VK_X -> this.gp.getMap().setMiniMapOn(!this.gp.getMap().isMiniMapOn());
 		}
 	}
 
