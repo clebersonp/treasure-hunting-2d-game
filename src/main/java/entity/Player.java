@@ -51,7 +51,7 @@ public class Player extends Entity {
 		super.solidArea.height = 31;
 
 		this.setDefaultValues();
-		this.loadPlayerImages();
+		this.loadImages();
 		this.loadPlayerAttackImages();
 		this.setInventoryItems();
 	}
@@ -211,10 +211,10 @@ public class Player extends Entity {
 
 			super.spriteCounter++;
 			if (super.spriteCounter > 10) {
-				if (super.sprintNum == 1) {
-					super.sprintNum++;
-				} else if (super.sprintNum == 2) {
-					super.sprintNum--;
+				if (super.sprinteNum == 1) {
+					super.sprinteNum++;
+				} else if (super.sprinteNum == 2) {
+					super.sprinteNum--;
 				}
 				super.spriteCounter = 0;
 			}
@@ -259,68 +259,8 @@ public class Player extends Entity {
 		if (!this.isAlive()) {
 			this.getGp().getMusic().stop();
 			new Sound(Sound.GAME_OVER, false).play();
+			this.getGp().getUi().setCommandNum(-1);
 			this.getGp().setGameState(GamePanel.GAME_OVER_STATE);
-		}
-	}
-
-	private void attacking() {
-		super.spriteCounter++;
-		if (super.spriteCounter <= 5) {
-			super.sprintNum = 1;
-		}
-		if (super.spriteCounter > 5 && super.spriteCounter <= 25) {
-			super.sprintNum = 2;
-
-			// save current information
-			int currentWorldX = this.worldX;
-			int currentWorldY = this.worldY;
-			int currentSolidAreaWidth = this.solidArea.width;
-			int currentSolidAreaHeight = this.solidArea.height;
-
-			// Adjust player's worldX/Y for the attackArea collision
-			switch (this.direction) {
-			case UP -> this.worldY -= this.attackArea.height;
-			case DOWN -> this.worldY += this.attackArea.height;
-			case LEFT -> this.worldX -= this.attackArea.width;
-			case RIGHT -> this.worldX += this.attackArea.width;
-			}
-
-			// attackAtea becomes solidArea
-			this.solidArea.width = this.attackArea.width;
-			this.solidArea.height = this.attackArea.height;
-
-			// check monster collision with the updated worldX/Y and solidArea
-			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
-			this.damageMonster(monsterIndex, this.getAttack(), this.getCurrentWeapon().getKnockBackPower());
-
-			// CHECK INTERACTIVE TILE COLLISON FOR INTERACT TO IT
-			int interactiveTitleIndex = this.getGp().getCollisionChecker().checkEntity(this,
-					this.getGp().getInteractiveTiles());
-			this.damageInteractiveTile(interactiveTitleIndex);
-
-			// CHECH THE WEAPON IS HITING A PROJECTILE WITH COLLISION
-			int projectileIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getProjectiles());
-			this.damageProjectile(projectileIndex);
-
-			// Reset worldX/Y and solidArea of player
-			this.worldX = currentWorldX;
-			this.worldY = currentWorldY;
-			this.solidArea.width = currentSolidAreaWidth;
-			this.solidArea.height = currentSolidAreaHeight;
-
-		}
-		if (super.spriteCounter > 25) {
-			super.sprintNum = 1;
-			super.spriteCounter = 0;
-			this.setAttacking(Boolean.FALSE);
-		}
-	}
-
-	public void knockBack(Entity entity, int knockBackPower) {
-		if (knockBackPower > 0) {
-			entity.direction = this.direction;
-			entity.setSpeed(entity.getSpeed() + knockBackPower);
-			entity.setKnockBack(true);
 		}
 	}
 
@@ -333,14 +273,14 @@ public class Player extends Entity {
 		}
 	}
 
-	public void damageMonster(int index, int attack, int knockBackPower) {
+	public void damageMonster(int index, Entity attacker, int attack, int knockBackPower) {
 		if (index >= 0) {
 			final Entity[] monsters = this.getGp().getMonsters()[this.getGp().getCurrentMap()];
 			final Entity monster = monsters[index];
 			if (!monster.isInvincible()) {
 				new Sound(Sound.HIT_MONSTER, false).play();
 
-				this.knockBack(monster, knockBackPower);
+				this.setKnockBack(monster, attacker, knockBackPower);
 
 				int damage = attack - monster.getDefense();
 				if (damage < 0) {
@@ -395,7 +335,7 @@ public class Player extends Entity {
 	public void checkLevelUp() {
 		if (this.getExp() >= this.getNextLevelExp()) {
 			this.setLevel(this.getLevel() + 1);
-			this.setNextLevelExp(this.getNextLevelExp() * 2);
+			this.setNextLevelExp(this.getNextLevelExp() + 1);
 			this.setMaxLife(this.getMaxLife() + 2);
 			this.setStrength(this.getStrength() + 1);
 			this.setDexterity(this.getDexterity() + 1);
@@ -556,35 +496,35 @@ public class Player extends Entity {
 		int tempScreenX = this.screenX;
 		int tempScreenY = this.screenY;
 
-		image = switch (super.direction) {
+		image = switch (this.direction) {
 		case UP -> {
 			if (this.isAttacking()) {
 				tempScreenY -= this.getGp().getTileSize();
-				yield this.sprintNum == 1 ? this.attackUp1 : this.attackUp2;
+				yield this.sprinteNum == 1 ? this.attackUp1 : this.attackUp2;
 			} else {
-				yield this.sprintNum == 1 ? this.up1 : super.up2;
+				yield this.sprinteNum == 1 ? this.up1 : super.up2;
 			}
 		}
 		case DOWN -> {
 			if (this.isAttacking()) {
-				yield super.sprintNum == 1 ? super.attackDown1 : super.attackDown2;
+				yield super.sprinteNum == 1 ? super.attackDown1 : super.attackDown2;
 			} else {
-				yield super.sprintNum == 1 ? super.down1 : super.down2;
+				yield super.sprinteNum == 1 ? super.down1 : super.down2;
 			}
 		}
 		case LEFT -> {
 			if (this.isAttacking()) {
 				tempScreenX -= this.getGp().getTileSize();
-				yield super.sprintNum == 1 ? super.attackLeft1 : super.attackLeft2;
+				yield super.sprinteNum == 1 ? super.attackLeft1 : super.attackLeft2;
 			} else {
-				yield super.sprintNum == 1 ? super.left1 : super.left2;
+				yield super.sprinteNum == 1 ? super.left1 : super.left2;
 			}
 		}
 		case RIGHT -> {
 			if (this.isAttacking()) {
-				yield super.sprintNum == 1 ? super.attackRight1 : super.attackRight2;
+				yield super.sprinteNum == 1 ? super.attackRight1 : super.attackRight2;
 			} else {
-				yield super.sprintNum == 1 ? super.right1 : super.right2;
+				yield super.sprinteNum == 1 ? super.right1 : super.right2;
 			}
 		}
 		default -> throw new IllegalArgumentException("Unexpected value for player direction: " + super.direction);
@@ -623,7 +563,7 @@ public class Player extends Entity {
 		}
 	}
 
-	public void loadPlayerImages() {
+	public void loadImages() {
 		super.up1 = this.setup("/player/boy_up_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.up2 = this.setup("/player/boy_up_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.right1 = this.setup("/player/boy_right_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
@@ -713,6 +653,8 @@ public class Player extends Entity {
 	@Override
 	public int getAttack() {
 		this.attackArea = this.getCurrentWeapon().getAttackArea();
+		this.setMotion1_duration(this.getCurrentWeapon().getMotion1_duration());
+		this.setMotion2_duration(this.getCurrentWeapon().getMotion2_duration());
 		return this.getStrength() * this.getCurrentWeapon().getAttackValue();
 	}
 

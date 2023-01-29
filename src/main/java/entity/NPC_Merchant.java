@@ -25,12 +25,12 @@ public class NPC_Merchant extends Entity {
 		this.direction = Entity.Direction.DOWN;
 		this.setDefaultSpeed(1);
 		this.setSpeed(this.getDefaultSpeed());
-		this.loadPlayerImages();
+		this.loadImages();
 		this.setDialogue();
 		this.setInventoryItems();
 	}
 
-	public void loadPlayerImages() {
+	public void loadImages() {
 		super.up1 = this.setup("/npc/merchant_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.up2 = this.setup("/npc/merchant_down_2.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 		super.right1 = this.setup("/npc/merchant_down_1.png", this.getGp().getTileSize(), this.getGp().getTileSize());

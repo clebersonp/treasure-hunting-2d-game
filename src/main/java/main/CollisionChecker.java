@@ -1,6 +1,7 @@
 package main;
 
 import entity.Entity;
+import entity.Entity.Direction;
 
 public class CollisionChecker {
 
@@ -25,7 +26,13 @@ public class CollisionChecker {
 		int tileNum2 = 0;
 		int tileNum1 = tileNum2;
 
-		switch (entity.getDirection()) {
+		// Use a temporal direction when it's being knockbacked
+		Direction direction = entity.getDirection();
+		if (entity.isKnockBack()) {
+			direction = entity.getKnockBackDirection();
+		}
+
+		switch (direction) {
 		case UP:
 			entityTopRow = (entityTopWorldY - entity.getSpeed()) / this.gp.getTileSize();
 			tileNum1 = this.gp.getTileManager().getMapTileNum()[this.gp.getCurrentMap()][entityTopRow][entityLeftCol];
@@ -114,6 +121,13 @@ public class CollisionChecker {
 	// NPC OR MONSTER COLLISION
 	public int checkEntity(Entity entity, Entity[][] targets) {
 		int objIndex = -1;
+
+		// Use a temporal direction when it's being knockbacked
+		Direction direction = entity.getDirection();
+		if (entity.isKnockBack()) {
+			direction = entity.getKnockBackDirection();
+		}
+
 		for (int i = 0; i < targets[this.gp.getCurrentMap()].length; i++) {
 
 			if (targets[this.gp.getCurrentMap()][i] != null) {
@@ -127,7 +141,7 @@ public class CollisionChecker {
 				targets[this.gp.getCurrentMap()][i].getSolidArea().y = targets[this.gp.getCurrentMap()][i].getWorldY()
 						+ targets[this.gp.getCurrentMap()][i].getSolidArea().y;
 
-				switch (entity.getDirection()) {
+				switch (direction) {
 				case UP:
 					entity.getSolidArea().y -= entity.getSpeed();
 					break;

@@ -10,7 +10,7 @@ public class OBJ_Door extends Entity {
 		this.setName("Door");
 		this.setType(EntityType.OBSTACLE);
 		this.setCollision(true);
-		this.loadPlayerImages();
+		this.loadImages();
 
 		// Definir area de colisao do obj door
 		this.solidArea.x = 0;
@@ -22,7 +22,7 @@ public class OBJ_Door extends Entity {
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.down1 = this.setup("/objects/door.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 	

@@ -35,7 +35,7 @@ public abstract class Entity {
 	// Entity direction, Default Down p objetos statics carregar como a image down
 	protected Direction direction = Direction.DOWN;
 
-	protected int sprintNum = 1;
+	protected int sprinteNum = 1;
 
 	protected Rectangle solidArea = new Rectangle(new Point(0, 0), new Dimension(48, 48));
 	protected Rectangle attackArea = new Rectangle(0, 0, 0, 0);
@@ -87,6 +87,8 @@ public abstract class Entity {
 	private int exp;
 	private int nextLevelExp;
 	private int coin;
+	private int motion1_duration;
+	private int motion2_duration;
 	private Entity currentWeapon;
 	private Entity currentShield;
 	private Entity currentLight;
@@ -107,6 +109,9 @@ public abstract class Entity {
 	// INVENTORY
 	private final List<Entity> inventory = new ArrayList<>();
 	private final int maxInventorySize = 20;
+	private Direction knockBackDirection;
+
+	private Entity attacker;
 
 	public Entity(GamePanel gp) {
 		super();
@@ -233,7 +238,7 @@ public abstract class Entity {
 				this.knockBack = false;
 				this.speed = this.defaultSpeed;
 			} else {
-				switch (this.gp.getPlayer().getDirection()) {
+				switch (this.knockBackDirection) {
 				case UP -> this.worldY -= this.speed;
 				case DOWN -> this.worldY += this.speed;
 				case LEFT -> this.worldX -= this.speed;
@@ -248,6 +253,8 @@ public abstract class Entity {
 				this.speed = this.defaultSpeed;
 			}
 
+		} else if (this.isAttacking()) {
+			this.attacking();
 		} else {
 			this.setAction();
 
@@ -262,16 +269,16 @@ public abstract class Entity {
 				case RIGHT -> this.worldX += this.speed;
 				}
 			}
-		}
 
-		this.spriteCounter++;
-		if (this.spriteCounter > 25) {
-			if (this.sprintNum == 1) {
-				this.sprintNum++;
-			} else if (this.sprintNum == 2) {
-				this.sprintNum--;
+			this.spriteCounter++;
+			if (this.spriteCounter > 25) {
+				if (this.sprinteNum == 1) {
+					this.sprinteNum++;
+				} else if (this.sprinteNum == 2) {
+					this.sprinteNum--;
+				}
+				this.spriteCounter = 0;
 			}
-			this.spriteCounter = 0;
 		}
 
 		// This needs to be outside of key if statement!
@@ -289,11 +296,101 @@ public abstract class Entity {
 		}
 	}
 
+	public void attacking() {
+		
+		this.spriteCounter++;
+		
+		if (this.spriteCounter <= this.motion1_duration) {
+			this.sprinteNum = 1;
+		}
+		if (this.spriteCounter > this.motion1_duration && this.spriteCounter <= this.motion2_duration) {
+			this.sprinteNum = 2;
+
+			// save current information
+			int currentWorldX = this.worldX;
+			int currentWorldY = this.worldY;
+			int currentSolidAreaWidth = this.solidArea.width;
+			int currentSolidAreaHeight = this.solidArea.height;
+
+			// Adjust player's worldX/Y for the attackArea collision
+			switch (this.direction) {
+			case UP -> this.worldY -= this.attackArea.height;
+			case DOWN -> this.worldY += this.attackArea.height;
+			case LEFT -> this.worldX -= this.attackArea.width;
+			case RIGHT -> this.worldX += this.attackArea.width;
+			}
+
+			// attackAtea becomes solidArea
+			this.solidArea.width = this.attackArea.width;
+			this.solidArea.height = this.attackArea.height;
+
+			if (EntityType.MONSTER == this.type) {
+				if (this.gp.getCollisionChecker().checkPlayer(this)) {
+					this.damagePlayer(this.attack);
+				}
+			}
+			// PLAYER
+			else if (EntityType.PLAYER == this.type) {
+				// check monster collision with the updated worldX/Y and solidArea
+				int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
+				this.gp.getPlayer().damageMonster(monsterIndex, this, this.getAttack(),
+						this.getCurrentWeapon().getKnockBackPower());
+
+				// CHECK INTERACTIVE TILE COLLISON FOR INTERACT TO IT
+				int interactiveTitleIndex = this.getGp().getCollisionChecker().checkEntity(this,
+						this.getGp().getInteractiveTiles());
+				this.gp.getPlayer().damageInteractiveTile(interactiveTitleIndex);
+
+				// CHECH THE WEAPON IS HITING A PROJECTILE WITH COLLISION
+				int projectileIndex = this.getGp().getCollisionChecker().checkEntity(this,
+						this.getGp().getProjectiles());
+				this.gp.getPlayer().damageProjectile(projectileIndex);
+			}
+
+			// Reset worldX/Y and solidArea of player
+			this.worldX = currentWorldX;
+			this.worldY = currentWorldY;
+			this.solidArea.width = currentSolidAreaWidth;
+			this.solidArea.height = currentSolidAreaHeight;
+
+		}
+		if (this.spriteCounter > this.motion2_duration) {
+			this.sprinteNum = 1;
+			this.spriteCounter = 0;
+			this.attacking = false;
+		}
+	}
+
+	public void checkAttackOrNot(int rate, int straight, int horizontal) {
+
+		int xDistance = this.getxDistance(this.gp.getPlayer());
+		int yDistance = this.getyDistance(this.gp.getPlayer());
+
+		boolean targetInRange = switch (this.direction) {
+		case UP -> (this.gp.getPlayer().getWorldY() < this.worldY && yDistance < straight && xDistance < horizontal);
+		case DOWN -> (this.gp.getPlayer().getWorldY() > this.worldY && yDistance < straight && xDistance < horizontal);
+		case LEFT -> (this.gp.getPlayer().getWorldX() < this.worldX && xDistance < straight && yDistance < horizontal);
+		case RIGHT -> (this.gp.getPlayer().getWorldX() > this.worldX && xDistance < straight && yDistance < horizontal);
+		default -> false;
+		};
+
+		if (targetInRange) {
+			// Check if it initiates an attack
+			int i = new Random().nextInt(rate);
+			if (i == 0) {
+				this.attacking = true;
+				this.sprinteNum = 1;
+				this.spriteCounter = 0;
+				this.shotAvailableCounter = 0;
+			}
+		}
+	}
+
 	public void damagePlayer(int attack) {
 		if (!this.gp.getPlayer().isInvincible()) {
 			// we can give damage
 			new Sound(Sound.RECEIVE_DAMAGE, false).play();
-			int damage = this.getAttack() - this.gp.getPlayer().getDefense();
+			int damage = attack - this.gp.getPlayer().getDefense();
 			if (damage < 0) {
 				damage = 0;
 			}
@@ -302,7 +399,16 @@ public abstract class Entity {
 		}
 	}
 
-	protected abstract void loadPlayerImages();
+	public void setKnockBack(Entity target, Entity attacker, int knockBackPower) {
+		if (knockBackPower > 0) {
+			this.attacker = attacker;
+			target.knockBackDirection = this.attacker.direction;
+			target.setSpeed(target.getSpeed() + knockBackPower);
+			target.setKnockBack(true);
+		}
+	}
+
+	protected abstract void loadImages();
 
 	public void speak() {
 
@@ -336,17 +442,46 @@ public abstract class Entity {
 
 			BufferedImage image = null;
 
+			int tempScreenX = screenX;
+			int tempScreenY = screenY;
+
 			image = switch (this.direction) {
-			case UP -> this.sprintNum == 1 ? this.up1 : this.up2;
-			case DOWN -> this.sprintNum == 1 ? this.down1 : this.down2;
-			case LEFT -> this.sprintNum == 1 ? this.left1 : this.left2;
-			case RIGHT -> this.sprintNum == 1 ? this.right1 : this.right2;
+			case UP -> {
+				if (this.isAttacking()) {
+					tempScreenY -= this.getGp().getTileSize();
+					yield this.sprinteNum == 1 ? this.attackUp1 : this.attackUp2;
+				} else {
+					yield this.sprinteNum == 1 ? this.up1 : this.up2;
+				}
+			}
+			case DOWN -> {
+				if (this.isAttacking()) {
+					yield this.sprinteNum == 1 ? this.attackDown1 : this.attackDown2;
+				} else {
+					yield this.sprinteNum == 1 ? this.down1 : this.down2;
+				}
+			}
+			case LEFT -> {
+				if (this.isAttacking()) {
+					tempScreenX -= this.getGp().getTileSize();
+					yield this.sprinteNum == 1 ? this.attackLeft1 : this.attackLeft2;
+				} else {
+					yield this.sprinteNum == 1 ? this.left1 : this.left2;
+				}
+			}
+			case RIGHT -> {
+				if (this.isAttacking()) {
+					yield this.sprinteNum == 1 ? this.attackRight1 : this.attackRight2;
+				} else {
+					yield this.sprinteNum == 1 ? this.right1 : this.right2;
+				}
+			}
 			default -> throw new IllegalArgumentException("Unexpected value for player direction: " + this.direction);
 			};
 
 			// Monster HP bar
 			if (EntityType.MONSTER.equals(this.type) && this.isHpBarOn()) {
-				this.checkHealthBar(g2, screenX, screenY);
+				this.checkHealthBar(g2, tempScreenX, tempScreenY);
 
 				this.hpBarCounter++;
 				if (this.hpBarCounter > 600) { // 10 secs
@@ -364,7 +499,7 @@ public abstract class Entity {
 				this.dyingAnimation(g2);
 			}
 
-			g2.drawImage(image, screenX, screenY, null);
+			g2.drawImage(image, tempScreenX, tempScreenY, null);
 
 			// RESET ALPHA
 			this.changeAlpha(g2, 1F);
@@ -1101,6 +1236,38 @@ public abstract class Entity {
 
 	public void setLightRadius(int lightRadius) {
 		this.lightRadius = lightRadius;
+	}
+
+	public Entity getAttacker() {
+		return attacker;
+	}
+
+	public void setAttacker(Entity attacker) {
+		this.attacker = attacker;
+	}
+
+	public Direction getKnockBackDirection() {
+		return knockBackDirection;
+	}
+
+	public void setKnockBackDirection(Direction knockBackDirection) {
+		this.knockBackDirection = knockBackDirection;
+	}
+
+	public int getMotion1_duration() {
+		return motion1_duration;
+	}
+
+	public void setMotion1_duration(int motion1_duration) {
+		this.motion1_duration = motion1_duration;
+	}
+
+	public int getMotion2_duration() {
+		return motion2_duration;
+	}
+
+	public void setMotion2_duration(int motion2_duration) {
+		this.motion2_duration = motion2_duration;
 	}
 
 	public static enum Direction {

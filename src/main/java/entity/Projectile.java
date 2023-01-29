@@ -10,7 +10,7 @@ public abstract class Projectile extends Entity {
 		super(gp);
 	}
 
-	protected abstract void loadPlayerImages();
+	protected abstract void loadImages();
 
 	public void set(int worldX, int worldY, Entity.Direction direction, boolean alive, Entity user) {
 
@@ -31,7 +31,7 @@ public abstract class Projectile extends Entity {
 		if (EntityType.PLAYER.equals(this.user.getType())) {
 			int monsterIndex = this.getGp().getCollisionChecker().checkEntity(this, this.getGp().getMonsters());
 			if (monsterIndex != -1) {
-				this.getGp().getPlayer().damageMonster(monsterIndex, this.getAttack(), this.getKnockBackPower());
+				this.getGp().getPlayer().damageMonster(monsterIndex, this, this.getAttack(), this.getKnockBackPower());
 				this.generateParticle(this.user.getProjectile(),
 						this.getGp().getMonsters()[this.getGp().getCurrentMap()][monsterIndex]);
 				this.setAlive(Boolean.FALSE); // destroi o projectile
@@ -61,10 +61,10 @@ public abstract class Projectile extends Entity {
 		// controla a animacao, trocando as sprits a partir do counter
 		this.spriteCounter++;
 		if (this.spriteCounter > 12) {
-			if (this.sprintNum == 1) {
-				this.sprintNum = 2;
+			if (this.sprinteNum == 1) {
+				this.sprinteNum = 2;
 			} else {
-				this.sprintNum = 1;
+				this.sprinteNum = 1;
 			}
 			this.spriteCounter = 0;
 		}

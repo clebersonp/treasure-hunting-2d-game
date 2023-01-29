@@ -10,13 +10,13 @@ public class OBJ_ShieldBlue extends Entity {
 		this.setType(EntityType.SHIELD);
 		this.setName("Blue Shield");
 		this.setDefenseValue(2);
-		this.loadPlayerImages();
+		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nA shiny blue shield.");
 		this.setPrice(150);
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.down1 = this.setup("/objects/shield_blue.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

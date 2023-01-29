@@ -132,10 +132,16 @@ public class KeyHandler implements KeyListener {
 		case KeyEvent.VK_W, KeyEvent.VK_UP -> {
 			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() - 1);
 			new Sound(Sound.INVENTORY_CURSOR, false).play();
+			if (this.gp.getUi().getCommandNum() < 0) {
+				this.gp.getUi().setCommandNum(1);
+			}
 		}
 		case KeyEvent.VK_S, KeyEvent.VK_DOWN -> {
 			this.gp.getUi().setCommandNum(this.gp.getUi().getCommandNum() + 1);
 			new Sound(Sound.INVENTORY_CURSOR, false).play();
+			if (this.gp.getUi().getCommandNum() > 1) {
+				this.gp.getUi().setCommandNum(0);
+			}
 		}
 		case KeyEvent.VK_ENTER -> {
 
@@ -152,12 +158,6 @@ public class KeyHandler implements KeyListener {
 				this.gp.restart();
 			}
 		}
-		}
-
-		if (this.gp.getUi().getCommandNum() < 0) {
-			this.gp.getUi().setCommandNum(1);
-		} else if (this.gp.getUi().getCommandNum() > 1) {
-			this.gp.getUi().setCommandNum(0);
 		}
 	}
 

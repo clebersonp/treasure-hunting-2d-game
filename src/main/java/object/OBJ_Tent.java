@@ -11,14 +11,14 @@ public class OBJ_Tent extends Entity {
 		super(gp);
 		this.setType(EntityType.CONSUMABLE);
 		this.setName("Tent");
-		this.loadPlayerImages();
+		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nYou can sleep at night\nuntil next morning.");
 		this.setPrice(300);
 		this.setStackable(true);
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.down1 = this.setup("/objects/tent.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

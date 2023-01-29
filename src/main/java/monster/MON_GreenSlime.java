@@ -33,11 +33,11 @@ public class MON_GreenSlime extends Entity {
 
 		this.setProjectile(new OBJ_Rock(gp));
 
-		this.loadPlayerImages();
+		this.loadImages();
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.up1 = this.setup("/monsters/greenslime_down_1.png", this.getGp().getTileSize(),
 				this.getGp().getTileSize());
 		this.up2 = this.setup("/monsters/greenslime_down_2.png", this.getGp().getTileSize(),

@@ -10,13 +10,13 @@ public class OBJ_ShieldWood extends Entity {
 		this.setType(EntityType.SHIELD);
 		this.setName("Shield Wood");
 		this.setDefenseValue(1);
-		this.loadPlayerImages();
+		this.loadImages();
 		this.setDescription("[" + this.getName() + "]\nMade by wood.");
 		this.setPrice(100);
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.down1 = this.setup("/objects/shield_wood.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

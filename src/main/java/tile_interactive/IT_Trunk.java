@@ -17,11 +17,11 @@ public class IT_Trunk extends InteractiveTile {
 		this.solidAreaDefaultX = this.solidArea.x;
 		this.solidAreaDefaultY = this.solidArea.y;
 
-		this.loadPlayerImages();
+		this.loadImages();
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.down1 = this.setup("/tiles_interactive/trunk.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 

@@ -396,6 +396,7 @@ public class UI {
 	}
 
 	private void drawGameOverScreen(Graphics2D g2) {
+		
 		g2.setColor(new Color(0, 0, 0, 150));
 		g2.fillRect(0, 0, this.gp.getScreenWidth(), this.gp.getScreenHeight());
 
@@ -1243,7 +1244,7 @@ public class UI {
 				this.gp.geteManager().getLighting().setDayState(DayState.DAY);
 				this.gp.geteManager().getLighting().setDayCounter(0);
 				this.gp.setGameState(GamePanel.PLAY_STATE);
-				this.gp.getPlayer().loadPlayerImages();
+				this.gp.getPlayer().loadImages();
 			}
 		}
 	}

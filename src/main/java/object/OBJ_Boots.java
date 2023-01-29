@@ -8,11 +8,11 @@ public class OBJ_Boots extends Entity {
 	public OBJ_Boots(GamePanel gp) {
 		super(gp);
 		this.setName("Boots");
-		this.loadPlayerImages();
+		this.loadImages();
 	}
 
 	@Override
-	protected void loadPlayerImages() {
+	protected void loadImages() {
 		this.down1 = this.setup("/objects/boots.png", this.getGp().getTileSize(), this.getGp().getTileSize());
 	}
 
